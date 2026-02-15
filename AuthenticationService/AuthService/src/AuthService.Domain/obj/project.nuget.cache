@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "Jw7ceEdmeso=",
+  "dgSpecHash": "Sk0EMo0CKU4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\rgome\\Documents\\IN6AM\\ChapinBank\\AuthenticationService\\AuthService\\src\\AuthService.Domain\\AuthService.Domain.csproj",
+  "projectFilePath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\ChapinBank\\AuthenticationService\\AuthService\\src\\AuthService.Domain\\AuthService.Domain.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\rgome\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512"
+    "C:\\Users\\mzaba\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512"
   ],
   "logs": []
 }
