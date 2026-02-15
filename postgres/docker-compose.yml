@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:13
+    container_name: in6am_chapin_bank
+    environment:
+      POSTGRES_USER: IN6AM
+      POSTGRES_PASSWORD: Admin!
+      POSTGRES_DB: chapin_bank
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
