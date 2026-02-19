@@ -21,9 +21,8 @@ public class User
     [MaxLength(25, ErrorMessage = "El username no puede tener más de 25 caracteres")]
     public string Username { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "El Número de cuenta es obligatorio")]
-    [MaxLength(25, ErrorMessage = "El número de cuenta no puede tener más de 25 caracteres")]
-    public string NoCuenta {get; set;} = string.Empty;
+    
+    //public string NoCuenta {get; set;} = string.Empty;
     public int DPI {get; set;} = 0;
 
     public string Direction {get; set;} = string.Empty;
@@ -57,6 +56,7 @@ public class User
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     public ICollection<UserRole> UserRoles { get; set; } = [];
+    public ICollection<Account> Accounts {get; set;} = [];
 
 
     public UserEmail UserEmail { get; set; } = null!;

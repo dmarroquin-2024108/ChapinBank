@@ -72,6 +72,12 @@ public class AuthService(
             Name = dto.Name,
             Surname = dto.Surname,
             Username = dto.Username,
+            DPI = dto.DPI,
+            Direction = dto.Direction,
+            Phone = dto.Phone,
+            NameWork = dto.NameWork,
+            IngresosMensuales = dto.IngresosMensuales,
+
             Email = dto.Email.ToLowerInvariant(),
             PasswordHash = passHashService.HasPassword(dto.Password),
             Status = false,
