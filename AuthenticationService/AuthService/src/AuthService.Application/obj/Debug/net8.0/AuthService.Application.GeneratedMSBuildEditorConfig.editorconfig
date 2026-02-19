@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = AuthService.Application
-build_property.ProjectDir = C:\Users\rgome\Documents\IN6AM\ChapinBank\AuthenticationService\AuthService\src\AuthService.Application\
+build_property.ProjectDir = C:\Users\mzaba\Downloads\ChapinBank\AuthenticationService\AuthService\src\AuthService.Application\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
