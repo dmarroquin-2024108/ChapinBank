@@ -1,7 +1,9 @@
 using System;
+using System.Formats.Asn1;
 using AuthService.Application.DTOs;
 using AuthService.Application.DTOs.Email;
 using AuthService.Application.Interfaces;
+using AuthService.Application.Services;
 using AuthService.Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -140,4 +142,5 @@ public class AuthController(IAuthService authService) : ControllerBase
         var result = await authService.ResetPasswordAsync(resetPasswordDto);
         return Ok(result);
     }
+
 }

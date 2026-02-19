@@ -33,6 +33,11 @@ public class IdGenerator
         return $"rol_{GenerateShortUUID()}";
     }
 
+    public static string GenerateAccountId()
+    {
+        return $"acc_{GenerateShortUUID()}";
+    }
+
     public static bool IsValidUserId(string? id)
     {
         if (string.IsNullOrEmpty(id))

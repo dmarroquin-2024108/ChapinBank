@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using AuthService.Application.Interfaces;
+using AuthService.Domain.Interfaces;
+using AuthService.Application.Services;
+using AuthService.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +36,11 @@ builder.Services.AddApiDocumentation();
 builder.Services.AddApplicationServices(builder.Configuration);
 //builder.Services.AddScoped<IAuthService, AuthService.Application.Services.AuthService>(); // necesario para inyección directa en controladores
 //builder.Services.AddJwtAuthentication(builder.Configuration);
-builder.Services.AddRateLimitingPolicies();
+
+//nuevo 18/02
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();builder.Services.AddRateLimitingPolicies();
+
 
 // Add security services
 builder.Services.AddSecurityPolicies(builder.Configuration);

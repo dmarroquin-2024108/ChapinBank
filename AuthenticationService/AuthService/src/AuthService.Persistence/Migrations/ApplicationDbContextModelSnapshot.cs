@@ -22,6 +22,49 @@ namespace AuthService.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("AuthService.Domain.Entities.Account", b =>
+                {
+                    b.Property<string>("IdAccount")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("id_account");
+
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("account_number");
+
+                    b.Property<string>("AccountType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("account_type");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("IdAccount")
+                        .HasName("pk_accounts");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_accounts_user_id");
+
+                    b.ToTable("accounts", (string)null);
+                });
+
             modelBuilder.Entity("AuthService.Domain.Entities.Roles", b =>
                 {
                     b.Property<string>("IdRole")
@@ -79,7 +122,7 @@ namespace AuthService.Persistence.Migrations
                         .HasColumnName("email");
 
                     b.Property<double>("IngresosMensuales")
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("numeric(18,2)")
                         .HasColumnName("ingresos_mensuales");
 
                     b.Property<string>("Name")
@@ -93,12 +136,6 @@ namespace AuthService.Persistence.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("name_work");
-
-                    b.Property<string>("NoCuenta")
-                        .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("character varying(25)")
-                        .HasColumnName("no_cuenta");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -117,11 +154,13 @@ namespace AuthService.Persistence.Migrations
                         .HasColumnName("requiere_cambio_pass");
 
                     b.Property<double>("SaldoActual")
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("numeric(18,2)")
                         .HasColumnName("saldo_actual");
 
                     b.Property<bool>("Status")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
+                        .HasDefaultValue(true)
                         .HasColumnName("status");
 
                     b.Property<string>("Surname")
@@ -266,6 +305,18 @@ namespace AuthService.Persistence.Migrations
                     b.ToTable("user_roles", (string)null);
                 });
 
+            modelBuilder.Entity("AuthService.Domain.Entities.Account", b =>
+                {
+                    b.HasOne("AuthService.Domain.Entities.User", "User")
+                        .WithMany("Accounts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_accounts_users_user_id");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AuthService.Domain.Entities.UserEmail", b =>
                 {
                     b.HasOne("AuthService.Domain.Entities.User", "User")
@@ -318,6 +369,8 @@ namespace AuthService.Persistence.Migrations
 
             modelBuilder.Entity("AuthService.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Accounts");
+
                     b.Navigation("UserEmail")
                         .IsRequired();
 

@@ -49,7 +49,6 @@ public class DataSeeder
             {
                 var passwordHasher = new PasswordHashService();
                 var userId = IdGenerator.GenerateUserId();
-                var profileId = IdGenerator.GenerateUserId();
                 var emailId = IdGenerator.GenerateUserId();
                 var userRoleId = IdGenerator.GenerateUserId();
 
@@ -59,10 +58,19 @@ public class DataSeeder
                     Name = "Super Admin",
                     Surname = "Admin Admin",
                     Username = "superadmin",
+                    DPI = 0000000000101,
+                    Direction = "Zona 1, Ciudad de Guatemala",
+                    Phone = "12345678",
                     Email = "superadmin@example.com",
                     PasswordHash = passwordHasher.HasPassword("SuperAdmin!"),
-                    Status = true,
                     RequiereCambioPass = false,
+                    NameWork = "Chapin Bank",
+                    IngresosMensuales = 0,
+                    SaldoActual = 0,
+                    Status = true,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+
 
                     UserEmail = new UserEmail
                     {
@@ -82,9 +90,25 @@ public class DataSeeder
                             RoleId = superAdminRole.IdRole
                         }
                     ]
+
+
                 };
+
                 await context.Users.AddAsync(superAdminUser);
                 await context.SaveChangesAsync();
+
+                var superAdminAccount = new Account
+                {
+                    IdAccount = IdGenerator.GenerateAccountId(),
+                    AccountNumber = AccountNumberGenerator.GenerateAccountNumber("ADMIN"),
+                    AccountType = "ADMIN",
+                    UserId = userId,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+                await context.Accounts.AddAsync(superAdminAccount);
+                await context.SaveChangesAsync();
+            
             }
         }
     }
