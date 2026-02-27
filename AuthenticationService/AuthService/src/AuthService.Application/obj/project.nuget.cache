@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jFVEyf5eu6M=",
+  "dgSpecHash": "D2a5wFHWA1Y=",
   "success": true,
-  "projectFilePath": "C:\\Users\\mzaba\\Downloads\\ChapinBank\\AuthenticationService\\AuthService\\src\\AuthService.Application\\AuthService.Application.csproj",
+  "projectFilePath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\IN6AM\\ChapinBank\\AuthenticationService\\AuthService\\src\\AuthService.Application\\AuthService.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mzaba\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\mzaba\\.nuget\\packages\\cloudinarydotnet\\1.27.7\\cloudinarydotnet.1.27.7.nupkg.sha512",
