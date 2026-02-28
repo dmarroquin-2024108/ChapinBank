@@ -182,7 +182,7 @@ export const acceptTransferRecord = async ({ transferToken, token, userId }) => 
         numberAccountOrigin: transfer.numberAccountOrigin,
         numberAccountDestination: transfer.numberAccountDestination,
         commision: transfer.commision,
-        status: 'COMPLETADO',
+        status: 'COMPLETED',
         description: transfer.description
     });
 
@@ -269,7 +269,7 @@ export const cancelTransferRecord = async ({ transferToken, token, userId }) => 
         numberAccountOrigin: transfer.numberAccountOrigin,
         numberAccountDestination: transfer.numberAccountDestination,
         commision: transfer.commision,
-        status: 'CANCELADO',
+        status: 'FAILED',
         description: 'Transferencia cancelada - reembolso aplicado'
     });
 
