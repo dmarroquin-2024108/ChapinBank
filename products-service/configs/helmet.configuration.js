@@ -1,0 +1,20 @@
+export const helmetOptions = {
+    contentSecurityPolicy: {
+        useDefaults: true,
+        directives:{
+            defaultSrc: ["'self'"],
+            scriptSrc:["'self'", "'unsafe-inline'"],
+            styleSrc:["'self'", "'unsafe-inline'"],
+            connectSrc:["'self'"],
+            fontSrc:["'self'"],
+            objectSrc: ["'none"],
+            baseUri:["'self'"],
+            frameAcestors:["'none'"]
+        }//directiva
+    },//ContentSecurityPolice
+    hsts: false,
+    frameguard:{action: 'deny'},
+    hidePoweredBy: true,
+    crossOriginResourcePolicy: {policy: 'cross-origin'},
+    crossOriginEmbedderPolicy: false,
+};
