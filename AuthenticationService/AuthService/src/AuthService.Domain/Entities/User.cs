@@ -45,10 +45,6 @@ public class User
 
     public string NameWork {get; set;} = string.Empty;
 
-    public double IngresosMensuales {get; set;} = 0.0;
-
-    public double SaldoActual {get; set;} = 0.0;
-
     public bool Status { get; set; } = false;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -56,8 +52,6 @@ public class User
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     public ICollection<UserRole> UserRoles { get; set; } = [];
-    public ICollection<Account> Accounts {get; set;} = [];
-
 
     public UserEmail UserEmail { get; set; } = null!;
 

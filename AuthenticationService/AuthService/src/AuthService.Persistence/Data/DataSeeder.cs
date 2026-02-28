@@ -65,8 +65,6 @@ public class DataSeeder
                     PasswordHash = passwordHasher.HasPassword("SuperAdmin!"),
                     RequiereCambioPass = false,
                     NameWork = "Chapin Bank",
-                    IngresosMensuales = 0,
-                    SaldoActual = 0,
                     Status = true,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
@@ -95,18 +93,6 @@ public class DataSeeder
                 };
 
                 await context.Users.AddAsync(superAdminUser);
-                await context.SaveChangesAsync();
-
-                var superAdminAccount = new Account
-                {
-                    IdAccount = IdGenerator.GenerateAccountId(),
-                    AccountNumber = AccountNumberGenerator.GenerateAccountNumber("ADMIN"),
-                    AccountType = "ADMIN",
-                    UserId = userId,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                };
-                await context.Accounts.AddAsync(superAdminAccount);
                 await context.SaveChangesAsync();
             
             }

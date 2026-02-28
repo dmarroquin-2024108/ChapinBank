@@ -5,6 +5,7 @@ using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 using Serilog;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using AuthService.Application.Interfaces;
@@ -37,11 +38,6 @@ builder.Services.AddApplicationServices(builder.Configuration);
 //builder.Services.AddScoped<IAuthService, AuthService.Application.Services.AuthService>(); // necesario para inyección directa en controladores
 //builder.Services.AddJwtAuthentication(builder.Configuration);
 
-//nuevo 18/02
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();builder.Services.AddRateLimitingPolicies();
-
-
 // Add security services
 builder.Services.AddSecurityPolicies(builder.Configuration);
 builder.Services.AddSecurityOptions();
@@ -67,7 +63,24 @@ builder.Services.AddAuthentication("Bearer")
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("AuthPolicy", opt =>
+    {
+        opt.PermitLimit = 5;
+        opt.Window = TimeSpan.FromSeconds(10);
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 2;
+    });
 
+    options.AddFixedWindowLimiter("ApiPolicy", opt =>
+    {
+        opt.PermitLimit = 20; 
+        opt.Window = TimeSpan.FromSeconds(10);
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 5;
+    });
+});
 
 var app = builder.Build();
 

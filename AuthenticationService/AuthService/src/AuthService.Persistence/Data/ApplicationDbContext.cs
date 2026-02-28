@@ -11,8 +11,6 @@ public class ApplicationDbContext (DbContextOptions<ApplicationDbContext> option
     public DbSet<UserRole> UserRoles {get; set;}
     public DbSet<UserEmail> UserEmails {get; set;}
     public DbSet<UserPassReset> UserPasswordResets {get; set;}
-    public DbSet<Account> Accounts {get; set;}
-
     public static string ToSnakeCase(string input)
     {
         if(string.IsNullOrEmpty(input))
@@ -100,10 +98,7 @@ public class ApplicationDbContext (DbContextOptions<ApplicationDbContext> option
 
             entity.Property(e => e.Status)
                 .HasDefaultValue(true);
-            entity.Property(e => e.SaldoActual)
-                .HasColumnType("numeric(18,2)");
-            entity.Property(e => e.IngresosMensuales)
-                .HasColumnType("numeric(18,2)");
+                
             entity.Property(e => e.CreatedAt)
                 .IsRequired();
             entity.Property(e => e.UpdatedAt)
@@ -189,29 +184,6 @@ public class ApplicationDbContext (DbContextOptions<ApplicationDbContext> option
             entity.Property(e => e.IdUser)
                 .HasMaxLength(16);
             entity.Property(e => e.PasswordResetToken).HasMaxLength(256);
-        });
-
-        modelBuilder.Entity<Account>(entity =>
-        {
-            entity.HasKey(e => e.IdAccount);
-            entity.Property(e => e.IdAccount)
-                .HasMaxLength(16)
-                .ValueGeneratedOnAdd();
-            entity.Property(e => e.AccountNumber)
-                .IsRequired()
-                .HasMaxLength(20);
-            entity.Property(e => e.AccountType)
-                .IsRequired()
-                .HasMaxLength(20);
-            entity.Property(e => e.UserId)
-                .HasMaxLength(16);
-            entity.Property(e => e.CreatedAt)
-                .IsRequired();
-            entity.Property(e => e.UpdatedAt)
-                .IsRequired();
-            entity.HasOne(a => a.User)
-                .WithMany(u => u.Accounts)
-                .HasForeignKey(a => a.UserId);
         });
     }
 
