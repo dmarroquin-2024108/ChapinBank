@@ -2,7 +2,15 @@
 
 >**Nota**: Este proyecto está basado en un trabajo con nombre "Kinal Sports" desarrollado por Braulio Echeverría para el curso IN6AM - Kinal Guatemala. Se realizaron modificaciones con fines educativos.
 
+**Nota**:
+Link de Tablero de Trello:
+https://trello.com/invite/b/6973adeccd9207eab84a5ce7/ATTIec2272ff322f6b1ba95e92588739b0248479AF1E/sistema-bancario
+
+Link de documento de Evidencia de Reuniones y Participación del Grupo:
+https://cetkinal-my.sharepoint.com/:b:/g/personal/dmarroquin-2024108_kinal_edu_gt/IQD6A_LtomI2RpdUy-HKvTBzAagzpoUvij8KkRh7xrOPzcM?e=QYk9MV
+
 ChapinBank es una plataforma bancaria backend construida con arquitectura de microservicios. Permite a los usuarios registrarse, autenticarse, gestionar cuentas bancarias, realizar depósitos y transferencias, comprar productos bancarios y recibir notificaciones en tiempo real.
+
 ---
 
 ## Arquitectura General
@@ -374,7 +382,6 @@ https://github.com/IN6AMProm33/auth-service-dotnet.git
 
 **NOTA** 
 Este proyecto fue utilizado como referencia académica y posteriormente adaptado y modificado.
----
 
 ## Referencias
 
