@@ -1,35 +1,12 @@
-# ChapinBank — Sistema Bancario de Microservicios
+# ChapinBank - Gestion Bancaria
 
-ChapinBank es una plataforma bancaria backend construida con arquitectura de microservicios. Permite a los usuarios registrarse, autenticarse, gestionar cuentas bancarias, realizar depósitos y transferencias, comprar productos bancarios y recibir notificaciones en tiempo real.
+>**Nota**: Este proyecto está basado en un trabajo con nombre "Kinal Sports" desarrollado por Braulio Echeverría para el curso IN6AM - Kinal Guatemala. Se realizaron modificaciones con fines educativos.
 
 ---
 
 ## Arquitectura General
 
 El sistema está compuesto por **3 microservicios independientes** que se comunican entre sí mediante HTTP (Axios). Comparten la misma clave secreta JWT para validar tokens entre servicios.
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                        CHAPIN BANK                           │
-│                                                              │
-│  ┌─────────────────┐   ┌──────────────────┐   ┌──────────┐  │
-│  │  Auth Service   │   │  Account Service │   │ Products │  │
-│  │  .NET 8 / C#    │   │  Node.js / JS    │   │  Service │  │
-│  │  Puerto: 5079   │   │  Puerto: 3010    │   │ Node.js  │  │
-│  │  PostgreSQL      │   │  MongoDB         │   │ Puerto:  │  │
-│  │                 │   │                  │   │  3015    │  │
-│  └────────┬────────┘   └────────┬─────────┘   └────┬─────┘  │
-│           │   JWT compartido    │                   │        │
-│           └────────────────────┴───────────────────┘        │
-│                                                              │
-│  ┌───────────────────┐   ┌──────────────────────────────┐   │
-│  │  PostgreSQL :5436 │   │      MongoDB :27017          │   │
-│  │  (Auth DB)        │   │  (Accounts, Products, etc.)  │   │
-│  └───────────────────┘   └──────────────────────────────┘   │
-└──────────────────────────────────────────────────────────────┘
-```
-
----
 
 ## Tecnologías y Requisitos
 
@@ -371,18 +348,14 @@ ChapinBank/
 
 ---
 
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT. Consulte el archivo [LICENSE](LICENSE) para más detalles.
+
 ## Autor
 
 **Los Debuggers**  
 Curso IN6AM - Kinal Guatemala 2026
-
-## Microservicios Relacionados
-
-Este servicio es parte de la arquitectura de microservicios de ChapinBank:
-- **Authentication Service** (este repositorio)
-- Users Management Service
-- Notifications Service
-- API Gateway
 
 ---
 
@@ -391,10 +364,22 @@ Este servicio es parte de la arquitectura de microservicios de ChapinBank:
 
 ## Créditos
 
-Proyecto base desarrollado por:Braulio Echeverría Curso IN6AM - Kinal Guatemala 2026
+Proyecto base desarrollado por:
+Braulio Echeverría
+Curso IN6AM - Kinal Guatemala 2026
 
-Repositorio Original: https://github.com/IN6AMProm33/auth-service-dotnet.git
+Repositorio Original:
+https://github.com/IN6AMProm33/auth-service-dotnet.git
 
 Este proyecto fue utilizado como referencia académica y posteriormente adaptado y modificado.
+---
+
+## Referencias
+
+| Tecnología | Documentación |
+|------------|---------------|
+| JWT | [jwt.io](https://jwt.io/introduction) |
+| Axios | [axios-http.com](https://axios-http.com/docs/intro) |
+| RFC 6750 Bearer Token | [ietf.org](https://datatracker.ietf.org/doc/html/rfc6750) |
 
 ---
