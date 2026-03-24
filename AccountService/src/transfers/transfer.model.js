@@ -3,8 +3,9 @@ import { Schema, model } from 'mongoose';
 const transferSchema = new Schema({
     amount: {
         type: Number,
-        required: [true, 'El monto de depósito es obligatorio.'],
-        min: [1, 'El depósito debe de ser igual o mayor a 1'],
+        required: [true, 'El monto de la transferencia es obligatorio.'],
+        min: [10, 'El monto de la transferencia debe de ser igual o mayor a Q.10.00'],
+        max:[2000, 'El monto no puede exceder Q2,000.00 por transferencia.'],
         set: (val) => parseFloat(val.toFixed(2))
     },
 
@@ -12,9 +13,21 @@ const transferSchema = new Schema({
         type: String,
         required: [true, 'Debe de ingresar el tipo de moneda.'],
         enum: {
-            values: ['GTQ'],
-            message: 'Tipo de moneda no válido.'
-        }
+            values: ['GTQ', 'USD', 'EUR', 'MXN'],
+            message: 'Tipo de moneda no válido. Use: GTQ, USD, EUR ó MXN'
+        },
+        default: 'GTQ'
+    },
+
+    amountInGTQ:{
+        type: Number,
+        required: true,
+        set: (val)=>parseFloat(val.toFixed(2))
+    },
+
+    exchangeRate:{
+        type: Number,
+        default: 1
     },
 
     userId: {
