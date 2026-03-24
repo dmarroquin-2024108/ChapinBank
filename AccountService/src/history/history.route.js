@@ -1,16 +1,23 @@
 import { Router } from 'express';
-import { accountHistory, bankHistory, createHistoryInternal } from './history.controller.js';
+import { accountHistory, bankHistory, createHistoryInternal, accountsByMovements } from './history.controller.js';
 import { validateAccountHistory } from '../../middlewares/history.validator.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
-import { requireRole } from '../../../../products-service/middlewares/validate-role.js';
+import { requireRole } from '../../middlewares/validate-role.js';
 
 const router = Router();
 
 router.get(
     '/bank/movements',
     validateJWT,
-    requireRole('ADMIN_ROLE'),
+    requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
     bankHistory
+);
+
+router.get(
+    '/bank/accounts-by-movements',
+    validateJWT,
+    requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
+    accountsByMovements
 );
 
 router.get(

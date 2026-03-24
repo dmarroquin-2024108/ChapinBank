@@ -12,13 +12,34 @@ export const getAccountHistory = async ({ accountNumber }) => {
     return history.map(formatMovement);
 }; //Busqueda en una cuenta en especifico
 
-export const getBankHistory = async () => {
+export const getBankHistory = async ({ page = 1, limit = 20 } = {}) => {
     const history = await History
         .find({})
         .sort({ createdAt: -1 })
-        .limit(20);
+        .skip((page - 1) * limit)
+        .limit(limit);
     return history.map(formatMovement);
-}; //Todo el banco
+};//Todo el banco
+
+export const getAccountsByMovements = async (order) => {
+    const sortOrder = order === 'asc' ? 1 : -1;
+    return await History.aggregate([
+        {
+            $group: {
+                _id: '$accountNumber',
+                totalMovements: { $sum: 1 }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                accountNumber: '$_id',
+                totalMovements: 1
+            }
+        },
+        { $sort: { totalMovements: sortOrder } }
+    ]);
+}; //Cuentas ordenadas por movimientos
 
 const formatMovement = (doc) => {
     switch (doc.type) {
@@ -32,7 +53,7 @@ const formatMovement = (doc) => {
             return formatTransaction(doc);
 
         default:
-            return doc;
+            return { type: doc.type, amount: doc.amount, date: doc.createdAt };
     }
 }//Definir que tipo de movimiento se quiere en el historial
 
@@ -50,9 +71,7 @@ const formatTransfer = (doc) => ({
     amount: doc.amount.toFixed(2),
     currency: doc.currency,
     numberAccountOrigin: doc.numberAccountOrigin,
-    originHolder: doc.originHolder,
     numberAccountDestination: doc.numberAccountDestination,
-    destinationHolder: doc.destinationHolder,
     commision: doc.commision,
     status: doc.status,
     description: doc.description ?? 'Sin descripción'
