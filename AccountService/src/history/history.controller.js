@@ -1,4 +1,4 @@
-import { getAccountHistory, getBankHistory } from "./history.service.js";
+import { getAccountHistory, getBankHistory, getAccountsByMovements } from "./history.service.js";
 import History from './history.model.js'
 export const accountHistory = async(req,res)=>{
     try{
@@ -48,3 +48,23 @@ export const createHistoryInternal = async (req, res) => {
         data: movement
     });
 };
+
+export const accountsByMovements = async(req, res)=>{
+    try{
+        const order = req.query.order === 'asc' ? 'asc' : 'desc';
+        const result = await getAccountsByMovements(order);
+
+        res.status(200).json({
+            success:true,
+            message:'Cuentas ordenadas por movimientos',
+            total: result.length,
+            data: result
+        });
+    }catch(e){
+        res.status(500).json({
+            success:false,
+            message:'Error al obtener cuentas por movimientos',
+            error: e.message
+        });
+    }
+}//Cuentas con más movimientos
