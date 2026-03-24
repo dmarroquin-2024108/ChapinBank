@@ -5,6 +5,7 @@ using AuthService.Application.DTOs.Email;
 using AuthService.Application.Interfaces;
 using AuthService.Application.Services;
 using AuthService.Domain.Constants;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -143,4 +144,80 @@ public class AuthController(IAuthService authService) : ControllerBase
         return Ok(result);
     }
 
-}
+
+    [HttpPatch("me")]
+    [Authorize]
+    public async Task<ActionResult> UpdateProfile([FromBody] UpdateUserDto updateUserDto)
+    {
+        var userId = User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+        if (userId == null || string.IsNullOrEmpty(userId.Value))
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            var result = await authService.UpdateUserAsync(userId.Value, updateUserDto);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }//EditarPerfila
+
+    [HttpDelete("admin/users/{userId}")]
+    [Authorize(Roles = RoleConstants.ADMIN_ROLE + "," + RoleConstants.SUPERADMIN_ROLE)]
+    public async Task<ActionResult> SoftDeleteUser(string userId)
+    {
+        try
+        {
+            await authService.SoftDeleteUserAsync(userId);
+            return Ok(new
+            {
+                success = true,
+                message = "Usuario eliminado exitosamente"
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpPost("me/request-delete")]
+    [Authorize]
+    public async Task<ActionResult> RequestAccountDeletion()
+    {
+        var userId = User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+        if (userId == null || string.IsNullOrEmpty(userId.Value))
+            return Unauthorized();
+        try
+        {
+            await authService.RequestAccountDeletionAsync(userId.Value);
+            return Ok(new { success = true, message = "Se ha enviado un token de confirmación a tu correo" });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpPost("me/confirm-delete")]
+    [Authorize]
+    public async Task<ActionResult> ConfirmAccountDeletion([FromBody] ConfirmDeleteDto dto)
+    {
+        var userId = User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+        if (userId == null || string.IsNullOrEmpty(userId.Value))
+            return Unauthorized();
+        try
+        {
+            await authService.ConfirmAccountDeletionAsync(userId.Value, dto.Token);
+            return Ok(new { success = true, message = "Cuenta eliminada exitosamente" });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+}// AuthController

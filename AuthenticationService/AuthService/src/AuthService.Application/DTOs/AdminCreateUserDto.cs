@@ -30,7 +30,8 @@ public class AdminCreateUserDto
     public string NameWork { get; set; } = string.Empty;
 
     [Required]
-    public double IngresosMensuales { get; set; } = 0.0;
+    [Range(100, double.MaxValue, ErrorMessage = "No puede crear un Usuario si tiene ingresos menores a Q.100.00")]
+    public double IngresosMensuales { get; set; } = 0.00;
 
     [Required]
     [EmailAddress]

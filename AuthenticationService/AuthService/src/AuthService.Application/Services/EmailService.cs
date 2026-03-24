@@ -89,6 +89,23 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
         await SendEmailAsync(email, subject, body);
     }
 
+    public async Task SendAccountDeletionConfirmationAsync(string email, string username, string token)
+    {
+        var subject = "Confirmación de eliminación de cuenta";
+
+        var body = $@"
+            <h2>Solicitud de eliminación de cuenta</h2>
+            <p>Hola {username},</p>
+            <p>Recibimos una solicitud para eliminar tu cuenta de Chapin Bank.</p>
+            <p>Para confirmar la eliminación, usa el siguiente token:</p>
+            <p style='font-size: 18px; font-weight: bold;'>{token}</p>
+            <p>Este token expirará en <strong>1 hora</strong>.</p>
+            <p>Si no solicitaste esto, ignora este correo. Tu cuenta permanecerá activa.</p>
+        ";
+
+        await SendEmailAsync(email, subject, body);
+    }
+
     private async Task SendEmailAsync(string to, string subject, string body)
     {
         var smtpSettings = configuration.GetSection("SmtpSettings");
@@ -199,4 +216,3 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
         }
     }
 }
-

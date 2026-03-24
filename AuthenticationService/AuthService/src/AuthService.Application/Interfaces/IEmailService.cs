@@ -8,4 +8,5 @@ public interface IEmailService
     Task SendPasswordResetAsync(string email, string username, string token);
     Task SendWelcomeEmailAsync(string email, string username);
     Task SendAdminCreatedUserEmailAsync(string email, string username, string tempPassword, string verificationToken);
+    Task SendAccountDeletionConfirmationAsync(string email, string username, string token);
 }

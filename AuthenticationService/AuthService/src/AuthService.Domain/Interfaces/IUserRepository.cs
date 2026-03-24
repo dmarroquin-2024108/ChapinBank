@@ -13,12 +13,11 @@ public interface IUserRepository
     Task<User?> GetByPassResetTokenAsync(string token);
     Task<bool> ExistsByEmailAsync(string email);
     Task<bool> ExistsByUsernameAsync(string username);
-    Task<User> UpdateAsync(User user);
+    Task<bool> SoftDeleteAsync(string id);
     Task<bool> DeleteAsync(string id);
-    
+    Task<User> UpdateAsync(User user);
+    Task<User?> GetDeletedByEmailAsync(string email);
     Task<UserPassReset?> GetPasswordResetAsync(string token);
     Task UpdateUserRoleAsync(string userId, string roleId);
     Task AddPasswordResetAsync(UserPassReset resetEntry);
-
-    
 }
