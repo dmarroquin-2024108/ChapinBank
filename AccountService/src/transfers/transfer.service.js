@@ -1,32 +1,63 @@
 import jwt from 'jsonwebtoken';
 import Transfer from './transfer.model.js';
-import Account from '../accounts/account.model.js';
 import History from '../history/history.model.js'
-import { accountServiceClient } from '../../configs/axios.configuration.js';
+import { authServiceClient } from '../../configs/axios.configuration.js';
+import { getAccountByNumberAccount, updateAccountBalanceInternal } from '../accounts/account.service.js';
 import { notifyTransferCompleted, notifyTransferCreated } from '../notifications/notification.service.js';
+import { convertToGTQ } from '../../helpers/currency.helper.js';
+import { sendTransferRequestEmail, sendTransferCancelledEmail, sendTransferRejectedEmail, sendTransferAcceptedEmail, sendTransferAcceptEmail } from './../../helpers/Email.helper.js';
 
+const COMISION = 3.00; //Comisión para cuenta de ahorro
+const LIMITE_MOVIMIENTO = 2000.00; //Establecer límite de dinero que se puede transferir
+const LIMITE_DIARIO = 10000.00; // Limite dirario por cuenta
+const CANCEL_WINDOW_MINUTES = parseInt(process.env.TRANSFER_CANCEL_WINDOW_MINUTES || '30'); //Cancelar transferencia por emisor durante un tiempo de 30 minutos
 
+const getUserEmail = async (userId, token) => {
+    try {
+        const { data } = await authServiceClient.post(
+            '/api/v1/auth/profile/by-id',
+            { userId },
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return { email: data.data.email, username: data.data.username };
+    } catch (e) {
+        console.error('Error al obtener email del usuario:', err.response?.data || err.message);
+        return null;
+    }//try-catch
+}//Obtener el email del usuario de .NET
 
-const COMISION = 3.00;
-
-const getAccount = async (accountNumber, token) => {
-    const { data } = await accountServiceClient.get(
-        `/chapinbank/v1/accounts/internal/${accountNumber}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-    );
-    return data.data;
+const getAccount = async (accountNumber) => {
+    return await getAccountByNumberAccount(accountNumber);
 };//Obtener el numero de cuenta
 
-const updateBalance = async (accountNumber, balance, token) => {
-    await accountServiceClient.patch(
-        `/chapinbank/v1/accounts/internal/${accountNumber}`,
-        { balance },
-        { headers: { Authorization: `Bearer ${token}` } }
-    );
+const updateBalance = async (accountNumber, balance) => {
+    await updateAccountBalanceInternal(accountNumber, balance);
 };//PATCH para actualizar el balance cuando haya una transferencia
 
+const getDailyTransferAmount = async (numberAccountOrigin) => {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const result = await Transfer.aggregate([
+        {
+            $match: {
+                numberAccountOrigin,
+                status: { $in: ['PENDIENTE', 'COMPLETADO'] },
+                createdAt: { $gte: startOfDay }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: { $sum: `$amountInGTQ` }//Ya lo suma convertido
+            }
+        }
+    ]);
+    return result.length > 0 ? result[0].total : 0;
+}//getDaillyTransfer
+
 export const createTransferRecord = async ({ transferData, userId, token }) => {
-    const { numberAccountOrigin, numberAccountDestination } = transferData;
+    const { numberAccountOrigin, numberAccountDestination, currency = 'GTQ' } = transferData;
 
     if (numberAccountOrigin === numberAccountDestination) {
         const e = new Error(`La cuenta de origen y destino no pueden se las misma.`);
@@ -50,7 +81,7 @@ export const createTransferRecord = async ({ transferData, userId, token }) => {
         const e = new Error('No tienes permiso para usar esta cuenta');
         e.statusCode = 403;
         throw e;
-    }
+    }//Verificar propiedad de la cuenta origen
 
     //DESTINI
     let accountDestination;
@@ -62,25 +93,58 @@ export const createTransferRecord = async ({ transferData, userId, token }) => {
         throw e;
     }//try-catch
 
+    const { amountInGTQ, exchangeRate } = await convertToGTQ(transferData.amount, currency); //Conversión
+
     //Si la cuenta es de ahorro una comision de 3 quetzales
     const commision = accountOrigin.accountType === 'AHORRO' ? COMISION : 0;
-    const transferTotal = parseFloat((transferData.amount + commision).toFixed(2));
+
+    //Limite por transferencia (2000.00)
+    if (amountInGTQ > LIMITE_MOVIMIENTO) {
+        const e = new Error(`No se puede transferir más de Q. ${LIMITE_MOVIMIENTO} en un solo movimiento.`
+            + (currency !== 'GTQ' ? `(Tu monto equivale a Q. ${amountInGTQ.toFixed(2)})` : '')
+        );
+        e.statusCode = 400;
+        throw e;
+    }
 
     const balanceOrigen = parseFloat(accountOrigin.balance);
-    if (balanceOrigen < transferTotal) {
-        const e = new Error('Saldo insuficiente. Por favor transfiera una menor cantidad. NOTA: Si es cuenta AHORRO  se decomizan 3 GTQ');
-        e.statusCode = 404
+    const newBalance = parseFloat((amountInGTQ + commision).toFixed(2));
+
+    if (balanceOrigen < newBalance) {
+        const e = new Error(
+            `Saldo insuficiente. Necesita Q.${newBalance.toFixed(2)}` +
+            `(monto: Q.${amountInGTQ.toFixed(2)} + comisión: Q.${commision.toFixed(2)})` +
+            `pero su saldo es de: Q.${balanceOrigen.toFixed(2)}`
+        );
+        e.statusCode = 400;
         throw e;
-    };
+    }//Validar que el balance de la cuenta sea mayor al total de la transferencia
+
+    const totalDiario = await getDailyTransferAmount(numberAccountOrigin);
+    const proyectadoDiario = parseFloat((totalDiario + amountInGTQ).toFixed(2));
+
+    if (proyectadoDiario > LIMITE_DIARIO) {
+        const restante = parseFloat((LIMITE_DIARIO - totalDiario).toFixed(2));
+        const e = new Error(
+            `Límite diario de Q.${LIMITE_DIARIO.toFixed(2)} alcanzado. ` +
+            `Ya transferió Q.${totalDiario.toFixed(2)} hoy.` +
+            `Puede transferir como máximo: Q.${Math.max(0, restante).toFixed(2)} más.`
+        );
+        e.statusCode = 400;
+        throw e;
+    }// El máximo diario de transferencia
 
     //guardar la transferencia
     const transfer = new Transfer({
         ...transferData,
         userId,
+        currency,
+        amount: parseFloat(transferData.amount.toFixed(2)),
+        amountInGTQ,
+        exchangeRate,
         commision,
         noOperacion: Number(`${Date.now()}${Math.floor(Math.random() * 10000000)}`),
         status: 'PENDIENTE',
-        amount: parseFloat(transferData.amount.toFixed(2))
     });
     await transfer.save();
 
@@ -98,7 +162,7 @@ export const createTransferRecord = async ({ transferData, userId, token }) => {
     await transfer.save();
 
     //actualizar el saldo origen
-    const nuevoBalanceOrigen = parseFloat((balanceOrigen - transferTotal).toFixed(2));
+    const nuevoBalanceOrigen = parseFloat((balanceOrigen - newBalance).toFixed(2));
     await updateBalance(numberAccountOrigin, nuevoBalanceOrigen, token);
 
     await notifyTransferCreated({
@@ -111,13 +175,35 @@ export const createTransferRecord = async ({ transferData, userId, token }) => {
         noOperacion: transfer.noOperacion
     });
 
+    const destinationUserInfo = await getUserEmail(accountDestination.userId, token);
+    const originUserInfo = await getUserEmail(userId, token);
+
+    if (destinationUserInfo) {
+        try {
+            await sendTransferRequestEmail({
+                toEmail: destinationUserInfo.email,
+                toName: destinationUserInfo.email,
+                fromName: originUserInfo?.username || transfer.originHolder,
+                amount: transfer.amount,
+                currency: transfer.currency,
+                noOperacion: transfer.noOperacion,
+                transferToken,
+                cancelWindowMinutes: CANCEL_WINDOW_MINUTES
+            });
+        } catch (emailE) {
+            console.error('Error al enviar el email al destinatario:', emailE.message);
+        }
+    }//Mandar el token de Aceptar/Rechazar al destinatario de la transfer
     return {
         transfer,
         nuevoBalanceOrigen: nuevoBalanceOrigen.toFixed(2),
         commision: commision.toFixed(2),
+        amountInGTQ: amountInGTQ.toFixed(2),
+        exchangeRate,
         transferToken
     };
 }//TRANSFERcreate
+
 
 export const acceptTransferRecord = async ({ transferToken, token, userId }) => {
     let codigo;
@@ -151,7 +237,7 @@ export const acceptTransferRecord = async ({ transferToken, token, userId }) => 
 
     let accountDestination;
     try {
-        accountDestination = await getAccount(transfer.numberAccountDestination, token);
+        accountDestination = await getAccount(transfer.numberAccountDestination);
     } catch (err) {
         const e = new Error('Cuenta de destino no encontrada');
         e.statusCode = 404;
@@ -166,8 +252,8 @@ export const acceptTransferRecord = async ({ transferToken, token, userId }) => 
     }//Si es el propetario de la cuenta
 
     //Actualizat el balance si se acepta la transferencia
-    const nuevoBalanceDestino = parseFloat((parseFloat(accountDestination.balance) + transfer.amount).toFixed(2));
-    await updateBalance(transfer.numberAccountDestination, nuevoBalanceDestino, token);
+    const nuevoBalanceDestino = parseFloat((parseFloat(accountDestination.balance) + transfer.amountInGTQ).toFixed(2));
+    await updateBalance(transfer.numberAccountDestination, nuevoBalanceDestino);
 
     transfer.status = 'COMPLETADO',
         transfer.transferToken = undefined;
@@ -176,9 +262,11 @@ export const acceptTransferRecord = async ({ transferToken, token, userId }) => 
 
     await History.create({
         type: 'TRANSFER',
+        noOperacion: transfer.noOperacion,
         accountNumber: transfer.numberAccountDestination,
         userId: transfer.userId,
-        amount: transfer.amount,
+        currency: transfer.currency,
+        amount: transfer.amountInGTQ,
         numberAccountOrigin: transfer.numberAccountOrigin,
         numberAccountDestination: transfer.numberAccountDestination,
         commision: transfer.commision,
@@ -188,7 +276,7 @@ export const acceptTransferRecord = async ({ transferToken, token, userId }) => 
 
     await notifyTransferCompleted({
         senderUserId: transfer.userId,
-        receiverUserId: accountDestination.userId, 
+        receiverUserId: accountDestination.userId,
         numberAccountOrigin: transfer.numberAccountOrigin,
         numberAccountDestination: transfer.numberAccountDestination,
         amount: transfer.amount,
@@ -196,11 +284,146 @@ export const acceptTransferRecord = async ({ transferToken, token, userId }) => 
         noOperacion: transfer.noOperacion
     });
 
+    const originUserInfo = await getUserEmail(transfer.userId, token);
+    if (originUserInfo) {
+        try {
+            await sendTransferAcceptedEmail({
+                toEmail: originUserInfo.email,
+                toName: originUserInfo.username,
+                amount: transfer.amount,
+                currency: transfer.currency,
+                noOperacion: transfer.noOperacion
+            });
+        } catch (emailErr) {
+            console.error('Error al enviar email al emisor:', emailErr.message);
+        }
+    }// Notificar al emisor que su transferencia fue aceptada
+
+    const destinationUserInfo = await getUserEmail(accountDestination.userId, token);
+    if (destinationUserInfo) {
+        try {
+            await sendTransferAcceptEmail({
+                toEmail: destinationUserInfo.email,
+                toName: destinationUserInfo.username,
+                amount: transfer.amount,
+                currency: transfer.currency,
+                noOperacion: transfer.noOperacion
+            });
+        } catch (emailErr) {
+            console.error('Error al enviar email al destinatario:', emailErr.message);
+        }
+    }// Notificar al destinatario que aceptó correctamente
+
     return {
         transfer,
         nuevoBalanceDestino: nuevoBalanceDestino.toFixed(2)
     }
 }//Aceptar la transferencia
+
+
+export const rejectTransferRecord = async ({ transferToken, token, userId }) => {
+    let codigo;
+
+    try {
+        codigo = jwt.verify(transferToken, process.env.JWT_SECRET);
+    } catch (e) {
+        e.message = 'Token inválido o expirado.';
+        e.statusCode = 400;
+        throw e;
+    }
+
+    if (codigo.type !== 'TRANSFER_CONFIRMATION') {
+        const err = new Error('Token no válido para esta operación.');
+        err.statusCode = 400;
+        throw err;
+    }
+
+    const transfer = await Transfer.findById(codigo.transferId);
+
+    if (!transfer) {
+        const error = new Error('Transferencia no encontrada');
+        error.statusCode = 404;
+        throw error;
+    }
+
+    if (transfer.status !== 'PENDIENTE') {
+        const error = new Error('Esta transferencia ya fue procesada');
+        error.statusCode = 400;
+        throw error;
+    }
+
+    // Verificar que sea el dueño de la cuenta destino (solo el destinatario puede rechazar)
+    let accountDestination;
+    try {
+        accountDestination = await getAccount(transfer.numberAccountDestination);
+    } catch (err) {
+        const e = new Error('Cuenta de destino no encontrada');
+        e.statusCode = 404;
+        throw e;
+    }
+
+    if (accountDestination.userId !== userId) {
+        const error = new Error('No tienes permiso para rechazar esta transferencia');
+        error.statusCode = 403;
+        throw error;
+    }
+
+    let accountOrigin;
+    try {
+        accountOrigin = await getAccount(transfer.numberAccountOrigin); //rembolso al que mando la transfer
+    } catch (err) {
+        const e = new Error('Cuenta de origen no encontrada');
+        e.statusCode = 404;
+        throw e;
+    }
+
+    const balanceActual = parseFloat(accountOrigin.balance);
+    const reembolso = parseFloat((transfer.amountInGTQ + transfer.commision).toFixed(2));
+    const nuevoBalanceOrigen = parseFloat((balanceActual + reembolso).toFixed(2));
+
+    await updateBalance(transfer.numberAccountOrigin, nuevoBalanceOrigen);
+
+    transfer.status = 'CANCELADO';
+    transfer.transferToken = undefined;
+    transfer.canceledAt = new Date();
+    await transfer.save();
+
+    await History.create({
+        type: 'TRANSFER',
+        noOperacion: transfer.noOperacion,
+        accountNumber: transfer.numberAccountOrigin,
+        userId: transfer.userId,
+        currency: transfer.currency,
+        amount: transfer.amountInGTQ,
+        numberAccountOrigin: transfer.numberAccountOrigin,
+        numberAccountDestination: transfer.numberAccountDestination,
+        commision: transfer.commision,
+        status: 'FAILED',
+        description: 'Transferencia rechazada por el destinatario - reembolso aplicado'
+    });
+
+    // Notificar al emisor por email que fue rechazada
+    const originUserInfo = await getUserEmail(transfer.userId, token);
+    if (originUserInfo) {
+        try {
+            await sendTransferRejectedEmail({
+                toEmail: originUserInfo.email,
+                toName: originUserInfo.username,
+                amount: transfer.amount,
+                currency: transfer.currency,
+                noOperacion: transfer.noOperacion
+            });
+        } catch (emailErr) {
+            console.error('Error al enviar email de rechazo:', emailErr.message);
+        }
+    }
+
+    return {
+        transfer,
+        reembolso: reembolso.toFixed(2),
+        nuevoBalanceOrigen: nuevoBalanceOrigen.toFixed(2)
+    };
+}//rejectTransferRecord
 
 export const cancelTransferRecord = async ({ transferToken, token, userId }) => {
     let codigo;
@@ -233,7 +456,17 @@ export const cancelTransferRecord = async ({ transferToken, token, userId }) => 
         throw error;
     }
 
-    // Verificar que sea el dueño de la cuenta origen o destino
+    const minutosTranscurridos = (Date.now() - new Date(transfer.createdAt).getTime()) / 1000 / 60;
+    if (minutosTranscurridos > CANCEL_WINDOW_MINUTES) {
+        const error = new Error(
+            `El tiempo para cancelar ha expirado. Solo puedes cancelar dentro de los primeros ${CANCEL_WINDOW_MINUTES} minutos. ` +
+            `Han pasado ${Math.floor(minutosTranscurridos)} minutos.`
+        );
+        error.statusCode = 400;
+        throw error;
+    }//verificar que todavía está a tiempo de cancelar
+
+    // Verificar que sea el dueño de la cuenta origen
     let accountOrigin;
     try {
         accountOrigin = await getAccount(transfer.numberAccountOrigin, token);
@@ -251,7 +484,7 @@ export const cancelTransferRecord = async ({ transferToken, token, userId }) => 
 
     // Devolver el dinero a la cuenta origen
     const balanceActual = parseFloat(accountOrigin.balance);
-    const reembolso = parseFloat((transfer.amount + transfer.commision).toFixed(2));
+    const reembolso = parseFloat((transfer.amountInGTQ + transfer.commision).toFixed(2));
     const nuevoBalanceOrigen = parseFloat((balanceActual + reembolso).toFixed(2));
 
     await updateBalance(transfer.numberAccountOrigin, nuevoBalanceOrigen, token);
@@ -263,9 +496,11 @@ export const cancelTransferRecord = async ({ transferToken, token, userId }) => 
 
     await History.create({
         type: 'TRANSFER',
-        accountNumber: transfer.numberAccountOrigin,
+        noOperacion: transfer.noOperacion,
+        accountNumber: transfer.numberAccountDestination,
         userId: transfer.userId,
-        amount: transfer.amount,
+        currency: transfer.currency,
+        amount: transfer.amountInGTQ,
         numberAccountOrigin: transfer.numberAccountOrigin,
         numberAccountDestination: transfer.numberAccountDestination,
         commision: transfer.commision,
@@ -283,9 +518,39 @@ export const cancelTransferRecord = async ({ transferToken, token, userId }) => 
         noOperacion: transfer.noOperacion
     });
 
+    const destinationAccount = await getAccount(transfer.numberAccountDestination).catch(() => null);
+    if (destinationAccount) {
+        const destinationUserInfo = await getUserEmail(destinationAccount.userId, token);
+        if (destinationUserInfo) {
+            try {
+                await sendTransferCancelledEmail({
+                    toEmail: destinationUserInfo.email,
+                    toName: destinationUserInfo.username,
+                    amount: transfer.amount,
+                    currency: transfer.currency,
+                    noOperacion: transfer.noOperacion
+                });
+            } catch (emailErr) {
+                console.error('Error al enviar email de cancelación:', emailErr.message);
+            }
+        }
+    }//Npotificar al destinatario que cancelaron la transferencia
+
     return {
         transfer,
         reembolso: reembolso.toFixed(2),
         nuevoBalanceOrigen: nuevoBalanceOrigen.toFixed(2)
     };
 };//Cancelar la tranferencia
+
+//Consultar el saldo diario disponible
+export const getDailyLimitStatus = async (numberAccountOrigin) => {
+    const used = await getDailyTransferAmount(numberAccountOrigin);
+    const remaining = Math.max(0, parseFloat((LIMITE_DIARIO - used).toFixed(2)));
+    return {
+        used: parseFloat(used.toFixed(2)),
+        remaining,
+        limit: LIMITE_DIARIO,
+        currency: 'GTQ'
+    };
+};

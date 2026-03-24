@@ -1,6 +1,7 @@
 import {Router} from 'express';
-import {createTransfer, confirmTransfer} from './transfer.controller.js';
+import {createTransfer, confirmTransfer, getCurrencyRates, getDailyLimit} from './transfer.controller.js';
 import {validateCreateTransfer, validateConfirmTransfer} from '../../middlewares/transfer-validator.js';
+import { validateJWT } from '../../middlewares/validate-JWT.js';
 
 const router = Router();
 router.post(
@@ -14,5 +15,17 @@ router.post(
     validateConfirmTransfer,
     confirmTransfer
 );
+
+router.get(
+    '/currency',
+    validateJWT,
+    getCurrencyRates
+)
+
+router.get(
+    '/daily-limit',
+    validateJWT,
+    getDailyLimit
+)
 
 export default router;
