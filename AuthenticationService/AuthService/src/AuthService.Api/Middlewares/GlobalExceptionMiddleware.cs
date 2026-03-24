@@ -16,6 +16,33 @@ public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExcep
         try
         {
             await next(context);
+            if(!context.Response.HasStarted)
+            {
+                if(context.Response.StatusCode == (int)HttpStatusCode.MethodNotAllowed)
+                {
+                    context.Response.ContentType = "application/json";
+                    var response = new
+                    {
+                        success = false,
+                        message = $"El método {context.Request.Method} no está permitido para esta ruta. Verifique el endpoint correcto.",
+                        errorCode = "METHOD_NOT_ALLOWED",
+                        timestamp = DateTime.UtcNow
+                    };
+                    await context.Response.WriteAsync(JsonSerializer.Serialize(response, JsonOptions));
+                }//Si se equivoca en el método 
+                else if(context.Response.StatusCode == (int)HttpStatusCode.NotFound)
+                {
+                    context.Response.ContentType = "application/json";
+                    var response = new
+                    {
+                        success = false,
+                        message = $"La ruta {context.Request.Path} no existe.",
+                        errorCode= "ROUTE_NOT_FOUND",
+                        timestamp = DateTime.UtcNow
+                    };
+                    await context.Response.WriteAsync(JsonSerializer.Serialize(response, JsonOptions));
+                }//si se equivoxa de rutas
+            }//Mejor manejo de los errores
         }
         catch (Exception ex)
         {
@@ -107,4 +134,3 @@ public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExcep
         };
     }
 }
-

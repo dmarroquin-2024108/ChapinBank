@@ -1,5 +1,7 @@
 using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 
 namespace AuthService.Domain.Entities;
 
@@ -45,8 +47,13 @@ public class User
 
     public string NameWork {get; set;} = string.Empty;
 
+    [Required(ErrorMessage = "Debe de proporcionar sus ingresos menusales")]
+    [Range(100, double.MaxValue,ErrorMessage = "No puede crear un Usuario si tiene ingresos menores a Q.100.00")]
+    public double IngresosMensuales {get; set;} = 0.00;
+    
     public bool Status { get; set; } = false;
-
+    public bool IsDeleted{get; set;} = false;
+    public DateTime? DeletedAt{get; set;} = null;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

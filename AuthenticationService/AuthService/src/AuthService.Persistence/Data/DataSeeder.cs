@@ -65,6 +65,7 @@ public class DataSeeder
                     PasswordHash = passwordHasher.HasPassword("SuperAdmin!"),
                     RequiereCambioPass = false,
                     NameWork = "Chapin Bank",
+                    IngresosMensuales = 200.00,
                     Status = true,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,

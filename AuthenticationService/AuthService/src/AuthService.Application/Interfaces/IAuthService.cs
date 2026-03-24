@@ -11,6 +11,10 @@ public interface IAuthService
     Task<EmailResponseDto> ResendVerificationEmailAsync(ResendVerificationDto resendDto);
     Task<EmailResponseDto> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto);
     Task<EmailResponseDto> ResetPasswordAsync(ResetPasswordDto resetPasswordDto);
+    Task<UpdateUserDto?>UpdateUserAsync(string userId, UpdateUserDto updateUserDto);
+    Task<bool> SoftDeleteUserAsync(String userId);
+    Task RequestAccountDeletionAsync(string userId);
+    Task<bool> ConfirmAccountDeletionAsync(string userId, string token);
     Task<UserResponseDto?> GetUserByIdAsync(string userId);
     Task<RegisterResponseDto> CreateUserByAdminAsync(AdminCreateUserDto dto, string currentUserRole);
 

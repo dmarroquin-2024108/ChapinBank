@@ -24,7 +24,7 @@ public class AuthService(
 {
     public async Task<RegisterResponseDto> CreateUserByAdminAsync(AdminCreateUserDto dto, string currentUserRole)
     {
-        var rolName = string.IsNullOrEmpty(dto.Role)? RoleConstants.USER_ROLE : dto.Role;
+        var rolName = string.IsNullOrEmpty(dto.Role) ? RoleConstants.USER_ROLE : dto.Role;
         if (currentUserRole == RoleConstants.USER_ROLE)
         {
             throw new BusinessException(ErrorCodes.UNAUTHORIZED_ROLE_ASSIGNMENT, "Un usuario no tiene permisos para asignar roles");
@@ -33,8 +33,45 @@ public class AuthService(
         if (currentUserRole == RoleConstants.ADMIN_ROLE && rolName == RoleConstants.ADMIN_ROLE)
         {
             throw new BusinessException(ErrorCodes.UNAUTHORIZED_ROLE_ASSIGNMENT, "Un admin no puede crear otro admin, únicamente usuarios");
-        }   
+        }
 
+        var deletedUser = await userRepository.GetDeletedByEmailAsync(dto.Email);
+        if (deletedUser != null)
+        {
+            var reactivationToken = TokenGenerator.GenerateEmailVerifiToken();
+            deletedUser.IsDeleted = false;
+            deletedUser.DeletedAt = null;
+            deletedUser.Status = false;
+            deletedUser.Name = dto.Name;
+            deletedUser.Surname = dto.Surname;
+            deletedUser.Username = dto.Username;
+            deletedUser.DPI = dto.DPI;
+            deletedUser.Direction = dto.Direction;
+            deletedUser.Phone = dto.Phone;
+            deletedUser.NameWork = dto.NameWork;
+            deletedUser.IngresosMensuales = dto.IngresosMensuales;
+            deletedUser.PasswordHash = passHashService.HasPassword(dto.Password);
+            deletedUser.RequiereCambioPass = true;
+            deletedUser.UpdatedAt = DateTime.UtcNow;
+
+            if (deletedUser.UserEmail != null)
+            {
+                deletedUser.UserEmail.EmailVerified = false;
+                deletedUser.UserEmail.EmailVerificationToken = reactivationToken;
+                deletedUser.UserEmail.EmailVerificationTokenExpiry = DateTime.UtcNow.AddHours(24);
+            }
+
+            await userRepository.UpdateAsync(deletedUser);
+            await emailService.SendAdminCreatedUserEmailAsync(deletedUser.Email, deletedUser.Username, dto.Password, reactivationToken);
+
+            return new RegisterResponseDto
+            {
+                Success = true,
+                User = MapToUserResponseDto(deletedUser),
+                Message = "Cuenta reactivada. Revise su correo para activarla",
+                EmailVerificationRequired = true
+            };
+        }//Verificar si la cuenta ya existia para reactivarla
 
         // verificar si el email ya existe
         if (await userRepository.ExistsByEmailAsync(dto.Email))
@@ -42,7 +79,6 @@ public class AuthService(
             logger.LogRegistrationWithExistingEmail();
             throw new BusinessException(ErrorCodes.EMAIL_ALREADY_EXISTS, "El email ya existe");
         }
-
 
         // verficai si el username ya existe
         if (await userRepository.ExistsByUsernameAsync(dto.Username))
@@ -53,9 +89,8 @@ public class AuthService(
 
         // Crear nuevo usuario y entidades relacionadas
         var emailVerificationToken = TokenGenerator.GenerateEmailVerifiToken();
-
         var userId = IdGenerator.GenerateUserId();
-        var userEmailId =IdGenerator.GenerateUserId();
+        var userEmailId = IdGenerator.GenerateUserId();
         var userRoleId = IdGenerator.GenerateUserId();
         var userPasswordResetId = IdGenerator.GenerateUserId();
 
@@ -65,7 +100,6 @@ public class AuthService(
         {
             throw new InvalidOperationException($"Rol por defecto '{rolName}' no encontrado. Asegúrese de que la siembra se ejecute antes del registro");
         }
-
         var user = new User
         {
             IdUser = userId,
@@ -76,11 +110,11 @@ public class AuthService(
             Direction = dto.Direction,
             Phone = dto.Phone,
             NameWork = dto.NameWork,
+            IngresosMensuales = dto.IngresosMensuales,
             Email = dto.Email.ToLowerInvariant(),
             PasswordHash = passHashService.HasPassword(dto.Password),
             Status = false,
             RequiereCambioPass = true,
-
             UserEmail = new UserEmail
             {
                 IdEmail = userEmailId,
@@ -104,9 +138,7 @@ public class AuthService(
                 PasswordResetToken = null,
                 PasswordTokenExpiry = null
             }
-
         };
-
 
         //guardar usuario y entidades relacionadas  
         var createdUser = await userRepository.CreateAsync(user);
@@ -145,6 +177,13 @@ public class AuthService(
         {
             logger.LogFailedLoginAttempt();
             throw new UnauthorizedAccessException("Credenciales inválidas");
+        }
+
+        // Verificar si el usuario fue eliminado
+        if (user.IsDeleted)
+        {
+            logger.LogFailedLoginAttempt();
+            throw new UnauthorizedAccessException("Esta cuenta ha sido eliminada");
         }
 
         // Verificar si el usuario está activo
@@ -200,9 +239,15 @@ public class AuthService(
             Username = user.Username,
             Email = user.Email,
             Role = userRole,
+            Phone = user.Phone,
+            Direction = user.Direction,
+            NameWork = user.NameWork,
+            IngresosMensuales = user.IngresosMensuales,
             Status = user.Status,
             IsEmailVerified = user.UserEmail?.EmailVerified ?? false,
+            IsDeleted = user.IsDeleted,
             CreatedAt = user.CreatedAt,
+            DeleteAt = user.DeletedAt,
             UpdatedAt = user.UpdatedAt
         };
     }
@@ -334,7 +379,7 @@ public class AuthService(
         {
             var resetEntry = new UserPassReset
             {
-                IdUserPass= Guid.NewGuid().ToString("N").Substring(0, 16),
+                IdUserPass = Guid.NewGuid().ToString("N").Substring(0, 16),
                 //primero idUser de UserPassReset, luego idUser de user
                 IdUser = user.IdUser,
                 PasswordResetToken = resetToken,
@@ -402,17 +447,113 @@ public class AuthService(
         };
     }
 
+    public async Task<UpdateUserDto?> UpdateUserAsync(string userId, UpdateUserDto updateUserDto)
+    {
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null) throw new Exception("Usuario no encontrado");
+        if (updateUserDto.Username != null)
+        {
+            if (await userRepository.ExistsByUsernameAsync(updateUserDto.Username)) throw new Exception("El username ya existe.");
+            user.Username = updateUserDto.Username;
+        }
+
+        if (updateUserDto.Email != null)
+        {
+            if (await userRepository.ExistsByEmailAsync(updateUserDto.Email)) throw new Exception("Email ya existente.");
+            user.Email = updateUserDto.Email;
+        }
+
+        if (updateUserDto.Direction != null) user.Direction = updateUserDto.Direction;
+        if (updateUserDto.Phone != null) user.Phone = updateUserDto.Phone;
+        if (updateUserDto.NameWork != null) user.NameWork = updateUserDto.NameWork;
+        if (updateUserDto.IngresosMensuales != null) user.IngresosMensuales = updateUserDto.IngresosMensuales.Value;
+
+        await userRepository.UpdateAsync(user);
+
+        return new UpdateUserDto
+        {
+            Username = user.Username,
+            Email = user.Email,
+            Direction = user.Direction,
+            Phone = user.Phone,
+            NameWork = user.NameWork,
+            IngresosMensuales = user.IngresosMensuales,
+            UpdatedAt = user.UpdatedAt
+        };
+    }//Actualizar el Usuario (PATCH)
+
+    public async Task<bool> SoftDeleteUserAsync(string userId)
+    {
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null) throw new Exception("Usuario no encontrado");
+        if (user.IsDeleted) throw new Exception("El usuario ya fue eliminado");
+
+        // No se puede eliminar una cuenta de superadmin
+        var isSuperAdmin = user.UserRoles.Any(r => r.Role?.Name == RoleConstants.SUPERADMIN_ROLE)
+        ;
+        if (isSuperAdmin) throw new Exception("No se puede eliminar una cuenta de Superadmin");
+
+        return await userRepository.SoftDeleteAsync(userId);
+    }//Lógica para el admin si quiere desactivar cuentas
+
+    public async Task RequestAccountDeletionAsync(string userId)
+    {
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null) throw new Exception("Usuario no encontrado");
+        if (user.IsDeleted) throw new Exception("La cuenta ya fue eliminada");
+
+        // Generar token y guardarlo en UserPasswordReset
+        var token = TokenGenerator.GeneratePasswordResetToken();
+
+        if (user.UserPasswordReset == null)
+        {
+            var resetEntry = new UserPassReset
+            {
+                IdUserPass = IdGenerator.GenerateUserId(),
+                IdUser = userId,
+                PasswordResetToken = token,
+                PasswordTokenExpiry = DateTime.UtcNow.AddHours(1)
+            };
+            await userRepository.AddPasswordResetAsync(resetEntry);
+        }
+        else
+        {
+            user.UserPasswordReset.PasswordResetToken = token;
+            user.UserPasswordReset.PasswordTokenExpiry = DateTime.UtcNow.AddHours(1);
+            await userRepository.UpdateAsync(user);
+        }
+
+        await emailService.SendAccountDeletionConfirmationAsync(user.Email, user.Username, token);
+        logger.LogInformation("Account deletion requested for user {Username}", user.Username);
+    }//Manda token de verificación para confirmar la desactivacion de la cuenta
+
+    public async Task<bool> ConfirmAccountDeletionAsync(string userId, string token)
+    {
+        var user = await userRepository.GetByPassResetTokenAsync(token);
+        if (user == null || user.UserPasswordReset == null)
+            throw new Exception("Token inválido o expirado");
+
+        // Verificar que el token pertenece al usuario que hace la petición
+        if (user.IdUser != userId)
+            throw new Exception("Token inválido o expirado");
+
+        if (user.IsDeleted) throw new Exception("La cuenta ya fue eliminada");
+
+        // Limpiar el token y hacer soft delete
+        user.UserPasswordReset.PasswordResetToken = null;
+        user.UserPasswordReset.PasswordTokenExpiry = null;
+        await userRepository.UpdateAsync(user);
+
+        return await userRepository.SoftDeleteAsync(userId);
+    }//Para el usuario que quiera desactivar su cuenta
+
     public async Task<UserResponseDto?> GetUserByIdAsync(string userId)
     {
         var user = await userRepository.GetByIdAsync(userId);
-        if (user == null)
+        if (user == null || user.IsDeleted)
         {
             return null;
         }
-
         return MapToUserResponseDto(user);
     }
-
-
-
 }

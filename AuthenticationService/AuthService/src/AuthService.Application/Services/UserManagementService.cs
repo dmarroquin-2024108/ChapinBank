@@ -33,7 +33,7 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles)
         }
 
         var role = await roles.GetByNameAsync(roleName)
-                       ?? throw new InvalidOperationException($"Role {roleName} not found");
+                    ?? throw new InvalidOperationException($"Role {roleName} not found");
 
         await users.UpdateUserRoleAsync(userId, role.IdRole);
 

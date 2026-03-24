@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using AuthService.Application.Services;
 using AuthService.Domain.Entities;
 using AuthService.Domain.Interfaces;
@@ -95,6 +96,26 @@ public class UserRepository (ApplicationDbContext context) : IUserRepository
         return true;
     }
 
+    public async Task<User?> GetDeletedByEmailAsync(string email)
+    {
+        return await context.Users
+            .Include(u=> u.UserEmail)
+            .Include(u=> u.UserPasswordReset)
+            .Include(u=> u.UserRoles)
+                .ThenInclude(ur=> ur.Role)
+            .FirstOrDefaultAsync(u=> EF.Functions.ILike(u.Email, email)&& u.IsDeleted);
+    }
+
+    public async Task<bool> SoftDeleteAsync(string id)
+    {
+        var user = await GetByIdAsync(id);
+        user.IsDeleted = true;
+        user.DeletedAt = DateTime.UtcNow;
+        user.Status = false;
+        context.Users.Update(user);
+        await context.SaveChangesAsync();
+        return true;
+    }
     public async Task<bool> ExistsByEmailAsync(string email)
     {
         return await context.Users

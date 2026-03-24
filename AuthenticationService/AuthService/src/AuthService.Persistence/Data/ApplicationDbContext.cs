@@ -90,6 +90,8 @@ public class ApplicationDbContext (DbContextOptions<ApplicationDbContext> option
 
             entity.Property(e => e.NameWork)
                 .HasMaxLength(255);
+            entity.Property(e=>e.IngresosMensuales)
+                .IsRequired();
             entity.Property(e => e.Email)
                 .IsRequired();
             entity.Property(e => e.PasswordHash)
@@ -98,7 +100,10 @@ public class ApplicationDbContext (DbContextOptions<ApplicationDbContext> option
 
             entity.Property(e => e.Status)
                 .HasDefaultValue(true);
-                
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValue(false);
+            entity.Property(e => e.DeletedAt)
+                .IsRequired(false);
             entity.Property(e => e.CreatedAt)
                 .IsRequired();
             entity.Property(e => e.UpdatedAt)
