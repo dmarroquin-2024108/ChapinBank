@@ -40,8 +40,21 @@ const depositSchema = new Schema({
         type: String,
         trim: true,
         maxLength: [255, 'La descripcion no puede exceder de 255 caracteres.'],
-    }
-},
+    },
+
+    status: {
+        type: String,
+        enum: {
+            values: ['ACTIVE', 'REVERTED'],
+            message: 'Estado de depósito no válido'
+        },
+        default: 'ACTIVE'
+    },
+
+    revertedAt: {
+        type: Date,
+        default: null
+    }},
     {
         timestamps: true,
         versionKey: false,
