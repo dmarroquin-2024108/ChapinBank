@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import { swaggerDocs } from './documentation.js';
 import { corsOptions } from './cors.configuration.js';
 import { helmetOptions } from './helmet.configuration.js';
 import { dbConnection } from './db.configuration.js';
@@ -51,6 +52,7 @@ export const initServer = async () => {
     try {
         middlewares(app);
         await dbConnection();
+        swaggerDocs(app);
         routes(app);
         app.use(errorHandler);
 
