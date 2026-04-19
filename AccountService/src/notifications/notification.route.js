@@ -13,44 +13,6 @@ const router = Router();
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Notification:
- *       type: object
- *       properties:
- *         _id:
- *           type: string
- *           example: "664a1f2e8b3c4d0012345678"
- *         user:
- *           type: string
- *           example: "664a1f2e8b3c4d0012340000"
- *         message:
- *           type: string
- *           example: "Tu compra ha sido procesada correctamente"
- *         isRead:
- *           type: boolean
- *           example: false
- *         createdAt:
- *           type: string
- *           format: date-time
- *           example: "2025-06-01T00:00:00.000Z"
- *         updatedAt:
- *           type: string
- *           format: date-time
- *           example: "2025-06-10T00:00:00.000Z"
- *     ErrorResponse:
- *       type: object
- *       properties:
- *         success:
- *           type: boolean
- *           example: false
- *         message:
- *           type: string
- *           example: "Descripción del error"
- */
-
-/**
- * @swagger
  * /chapinbank/v1/notifications/my:
  *   get:
  *     summary: Obtener las notificaciones del usuario autenticado
@@ -96,7 +58,7 @@ router.get('/my', validateJWT, getMyNotifications);
  * /chapinbank/v1/notifications/{id}/read:
  *   patch:
  *     summary: Marcar una notificación como leída
- *     description: Marca una notificación específica como leída (`isRead: true`). Requiere JWT.
+ *     description: "Marca una notificación específica como leída (`read: true`). Requiere JWT."
  *     tags: [Notifications]
  *     security:
  *       - bearerAuth: []

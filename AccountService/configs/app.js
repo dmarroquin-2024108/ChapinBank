@@ -14,7 +14,7 @@ import depositRoutes from '../src/deposits/deposit.route.js';
 import transferRoutes from '../src/transfers/transfer.routes.js';
 import historyRoutes from '../src/history/history.route.js';
 import notificationRoutes from '../src/notifications/notification.route.js'
-
+import { swaggerSpec, swaggerUi } from './documentation.js';
 
 const BASE_PATH = '/chapinbank/v1';
 
@@ -24,6 +24,7 @@ const routes = (app) =>{
     app.use(`${BASE_PATH}/transfers`, transferRoutes)
     app.use(`${BASE_PATH}/history`, historyRoutes);
     app.use(`${BASE_PATH}/notifications`, notificationRoutes);
+    app.use(`${BASE_PATH}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
     app.get(`${BASE_PATH}/health`, (req, res)=>{
         res.status(200).json({
             status: 'Healthy',
@@ -61,7 +62,7 @@ export const initServer = async ()=>{
         app.listen(PORT, ()=>{
             console.log(`Server Chapin Bank running on port ${PORT}`);
             console.log(`Health check endpoint: http://localhost:${PORT}${BASE_PATH}/health`);
-
+            console.log(`Swagger docs: http://localhost:${PORT}${BASE_PATH}/api-docs`);
         });
     }catch(err){
         console.error(`Chapin Bank - Error al inciar el servidor: ${err.message}`);
