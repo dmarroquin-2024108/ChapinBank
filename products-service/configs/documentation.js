@@ -1,5 +1,7 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import {productSchemas} from '../src/Products/products.schema.js';
+import {transactionSchemas} from '../src/Transactions/transaction.schema.js';
 
 const options = {
     definition: {
@@ -16,6 +18,10 @@ const options = {
             }
         ],
         components: {
+            schemas:{
+                ...productSchemas,
+                ...transactionSchemas
+            },
             securitySchemes: {
                 bearerAuth: {
                     type: 'http',
@@ -38,16 +44,4 @@ const options = {
 
 const swaggerSpec = swaggerJsdoc(options);
 
-export const swaggerDocs = (app) => {
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-        customSiteTitle: 'ChapinBank API Docs',
-        swaggerOptions: {
-            persistAuthorization: true
-        }
-    }));
-
-    app.get('/api-docs.json', (req, res) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(swaggerSpec);
-    });
-};
+export { swaggerSpec, swaggerUi };

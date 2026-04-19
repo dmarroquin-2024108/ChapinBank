@@ -4,7 +4,6 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { swaggerDocs } from './documentation.js';
 import { corsOptions } from './cors.configuration.js';
 import { helmetOptions } from './helmet.configuration.js';
 import { dbConnection } from './db.configuration.js';
@@ -12,13 +11,14 @@ import { requestLimit } from './rateLimit.configuration.js';
 import { errorHandler } from '../middlewares/handle-errors.js';
 import productRoutes from '../src/Products/products.route.js'
 import transactionRoutes from '../src/Transactions/transaction.route.js';
+import { swaggerSpec, swaggerUi } from './documentation.js';
 
 const BASE_PATH = '/chapinbank/v1';
 
 const routes = (app) => {
     app.use(`${BASE_PATH}/products`, productRoutes);
     app.use(`${BASE_PATH}/transactions`, transactionRoutes);
-
+    app.use(`${BASE_PATH}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
     app.get(`${BASE_PATH}/health`, (req, res) => {
         res.status(200).json({
             status: 'Healthy',
@@ -52,13 +52,13 @@ export const initServer = async () => {
     try {
         middlewares(app);
         await dbConnection();
-        swaggerDocs(app);
         routes(app);
         app.use(errorHandler);
 
         app.listen(PORT, () => {
             console.log(`ChapinBank - Products Server running on port ${PORT}`);
             console.log(`Health: http://localhost:${PORT}${BASE_PATH}/health`);
+            console.log(`Swagger docs: http://localhost:${PORT}${BASE_PATH}/api-docs`);
         });
 
     } catch (err) {
