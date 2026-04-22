@@ -27,32 +27,33 @@ router.use(validateJWT);
  *               accountType:
  *                 type: string
  *                 enum: [AHORRO, MONETARIA]
+ *                 example: "AHORRO"
  *     responses:
  *       201:
  *         description: Cuenta creada exitosamente
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   $ref: '#/components/schemas/Account'
+ *             example:
+ *               success: true
+ *               message: "Cuenta creada exitosamente"
+ *               data:
+ *                 accountNumber: "AH0000001"
+ *                 accountType: "AHORRO"
+ *                 balance: 0
  *       401:
  *         description: No autorizado (token inválido o no enviado)
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: "No autorizado"
  *       500:
  *         description: Error al crear la cuenta
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: "Error al crear la cuenta"
  */
 router.post('/', createAccountValidator, createAccount);
 
@@ -69,29 +70,30 @@ router.post('/', createAccountValidator, createAccount);
  *         description: Cuentas obtenidas correctamente
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 total:
- *                   type: number
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Account'
+ *             example:
+ *               success: true
+ *               total: 2
+ *               data:
+ *                 - accountNumber: "AH0000001"
+ *                   accountType: "AHORRO"
+ *                   balance: 500.00
+ *                 - accountNumber: "MO0000002"
+ *                   accountType: "MONETARIA"
+ *                   balance: 1200.00
  *       401:
  *         description: No autorizado (token inválido o no enviado)
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: "No autorizado"
  *       500:
  *         description: Error al obtener las cuentas
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: "Error al obtener las cuentas"
  */
 router.get('/', getAccounts);
 
@@ -109,30 +111,32 @@ router.get('/', getAccounts);
  *         required: true
  *         schema:
  *           type: string
+ *         example: "MO0000001"
  *     responses:
  *       200:
  *         description: Cuenta obtenida correctamente
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   $ref: '#/components/schemas/Account'
+ *             example:
+ *               success: true
+ *               data:
+ *                 accountNumber: "MO0000001"
+ *                 accountType: "MONETARIA"
+ *                 balance: 1000.00
  *       401:
  *         description: No autorizado
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: "No autorizado"
  *       500:
  *         description: Error al obtener la cuenta
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: "Error al obtener la cuenta"
  */
 router.get('/:accountNumber', getAccountId);
 
@@ -150,24 +154,25 @@ router.get('/:accountNumber', getAccountId);
  *         required: true
  *         schema:
  *           type: string
+ *         example: "AH0000001"
  *     responses:
  *       200:
  *         description: Cuenta obtenida correctamente
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   $ref: '#/components/schemas/Account'
+ *             example:
+ *               success: true
+ *               data:
+ *                 accountNumber: "AH0000001"
+ *                 accountType: "AHORRO"
+ *                 balance: 500.00
  *       401:
  *         description: No autorizado
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: "No autorizado"
  */
 router.get('/account-internal/:accountNumber', getAccountInternal);
 
@@ -185,38 +190,41 @@ router.get('/account-internal/:accountNumber', getAccountInternal);
  *         required: true
  *         schema:
  *           type: string
+ *         example: "MO0000001"
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *           example:
+ *             accountType: "MONETARIA"
  *     responses:
  *       200:
  *         description: Cuenta actualizada correctamente
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   $ref: '#/components/schemas/Account'
+ *             example:
+ *               success: true
+ *               message: "Cuenta actualizada correctamente"
+ *               data:
+ *                 accountNumber: "MO0000001"
+ *                 accountType: "MONETARIA"
+ *                 balance: 1000.00
  *       401:
  *         description: No autorizado
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: "No autorizado"
  *       500:
  *         description: Error al actualizar la cuenta
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: "Error al actualizar la cuenta"
  */
 router.patch('/:accountNumber', updateAccount);
 
@@ -234,6 +242,7 @@ router.patch('/:accountNumber', updateAccount);
  *         required: true
  *         schema:
  *           type: string
+ *         example: "AH0000001"
  *     requestBody:
  *       required: true
  *       content:
@@ -245,24 +254,24 @@ router.patch('/:accountNumber', updateAccount);
  *             properties:
  *               balance:
  *                 type: number
+ *                 example: 750.00
  *     responses:
  *       200:
  *         description: Cuenta actualizada correctamente
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   $ref: '#/components/schemas/Account'
+ *             example:
+ *               success: true
+ *               data:
+ *                 accountNumber: "AH0000001"
+ *                 balance: 750.00
  *       401:
  *         description: No autorizado
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: "No autorizado"
  */
 router.patch('/account-internal/:accountNumber', updateAccountInternal);
 
