@@ -47,44 +47,24 @@ const router = Router();
  *         description: Transferencia creada exitosamente
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     noOperacion:
- *                       type: number
- *                     numberAccountOrigin:
- *                       type: string
- *                     numberAccountDestination:
- *                       type: string
- *                     amount:
- *                       type: string
- *                     currency:
- *                       type: string
- *                     amountInGTQ:
- *                       type: string
- *                     exchangeRate:
- *                       type: number
- *                     commision:
- *                       type: string
- *                     status:
- *                       type: string
- *                     nuevoBalanceOrigen:
- *                       type: string
- *                     transferToken:
- *                       type: string
- *                     expiresIn:
- *                       type: string
- *                     cancelWindowMinutes:
- *                       type: number
- *                     createdAt:
- *                       type: string
+ *             example:
+ *               success: true
+ *               message: "Transferencia creada. Se envió un token al correo del destinatario para que la acepte o rechace."
+ *               data:
+ *                 noOperacion: 123456789
+ *                 numberAccountOrigin: "MO0000001"
+ *                 numberAccountDestination: "AH0000002"
+ *                 amount: "150.00"
+ *                 currency: "GTQ"
+ *                 amountInGTQ: "150.00"
+ *                 exchangeRate: 1
+ *                 commision: "3.00"
+ *                 status: "PENDIENTE"
+ *                 nuevoBalanceOrigen: "850.00"
+ *                 transferToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                 expiresIn: "1 hora"
+ *                 cancelWindowMinutes: 30
+ *                 createdAt: "2024-06-01T10:00:00.000Z"
  *       500:
  *         description: Error al crear la transferencia
  */
@@ -121,15 +101,19 @@ router.post(
  *         description: Transferencia procesada correctamente
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
+ *             example:
+ *               success: true
+ *               message: "Transferencia aceptada"
+ *               data:
+ *                 transfer:
+ *                   _id: "664f1a2b3c4d5e6f7a8b9c0d"
+ *                   numberAccountOrigin: "MO0000001"
+ *                   numberAccountDestination: "AH0000002"
+ *                   amount: 150
+ *                   currency: "GTQ"
+ *                   status: "COMPLETADO"
+ *                   noOperacion: 123456789
+ *                 nuevoBalanceDestino: "1150.00"
  *       400:
  *         description: Error al aceptar/rechazar la transferencia
  */
@@ -159,13 +143,14 @@ router.post(
  *         description: Tasas obtenidas correctamente
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   type: object
+ *             example:
+ *               success: true
+ *               data:
+ *                 base: "USD"
+ *                 rates:
+ *                   GTQ: 7.80
+ *                   EUR: 0.92
+ *                   MXN: 17.00
  *       500:
  *         description: Error al obtener tasas
  */
@@ -195,22 +180,13 @@ router.get(
  *         description: Límite diario obtenido correctamente
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   type: object
- *                   properties:
- *                     used:
- *                       type: number
- *                     remaining:
- *                       type: number
- *                     limit:
- *                       type: number
- *                     currency:
- *                       type: string
+ *             example:
+ *               success: true
+ *               data:
+ *                 used: 2000.00
+ *                 remaining: 8000.00
+ *                 limit: 10000.00
+ *                 currency: "GTQ"
  *       400:
  *         description: El parámetro accountNumber es obligatorio
  *       500:
