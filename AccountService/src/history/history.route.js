@@ -93,7 +93,7 @@ router.get(
  *                     properties:
  *                       accountNumber:
  *                         type: string
- *                         example: "GT001-2024-000123"
+ *                         example: "MO3456788"
  *                       totalMovements:
  *                         type: integer
  *                         example: 45
@@ -127,7 +127,7 @@ router.get(
  *         schema:
  *           type: string
  *         description: Número de cuenta bancaria a consultar
- *         example: "GT001-2024-000123"
+ *         example: "MO3456788"
  *     responses:
  *       200:
  *         description: Historial de cuenta obtenido exitosamente
@@ -192,7 +192,7 @@ router.get(
  *               accountNumber:
  *                 type: string
  *                 description: Número de cuenta asociado al movimiento
- *                 example: "GT001-2024-000123"
+ *                 example: "MO3456788"
  *               userId:
  *                 type: string
  *                 description: ID del usuario que realizó el movimiento
@@ -216,16 +216,16 @@ router.get(
  *                 example: "OP-2024-000456"
  *               numberAccountOrigin:
  *                 type: string
- *                 description: Número de cuenta origen (aplica para TRANSFER)
- *                 example: "GT001-2024-000100"
+ *                 description: Número de cuenta origen 
+ *                 example: "AH007845"
  *               originHolder:
  *                 type: string
  *                 description: Nombre del titular de la cuenta origen
  *                 example: "Juan Pérez"
  *               numberAccountDestination:
  *                 type: string
- *                 description: Número de cuenta destino (aplica para TRANSFER)
- *                 example: "GT001-2024-000123"
+ *                 description: Número de cuenta destino
+ *                 example: "MO3456788"
  *               destinationHolder:
  *                 type: string
  *                 description: Nombre del titular de la cuenta destino
@@ -273,94 +273,3 @@ router.post(
 );
 
 export default router;
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     History:
- *       type: object
- *       properties:
- *         _id:
- *           type: string
- *           example: "664f1a2b3c4d5e6f7a8b9c0d"
- *         type:
- *           type: string
- *           enum: [DEPOSIT, DEPOSIT_UPDATE, DEPOSIT_REVERT, TRANSFER, TRANSACTION]
- *           description: Tipo de movimiento registrado
- *           example: "DEPOSIT"
- *         accountNumber:
- *           type: string
- *           description: Número de cuenta asociado al movimiento
- *           example: "GT001-2024-000123"
- *         userId:
- *           type: string
- *           description: ID del usuario que realizó el movimiento
- *           example: "user_abc123"
- *         amount:
- *           type: number
- *           description: Monto del movimiento
- *           example: 500.00
- *         currency:
- *           type: string
- *           description: Moneda del movimiento
- *           default: "GTQ"
- *           example: "GTQ"
- *         depositMethod:
- *           type: string
- *           nullable: true
- *           description: Método de depósito, aplica cuando type es DEPOSIT
- *           example: "EFECTIVO"
- *         noOperacion:
- *           type: string
- *           nullable: true
- *           description: Número único de operación
- *           example: "OP-2024-000456"
- *         numberAccountOrigin:
- *           type: string
- *           nullable: true
- *           description: Número de cuenta origen, aplica para TRANSFER
- *           example: "GT001-2024-000100"
- *         originHolder:
- *           type: string
- *           nullable: true
- *           description: Nombre del titular de la cuenta origen
- *           example: "Juan Pérez"
- *         numberAccountDestination:
- *           type: string
- *           nullable: true
- *           description: Número de cuenta destino, aplica para TRANSFER
- *           example: "GT001-2024-000123"
- *         destinationHolder:
- *           type: string
- *           nullable: true
- *           description: Nombre del titular de la cuenta destino
- *           example: "María López"
- *         commision:
- *           type: number
- *           nullable: true
- *           description: Comisión cobrada por el movimiento
- *           example: 5.00
- *         status:
- *           type: string
- *           enum: [PENDING, COMPLETED, FAILED]
- *           description: Estado del movimiento
- *           default: "COMPLETED"
- *           example: "COMPLETED"
- *         productId:
- *           type: string
- *           nullable: true
- *           description: ID del producto relacionado al movimiento
- *           example: "664f1a2b3c4d5e6f7a8b9c0d"
- *         description:
- *           type: string
- *           nullable: true
- *           description: Descripción adicional del movimiento
- *           example: "Depósito en efectivo en agencia central"
- *         createdAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
- */

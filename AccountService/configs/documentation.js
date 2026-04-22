@@ -2,7 +2,8 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { accountSchemas } from '../src/accounts/account.schema.js';
 import {notificationSchemas} from '../src/notifications/notification.schema.js';
-
+import { historySchemas } from '../src/history/history.schema.js';
+import {transferSchemas} from '../src/transfers/transfers.schemas.js'
 const options = {
     definition: {
         openapi: '3.0.0',
@@ -14,7 +15,9 @@ const options = {
         components: {
             schemas:{
                 ...accountSchemas,
-                ...notificationSchemas
+                ...notificationSchemas,
+                ...historySchemas,
+                ...transferSchemas
             },
             securitySchemes: {
                 bearerAuth: {
