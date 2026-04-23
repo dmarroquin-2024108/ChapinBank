@@ -12,12 +12,29 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace AuthService.Api.Controllers;
 
+/// <summary>
+/// Gestión de autenticación y usuarios de ChapinBank
+/// </summary>
 [ApiController]
 [Route("api/v1/[controller]")]
+[Produces("application/json")]
 public class AuthController(IAuthService authService) : ControllerBase
 {
+    /// <summary>
+    /// Obtener perfil del usuario autenticado
+    /// </summary>
+    /// <remarks>
+    /// Devuelve la información del usuario autenticado obtenida desde el token JWT.
+    /// Requiere autenticación
+    /// </remarks>
+    /// <response code="200">Perfil obtenido exitosamente</response>
+    /// <response code="401">No autorizado — token inválido o ausente</response>
+    /// <response code="404">Usuario no encontrado</response>
     [HttpGet("profile")]
     [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<object>> GetProfile()
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
@@ -39,8 +56,21 @@ public class AuthController(IAuthService authService) : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Obtener perfil de un usuario por su ID
+    /// </summary>
+    /// <remarks>
+    /// Endpoint interno para que otros servicios consulten el perfil de un usuario por su ID.
+    /// No requiere autenticación pero tiene rate limiting (20 req / 10 seg)
+    /// </remarks>
+    /// <response code="200">Perfil obtenido exitosamente</response>
+    /// <response code="400">El userId es requerido</response>
+    /// <response code="404">Usuario no encontrado</response>
     [HttpPost("profile/by-id")]
     [EnableRateLimiting("ApiPolicy")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<object>> GetProfileById([FromBody] GetProfileByIdDto request)
     {
         if (string.IsNullOrEmpty(request.UserId))
@@ -70,9 +100,21 @@ public class AuthController(IAuthService authService) : ControllerBase
         });
     }
 
-    //crear usuarios
+    /// <summary>
+    /// Crear usuario (admin)
+    /// </summary>
+    /// <remarks>
+    /// Crea un nuevo usuario con cualquier rol. Solo accesible por administradores.
+    /// Requiere rol ADMIN_ROLE o SUPERADMIN_ROLE
+    /// </remarks>
+    /// <response code="201">Usuario creado exitosamente</response>
+    /// <response code="401">No autorizado</response>
+    /// <response code="403">Se requiere rol ADMIN_ROLE o SUPERADMIN_ROLE</response>
     [HttpPost("admin/create-user")]
-    [Authorize(Roles = RoleConstants.ADMIN_ROLE + "," + RoleConstants.SUPERADMIN_ROLE)]//restriccion de acceso
+    [Authorize(Roles = RoleConstants.ADMIN_ROLE + "," + RoleConstants.SUPERADMIN_ROLE)]
+    [ProducesResponseType(typeof(RegisterResponseDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<RegisterResponseDto>> CreateUserByAdmin([FromBody] AdminCreateUserDto dto)
     {
         var currentUserRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? RoleConstants.USER_ROLE;
@@ -80,26 +122,67 @@ public class AuthController(IAuthService authService) : ControllerBase
         return StatusCode(201, result);
     }
 
-
-
+    /// <summary>
+    /// Iniciar sesión
+    /// </summary>
+    /// <remarks>
+    /// Autentica al usuario con email/username y contraseña y retorna un JWT.
+    /// Tiene rate limiting (5 req / 10 seg)
+    /// </remarks>
+    /// <response code="200">Login exitoso. Retorna el token JWT y datos del usuario</response>
+    /// <response code="401">Credenciales inválidas o cuenta inactiva</response>
+    /// <response code="429">Demasiadas solicitudes</response>
     [HttpPost("login")]
     [EnableRateLimiting("AuthPolicy")]
+    [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginDto loginDto)
     {
         var result = await authService.LoginAsync(loginDto);
         return Ok(result);
     }
 
+    /// <summary>
+    /// Verificar correo electrónico
+    /// </summary>
+    /// <remarks>
+    /// Activa la cuenta del usuario mediante el token de verificación recibido por correo.
+    /// Tiene rate limiting (20 req / 10 seg)
+    /// </remarks>
+    /// <response code="200">Correo verificado exitosamente</response>
+    /// <response code="400">Token inválido o expirado</response>
+    /// <response code="429">Demasiadas solicitudes</response>
     [HttpPost("verify-email")]
     [EnableRateLimiting("ApiPolicy")]
+    [ProducesResponseType(typeof(EmailResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     public async Task<ActionResult<EmailResponseDto>> VerifyEmail([FromBody] VerifyEmailDto verifyEmailDto)
     {
         var result = await authService.VerifyEmailAsync(verifyEmailDto);
         return Ok(result);
     }
 
+    /// <summary>
+    /// Reenviar correo de verificación
+    /// </summary>
+    /// <remarks>
+    /// Reenvía el correo de verificación al usuario. Solo funciona si la cuenta aún no ha sido verificada.
+    /// Tiene rate limiting (5 req / 10 seg)
+    /// </remarks>
+    /// <response code="200">Correo de verificación reenviado exitosamente</response>
+    /// <response code="400">La cuenta ya fue verificada</response>
+    /// <response code="404">Usuario no encontrado</response>
+    /// <response code="429">Demasiadas solicitudes</response>
+    /// <response code="503">Error al enviar el correo</response>
     [HttpPost("resend-verification")]
     [EnableRateLimiting("AuthPolicy")]
+    [ProducesResponseType(typeof(EmailResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult<EmailResponseDto>> ResendVerification([FromBody] ResendVerificationDto resendDto)
     {
         var result = await authService.ResendVerificationEmailAsync(resendDto);
@@ -122,8 +205,21 @@ public class AuthController(IAuthService authService) : ControllerBase
         return Ok(result);
     }
 
+    /// <summary>
+    /// Solicitar restablecimiento de contraseña
+    /// </summary>
+    /// <remarks>
+    /// Envía un correo con el token para restablecer la contraseña.
+    /// Tiene rate limiting (5 req / 10 seg)
+    /// </remarks>
+    /// <response code="200">Instrucciones enviadas al correo exitosamente</response>
+    /// <response code="503">Error al enviar el correo</response>
+    /// <response code="429">Demasiadas solicitudes</response>
     [HttpPost("forgot-password")]
     [EnableRateLimiting("AuthPolicy")]
+    [ProducesResponseType(typeof(EmailResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     public async Task<ActionResult<EmailResponseDto>> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
     {
         var result = await authService.ForgotPasswordAsync(forgotPasswordDto);
@@ -136,17 +232,42 @@ public class AuthController(IAuthService authService) : ControllerBase
         return Ok(result);
     }
 
+    /// <summary>
+    /// Restablecer contraseña
+    /// </summary>
+    /// <remarks>
+    /// Cambia la contraseña del usuario usando el token de recuperación recibido por correo.
+    /// Tiene rate limiting (5 req / 10 seg)
+    /// </remarks>
+    /// <response code="200">Contraseña restablecida exitosamente</response>
+    /// <response code="400">Token inválido o expirado</response>
+    /// <response code="429">Demasiadas solicitudes</response>
     [HttpPost("reset-password")]
     [EnableRateLimiting("AuthPolicy")]
+    [ProducesResponseType(typeof(EmailResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     public async Task<ActionResult<EmailResponseDto>> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
     {
         var result = await authService.ResetPasswordAsync(resetPasswordDto);
         return Ok(result);
     }
 
-
+    /// <summary>
+    /// Actualizar perfil del usuario autenticado
+    /// </summary>
+    /// <remarks>
+    /// Permite al usuario autenticado editar su propia información de perfil.
+    /// Requiere autenticación
+    /// </remarks>
+    /// <response code="200">Perfil actualizado exitosamente</response>
+    /// <response code="400">Errores de validación</response>
+    /// <response code="401">No autorizado</response>
     [HttpPatch("me")]
     [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult> UpdateProfile([FromBody] UpdateUserDto updateUserDto)
     {
         var userId = User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
@@ -166,8 +287,24 @@ public class AuthController(IAuthService authService) : ControllerBase
         }
     }//EditarPerfila
 
+    /// <summary>
+    /// Eliminar usuario (admin)
+    /// </summary>
+    /// <remarks>
+    /// Realiza un soft delete del usuario indicado. Solo accesible por administradores.
+    /// Requiere rol ADMIN_ROLE o SUPERADMIN_ROLE
+    /// </remarks>
+    /// <param name="userId">ID del usuario a eliminar</param>
+    /// <response code="200">Usuario eliminado exitosamente</response>
+    /// <response code="400">Error al eliminar el usuario</response>
+    /// <response code="401">No autorizado</response>
+    /// <response code="403">Se requiere rol ADMIN_ROLE o SUPERADMIN_ROLE</response>
     [HttpDelete("admin/users/{userId}")]
     [Authorize(Roles = RoleConstants.ADMIN_ROLE + "," + RoleConstants.SUPERADMIN_ROLE)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult> SoftDeleteUser(string userId)
     {
         try
@@ -185,8 +322,21 @@ public class AuthController(IAuthService authService) : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Solicitar eliminación de cuenta propia
+    /// </summary>
+    /// <remarks>
+    /// Envía un token de confirmación al correo del usuario para iniciar el proceso de eliminación de su cuenta.
+    /// Requiere autenticación
+    /// </remarks>
+    /// <response code="200">Token de confirmación enviado al correo</response>
+    /// <response code="400">Error al procesar la solicitud</response>
+    /// <response code="401">No autorizado</response>
     [HttpPost("me/request-delete")]
     [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult> RequestAccountDeletion()
     {
         var userId = User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
@@ -203,8 +353,21 @@ public class AuthController(IAuthService authService) : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Confirmar eliminación de cuenta propia
+    /// </summary>
+    /// <remarks>
+    /// Confirma la eliminación de la cuenta del usuario autenticado usando el token recibido por correo.
+    /// Requiere autenticación
+    /// </remarks>
+    /// <response code="200">Cuenta eliminada exitosamente</response>
+    /// <response code="400">Token inválido o expirado</response>
+    /// <response code="401">No autorizado</response>
     [HttpPost("me/confirm-delete")]
     [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult> ConfirmAccountDeletion([FromBody] ConfirmDeleteDto dto)
     {
         var userId = User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");

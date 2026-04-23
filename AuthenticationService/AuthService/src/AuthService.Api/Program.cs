@@ -88,7 +88,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthService v1");
+        c.RoutePrefix = "swagger";
+    });
 }
 
 // Add Serilog request logging
@@ -146,12 +150,15 @@ app.Lifetime.ApplicationStarted.Register(() =>
             foreach (var addr in addresses)
             {
                 var health = $"{addr.TrimEnd('/')}/api/v1/health";
+                var swagger = $"{addr.TrimEnd('/')}/swagger";
                 startupLogger.LogInformation("El API de AuthService está ejecutándose en {Url}. Endpoint de salud: {HealthUrl}", addr, health);
+                startupLogger.LogInformation("Swagger docs: {SwaggerUrl}", swagger);
             }
         }
         else
         {
             startupLogger.LogInformation("API de AuthService iniciada. Endpoint de salud: /api/v1/health");
+            startupLogger.LogInformation("Swagger docs: /swagger");
         }
     }
     catch (Exception ex)
