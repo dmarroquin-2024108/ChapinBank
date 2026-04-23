@@ -1,6 +1,6 @@
 import Deposit from './deposit.model.js';
 import History from '../history/history.model.js'
-import{getAccountByNumberAccount, updateAccountBalanceInternal} from '../accounts/account.service.js';
+import { getAccountByNumberAccount, updateAccountBalanceInternal } from '../accounts/account.service.js';
 import { notifyDeposit } from '../notifications/notification.service.js';
 
 const REVERT_LIMIT_MS = parseInt(process.env.DEPOSIT_REVERT_LIMIT_MS || '60000');//1 minuto para revertir el depósito
@@ -18,7 +18,7 @@ export const createDepositRecord = async ({ depositData, accountNumber, userId, 
     });
     await deposit.save();
     await updateAccountBalanceInternal(accountNumber, nuevoBalance);
-    
+
     await History.create({
         type: 'DEPOSIT',
         accountNumber,
@@ -26,7 +26,8 @@ export const createDepositRecord = async ({ depositData, accountNumber, userId, 
         amount: parseFloat(depositData.amount.toFixed(2)),
         currency: depositData.currency,
         depositMethod: depositData.depositMethod,
-        description: depositData.description
+        description: depositData.description,
+        noOperacion: Number(`${Date.now()}${Math.floor(Math.random() * 10000000)}`)
     });
 
     await notifyDeposit({
@@ -37,7 +38,7 @@ export const createDepositRecord = async ({ depositData, accountNumber, userId, 
         depositMethod: deposit.depositMethod,
         newBalance: nuevoBalance
     })
-    
+
     return {
         deposit,
         balanceActual: nuevoBalance.toFixed(2)
@@ -78,7 +79,7 @@ export const revertDepositRecord = async ({ depositId, userId, token }) => {
 
     deposit.status = 'REVERTED';
     deposit.revertedAt = new Date();
-    
+
     await deposit.save();
     await updateAccountBalanceInternal(deposit.accountNumber, nuevoBalance);
 
@@ -89,7 +90,8 @@ export const revertDepositRecord = async ({ depositId, userId, token }) => {
         amount: deposit.amount,
         currency: deposit.currency,
         depositMethod: deposit.depositMethod,
-        description: `Depósito revertido. Monto descontado: ${deposit.amount.toFixed(2)}`
+        description: `Depósito revertido. Monto descontado: ${deposit.amount.toFixed(2)}`,
+        noOperacion: Number(`${Date.now()}${Math.floor(Math.random() * 10000000)}`)
     });
 
     return {

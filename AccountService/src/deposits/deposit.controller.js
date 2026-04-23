@@ -11,6 +11,7 @@ export const createDeposit = async (req, res) => {
             success: true,
             message: 'Depósito resgitrado exitosamente',
             data: {
+                depositId: deposit._id,
                 accountNumber: deposit.accountNumber,
                 amount: deposit.amount.toFixed(2),
                 currency: deposit.currency,

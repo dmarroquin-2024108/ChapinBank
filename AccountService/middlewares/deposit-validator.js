@@ -1,8 +1,18 @@
-import {body, param} from 'express-validator';
-import {validateJWT} from './validate-JWT.js';
-import { checkValidators }  from './check-validators.js';
+import { body, param } from 'express-validator';
+import { validateJWT } from './validate-JWT.js';
+import { checkValidators } from './check-validators.js';
 
 //validaciones para crear depositos
+
+export const validateRevertDeposit = [
+    validateJWT,
+    param('id')
+        .notEmpty()
+        .withMessage('El ID del depósito es requerido')
+        .isMongoId()
+        .withMessage('El ID del depósito no es válido'),
+    checkValidators,
+];//validateRevertDeposit
 
 export const validateCreateDeposit = [
     validateJWT,
@@ -13,7 +23,7 @@ export const validateCreateDeposit = [
         .notEmpty()
         .withMessage('El monto es requerido')
         .toFloat()
-        .isFloat({min: 1})
+        .isFloat({ min: 1 })
         .withMessage('El monto debe de ser mayor o igual que 1.')
         .custom((val) => {
             if (!/^\d+(\.\d{1,2})?$/.test(val.toString())) {
@@ -39,6 +49,6 @@ export const validateCreateDeposit = [
         .optional()
         .trim()
         .isLength({ max: 255 })
-    .withMessage('La descripción no puede exceder 255 caracteres'),
-        checkValidators,
+        .withMessage('La descripción no puede exceder 255 caracteres'),
+    checkValidators,
 ];
