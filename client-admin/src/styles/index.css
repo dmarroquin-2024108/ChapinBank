@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/* Estilos globales */
+@theme {
+  --color-main-blue: #032340; 
+  --color-gold: #FCDC85;   
+  --color-orange: #D67E20;   
+}
+
+:root {
+  font-family: 'Poppins', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  --main-blue: #032340;
+  --main-gold: #FCDC85;
+  --main-beige: #d67e20;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out;
+}
+
+.sidebar-underline {
+  position: relative;
+}
+.sidebar-underline.active::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 6px;
+  height: 4px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(3, 35, 64, 0.18) 0%,
+    var(--main-blue) 50%,
+    rgba(3, 35, 64, 0.18) 100%
+  );
+  filter: blur(1px);
+  z-index: 1;
+}
