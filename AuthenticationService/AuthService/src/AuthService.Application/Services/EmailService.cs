@@ -89,6 +89,20 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
         await SendEmailAsync(email, subject, body);
     }
 
+    public async Task SendPasswordChangeAsync(string email, string username)
+    {
+        var subject = "Contraseña Actualizada Correctamente";
+        var body = $@"
+            <h2>Contraseña Actualizada</h2>
+            <p>Hola {username},</p>
+            <p>Le informamos que su contraseña a sido actualizada exitosamente.</p>
+
+            <p><b>El link de solicitud de cambiar contraseña queda deshabilitado por motivos de seguridad</b></p>
+            <p>¡Gracias por usar nuestros servicios de Chapin Bank!</p>
+        ";
+
+        await SendEmailAsync(email, subject, body);
+    }
     public async Task SendAccountDeletionConfirmationAsync(string email, string username, string token)
     {
         var subject = "Confirmación de eliminación de cuenta";

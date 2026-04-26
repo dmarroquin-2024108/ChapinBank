@@ -75,7 +75,7 @@ builder.Services.AddRateLimiter(options =>
 
     options.AddFixedWindowLimiter("ApiPolicy", opt =>
     {
-        opt.PermitLimit = 20; 
+        opt.PermitLimit = 20;
         opt.Window = TimeSpan.FromSeconds(10);
         opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
         opt.QueueLimit = 5;
@@ -88,11 +88,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthService v1");
-        c.RoutePrefix = "swagger";
-    });
+    app.UseSwaggerUI();
 }
 
 // Add Serilog request logging
@@ -123,11 +119,14 @@ app.UseSecurityHeaders(policies => policies
 );
 
 // Manejo global de excepciones
+app.UseCors("DefaultCorsPolicy");
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 // Middlewares principales
-app.UseHttpsRedirection();
-app.UseCors("DefaultCorsPolicy");
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -150,15 +149,12 @@ app.Lifetime.ApplicationStarted.Register(() =>
             foreach (var addr in addresses)
             {
                 var health = $"{addr.TrimEnd('/')}/api/v1/health";
-                var swagger = $"{addr.TrimEnd('/')}/swagger";
                 startupLogger.LogInformation("El API de AuthService está ejecutándose en {Url}. Endpoint de salud: {HealthUrl}", addr, health);
-                startupLogger.LogInformation("Swagger docs: {SwaggerUrl}", swagger);
             }
         }
         else
         {
             startupLogger.LogInformation("API de AuthService iniciada. Endpoint de salud: /api/v1/health");
-            startupLogger.LogInformation("Swagger docs: /swagger");
         }
     }
     catch (Exception ex)

@@ -11,6 +11,9 @@ public class ApplicationDbContext (DbContextOptions<ApplicationDbContext> option
     public DbSet<UserRole> UserRoles {get; set;}
     public DbSet<UserEmail> UserEmails {get; set;}
     public DbSet<UserPassReset> UserPasswordResets {get; set;}
+
+    public DbSet<RefreshToken>? RefreshTokens{get; set;}
+
     public static string ToSnakeCase(string input)
     {
         if(string.IsNullOrEmpty(input))
@@ -23,6 +26,20 @@ public class ApplicationDbContext (DbContextOptions<ApplicationDbContext> option
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Configuración de RefreshToken
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.TokenHash).IsRequired();
+            entity.HasIndex(e => e.TokenHash).IsUnique();
+            entity.HasIndex(e => e.FamilyId);
+            entity.Property(e => e.ExpiresAt).IsRequired();
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.UserId).IsRequired().HasMaxLength(16);
+            entity.HasOne(e => e.User)
+                .WithMany(u => u.RefreshTokens)
+                .HasForeignKey(e => e.UserId);
+        });
         base.OnModelCreating(modelBuilder);
 
         foreach(var entity in modelBuilder.Model.GetEntityTypes())
