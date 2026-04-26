@@ -16,6 +16,7 @@ public interface IAuthService
     Task RequestAccountDeletionAsync(string userId);
     Task<bool> ConfirmAccountDeletionAsync(string userId, string token);
     Task<UserResponseDto?> GetUserByIdAsync(string userId);
+    Task<AuthResponseDto> ChangeTempPasswordAsync(string userId, string newPassword);
     Task<RegisterResponseDto> CreateUserByAdminAsync(AdminCreateUserDto dto, string currentUserRole);
 
 }

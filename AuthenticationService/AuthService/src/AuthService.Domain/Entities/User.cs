@@ -23,8 +23,7 @@ public class User
     [MaxLength(25, ErrorMessage = "El username no puede tener más de 25 caracteres")]
     public string Username { get; set; } = string.Empty;
 
-    
-    //public string NoCuenta {get; set;} = string.Empty;
+    [Required(ErrorMessage = "El DPI es obligatorio")]
     public int DPI {get; set;} = 0;
 
     public string Direction {get; set;} = string.Empty;
@@ -63,4 +62,6 @@ public class User
     public UserEmail UserEmail { get; set; } = null!;
 
     public UserPassReset UserPasswordReset { get; set; } = null!;
+
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }

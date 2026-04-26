@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace AuthService.Application.Services;
 
 public class AuthService(
+    IRefreshTokenService refreshTokenService,
     IUserRepository userRepository,
     IRoleRepository roleRepository,
     IPassHashService passHashService,
@@ -202,11 +203,19 @@ public class AuthService(
 
         if (user.RequiereCambioPass)
         {
+            var tempToken = jwtTokenService.GenerateToken(user);
+            var tempExpiryMinutes = int.Parse(configuration["JwtSettings:ExpirationMinutes"] ?? "30");
+            var (tempRefreshToken, _) = await refreshTokenService.CreateAsync(user.IdUser);
+
             return new AuthResponseDto
             {
                 Success = false,
                 Message = "Debe cambiar su contraseña temporal",
-                RequiresPasswordChange = true
+                RequiresPasswordChange = true,
+                Token = tempToken,
+                RefreshToken = tempRefreshToken,
+                UserDetails = MapToUserDetailsDto(user),
+                ExpiresAt = DateTime.UtcNow.AddMinutes(tempExpiryMinutes)
             };
         }
 
@@ -215,13 +224,14 @@ public class AuthService(
         // genera un token 
         var token = jwtTokenService.GenerateToken(user);
         var expiryMinutes = int.Parse(configuration["JwtSettings:ExpirationMinutes"] ?? "30");
-
+        var (refreshToken, _) = await refreshTokenService.CreateAsync(user.IdUser);
         // se crea respuesta a conveniencia
         return new AuthResponseDto
         {
             Success = true,
             Message = "Login EXITOSOS",
             Token = token,
+            RefreshToken = refreshToken,
             UserDetails = MapToUserDetailsDto(user),
             ExpiresAt = DateTime.UtcNow.AddMinutes(expiryMinutes)
         };
@@ -429,6 +439,16 @@ public class AuthService(
             };
         }
 
+        //Verificar si el token ya fue usado (es null cuando se usó)
+        if (user.UserPasswordReset.PasswordResetToken == null)
+        {
+            return new EmailResponseDto
+            {
+                Success = false,
+                Message = "Este enlace ya fue utilizado, solicite uno nuevo."
+            };
+        }
+
         // actualizar contraseña
         user.PasswordHash = passHashService.HasPassword(resetPasswordDto.NewPassword);
         user.RequiereCambioPass = false;
@@ -436,6 +456,16 @@ public class AuthService(
         user.UserPasswordReset.PasswordTokenExpiry = null;
 
         await userRepository.UpdateAsync(user);
+
+        // Enviar email de bienvenida
+        try
+        {
+            await emailService.SendPasswordChangeAsync(user.Email, user.Username);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to send welcome email to {Email}", user.Email);
+        }
 
         logger.LogInformation("Password reset successfully for user {Username}", user.Username);
 
@@ -555,5 +585,18 @@ public class AuthService(
             return null;
         }
         return MapToUserResponseDto(user);
+    }
+
+    public async Task<AuthResponseDto> ChangeTempPasswordAsync(string userId, string newPassword)
+    {
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null)
+            return new AuthResponseDto { Success = false, Message = "Usuario no encontrado" };
+
+        user.PasswordHash = passHashService.HasPassword(newPassword);
+        user.RequiereCambioPass = false;
+        await userRepository.UpdateAsync(user);
+
+        return new AuthResponseDto { Success = true, Message = "Contraseña actualizada exitosamente" };
     }
 }

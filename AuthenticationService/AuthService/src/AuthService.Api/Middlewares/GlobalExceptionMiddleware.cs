@@ -11,15 +11,20 @@ public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExcep
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
+
     public async Task InvokeAsync(HttpContext context)
     {
         try
         {
             await next(context);
-            if(!context.Response.HasStarted)
+
+            if (!context.Response.HasStarted)
             {
-                if(context.Response.StatusCode == (int)HttpStatusCode.MethodNotAllowed)
+                if (context.Response.StatusCode == (int)HttpStatusCode.MethodNotAllowed)
                 {
+                    if (context.Request.Method == HttpMethods.Options)
+                        return;
+
                     context.Response.ContentType = "application/json";
                     var response = new
                     {
@@ -29,20 +34,20 @@ public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExcep
                         timestamp = DateTime.UtcNow
                     };
                     await context.Response.WriteAsync(JsonSerializer.Serialize(response, JsonOptions));
-                }//Si se equivoca en el método 
-                else if(context.Response.StatusCode == (int)HttpStatusCode.NotFound)
+                }
+                else if (context.Response.StatusCode == (int)HttpStatusCode.NotFound)
                 {
                     context.Response.ContentType = "application/json";
                     var response = new
                     {
                         success = false,
                         message = $"La ruta {context.Request.Path} no existe.",
-                        errorCode= "ROUTE_NOT_FOUND",
+                        errorCode = "ROUTE_NOT_FOUND",
                         timestamp = DateTime.UtcNow
                     };
                     await context.Response.WriteAsync(JsonSerializer.Serialize(response, JsonOptions));
-                }//si se equivoxa de rutas
-            }//Mejor manejo de los errores
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -87,7 +92,6 @@ public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExcep
 
         context.Response.StatusCode = response.StatusCode;
 
-        // se construye una respuesta unificada para errores
         var unified = new
         {
             success = false,
