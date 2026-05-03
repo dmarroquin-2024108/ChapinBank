@@ -142,6 +142,12 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
             var fromEmail = smtpSettings["FromEmail"];
             var fromName = smtpSettings["FromName"];
 
+            if (string.IsNullOrWhiteSpace(fromEmail))
+            {
+                logger.LogError("SmtpSettings:FromEmail no está configurado");
+                throw new InvalidOperationException("FromEmail no configurado en SmtpSettings");
+            }
+            
             if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 logger.LogError("La configuración SMTP no está configurada correctamente");
