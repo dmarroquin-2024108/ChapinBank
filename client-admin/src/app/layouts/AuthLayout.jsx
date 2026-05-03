@@ -1,7 +1,7 @@
 export const AuthLayout = ({ title, subtitle, children }) => {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-main-blue p-4">
-            <div className="w-full max-w-xl bg-white rounded-xl shadow-lg border-gray-200 p-6 md:p-10">
+        <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0d2137] to-[#1a3a5c] flex items-center justify-center">
+            <div className="bg-white rounded-2xl shadow-2xl px-10 py-10 w-full max-w-md">
                 <div className="flex justify-center mb-6">
                     <img
                         src="/src/assets/img/ChapinLogo.png"
