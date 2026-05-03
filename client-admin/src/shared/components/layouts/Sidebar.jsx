@@ -1,63 +1,56 @@
-import { Link, useLocation } from "react-router-dom";
-import imgInicio from "../../../assets/img/inicio.png";
-import imgCuenta from "../../../assets/img/cuentas.png";
-import imgDepositos from "../../../assets/img/depositos.png";
-import imgHistorial from "../../../assets/img/historial.png";
-import imgTransferencia from "../../../assets/img/transferencia.png";
+import { Link, Navigate, replace, useLocation, useNavigate } from "react-router-dom";
+import {LayoutDashboard, Package, Users, CreditCard, History, LogOut, Icon} from "lucide-react";
+import imgLogo from "../../../assets/img/ChapinLogo.png"
 
-export const Sidebar = () => {
+export const Sidebar = ()=>{
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const items = [
-    { label: 'Inicio' },
-    { label: 'Cuentas' },
-    { label: 'Depósitos' },
-    { label: 'Historial' },
-    { label: 'Transferencias' },
-    { label: 'Productos' }
-  ]
+  const items =[
+    {label: "Resumen", icon: LayoutDashboard, to:"/dashboard"},
+    {label: "Productos", icon: Package, to:"/"},
+    {label: "Usuarios", icon: Users, to:"/"},
+    {label: "Cuentas", icon: CreditCard, to:"/"},
+    {label: "Historial", icon: History, to:"/"}
+  ];
 
-  return (
-    <aside className="w-64 bg-main-blue text-white flex flex-col">
-      <h1 className="p-4 text-center"><span className="text-2xl font-bold text-white">
-        Chapin
-      </span>
-        <span className="text-2xl font-bold text-orange">
-          Bank
-        </span></h1>
-      <nav className="flex-1 mt-4">
-        <ul>
-          <li className="flex items-center gap-3 px-6 py-3 cursor-pointer hover:bg-orange-400 hover:bg-opacity-70 transition-colors duration-200 border-l-4 border-yellow-400">
-            <img src={imgInicio}
-              alt="imgInicio"
-              className="w-5 h-5" /> Inicio
-          </li>
+  return(
+    <aside className="w-50 min-h-screen bg-[#0d1f35] flex flex-col">
+      <div className="px-5 py-5 border-b-1 border-gray-600">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center">
+            <img src={imgLogo} alt={imgLogo} />
+          </div>
+          <span className="text-white font-bold text-lg">
+            Chapin<span className="text-orange">Bank</span>
+          </span>
+        </div>
+      </div>
 
-          <li className="flex items-center gap-3 px-6 py-3 cursor-pointer hover:bg-orange-400 hover:bg-opacity-70 transition-colors duration-200 border-l-4 border-yellow-400">
-            <img src={imgCuenta}
-              alt="imgCuentas"
-              className="w-5 h-5" /> Cuentas
-          </li>
-
-          <li className="flex items-center gap-3 px-6 py-3 cursor-pointer hover:bg-orange-400 hover:bg-opacity-70 transition-colors duration-200 border-l-4 border-yellow-400">
-            <img src={imgDepositos}
-              alt="imgDeposito"
-              className="w-5 h-5" /> Depósitos
-          </li>
-
-          <li className="flex items-center gap-3 px-6 py-3 cursor-pointer hover:bg-orange-400 hover:bg-opacity-70 transition-colors duration-200 border-l-4 border-yellow-400">
-            <img src={imgHistorial}
-              alt="imgHistorial"
-              className="w-5 h-5" /> Historial
-          </li>
-
-          <li className="flex items-center gap-3 px-6 py-3 cursor-pointer hover:bg-orange-400 hover:bg-opacity-70 transition-colors duration-200 border-l-4 border-yellow-400">
-            <img src={imgTransferencia}
-              alt="imgTransferencia"
-              className="w-5 h-5" /> Transferencias
-          </li>
-        </ul>
+      <nav className="flex-1 mt-2">
+        {items.map(({label, icon: Icon, to})=>{
+          const active = location.pathname === to || location.pathname.startsWith(to + "/");
+          return(
+            <Link 
+              key={label}
+              to={to}
+              className={`flex items-center gap-3 px-5 py-3 text-sm font-medium transition-colors duration-150
+              ${active?"bg-orange text-white rounded-lg mx-2"
+                : "text-gray-400 hover:text-white hover:bg-white/5 mx-2 rounded-lg"}`}
+            >
+              <Icon size={17}/>
+              {label}
+            </Link>
+          );
+        })}
       </nav>
+
+      <button className="flex items-center gap-3 px-7 py-5 text-sm text-gray-400 hover:text-white transition-colors hover: cursor-pointer border-t-1 border-gray-600"
+      onClick={()=> navigate("/", {replace: true})}
+      >
+        <LogOut size={16} />
+          Cerrar Sesión
+      </button>
     </aside>
-  )
-}
+  );
+};

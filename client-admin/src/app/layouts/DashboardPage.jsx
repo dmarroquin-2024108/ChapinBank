@@ -8,5 +8,5 @@ export const DashboardPage = () => {
         <DashboardContainer user={user} onLogout={logout}>
             <Outlet />
         </DashboardContainer>
-    )
+    ) 
 }
