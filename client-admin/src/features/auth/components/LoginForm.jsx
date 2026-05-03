@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { Mail, Lock } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuthStore } from "../store/authStore.js";
 
@@ -19,10 +20,10 @@ export const LoginForm = ({ onForgot, onTempPassword }) => {
         if (res.success) {
             navigate('/dashboard');
             toast.success("¡Bienvenido al sistema!", { duration: 3000 });
-        }else if(res.requiresPasswordChange){
+        } else if (res.requiresPasswordChange) {
             onTempPassword();
-        }else{
-            toast.error(res.error, {duration: 3000});
+        } else {
+            toast.error(res.error, { duration: 3000 });
         }
     }
     return (
@@ -30,21 +31,24 @@ export const LoginForm = ({ onForgot, onTempPassword }) => {
             <div>
                 <label
                     htmlFor="emailOrUsername"
-                    className="block text-sm font-medium text-gray-700 mb-1.5"
+                    className="block text-sm font-semibold text-main-blue mb-1.5"
                 >
                     Email o Username
                 </label>
-                <input
-                    type="text"
-                    id="emailOrUsername"
-                    placeholder="correo@example.com o Username"
-                    className="mt-1 w-full bg-[#E8F0FE] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold"
-                    {
-                    ...register("emailOrUsername", {
-                        required: "Este campo es obligatorio"
-                    })
-                    }
-                />
+                <div className="relative">
+                    <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                        type="text"
+                        id="emailOrUsername"
+                        placeholder="correo@example.com o Username"
+                        className="w-full bg-white pl-9 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold placeholder-gray-400 text-sm"
+                        {
+                        ...register("emailOrUsername", {
+                            required: "Este campo es obligatorio"
+                        })
+                        }
+                    />
+                </div>
                 {errors.emailOrUsername && (
                     <p className="text-red-600 text-xs mt-1">
                         {errors.emailOrUsername.message}
@@ -55,33 +59,36 @@ export const LoginForm = ({ onForgot, onTempPassword }) => {
             <div>
                 <label
                     htmlFor="password"
-                    className="block text-sm font-medium text-gray-700 mb-1.5"
+                    className="text-sm font-semibold text-main-blue"
                 >
                     Contraseña
                 </label>
 
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="* * * * * * *"
-                    className="mt-1 w-full bg-[#E8F0FE] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold"
-                    {
+                <div className="relative">
+                    <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="* * * * * * *"
+                        className="w-full bg-white pl-9 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold placeholder-gray-400 text-sm"
+                        {
                         ...register("password", {
                             required: "Este campo es obligatorio"
                         })
-                    }
-                />
-                {errors.password &&(
+                        }
+                    />
+                </div>
+                {errors.password && (
                     <p className="text-red-600 text-xs mt-1">
                         {errors.password.message}
                     </p>
                 )}
             </div>
-                {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+            {error && <p className="text-red-600 text-sm text-center">{error}</p>}
             <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-orange text-white font-bold py-2 rounded-lg hover:bg-[#F2CD88] transition"
+                className="w-full bg-orange hover:bg-[#c07018] text-white font-bold py-3 rounded-xl transition-colors duration-200 text-base hover:cursor-pointer"
             >
                 {loading ? "Iniciando..." : "Iniciar Sesión"}
             </button>

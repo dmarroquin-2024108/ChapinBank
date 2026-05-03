@@ -30,13 +30,13 @@ export const ChangeTempPasswordModal = ({ onClose }) => {
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label className="block text-sm font-semibold text-main-blue mb-1.5">
                             Nueva Contraseña
                         </label>
                         <input
                             type="password"
                             placeholder="* * * * * *"
-                            className="mt-1 w-full bg-[#E8F0FE] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold"
+                            className="w-full bg-white px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold placeholder-gray-400 text-sm"
                             {...register("NewPassword", { required: "Este campo es obligatorio" })}
                         />
                         {errors.NewPassword && (

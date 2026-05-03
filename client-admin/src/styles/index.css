@@ -4,7 +4,7 @@
 @theme {
   --color-main-blue: #032340; 
   --color-gold: #FCDC85;   
-  --color-orange: #D67E20;   
+  --color-orange: #F28C00;  
 }
 
 :root {
@@ -14,7 +14,7 @@
 
   --main-blue: #032340;
   --main-gold: #FCDC85;
-  --main-beige: #d67e20;
+  --main-orange: #F28C00;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

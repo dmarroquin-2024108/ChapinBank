@@ -1,6 +1,7 @@
 import { useSearchParams, useNavigate, replace } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { Lock } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
 import { AuthLayout } from "../../../app/layouts/AuthLayout.jsx"
 
@@ -20,7 +21,7 @@ export const ResetPassword = () => {
         const resultado = await resetPassword({ token, NewPassword: formData.NewPassword });
         if (resultado.success) {
             toast.success("Constraseña Actualizada", { duration: 3000 });
-            navigate("/", {replace: true});
+            navigate("/", { replace: true });
         } else {
             toast.error("El enlace ya expiró o no es válido, solicite uno nuevo", { duration: 4000 });
         }
@@ -33,17 +34,19 @@ export const ResetPassword = () => {
         >
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label className="block text-sm font-semibold text-main-blue mb-1.5">
                         Nueva Contraseña
                     </label>
-                    <input
-                        type="password"
-                        id="NewPassword"
-                        placeholder="* * * * * *"
-                        className="mt-1 mb-5 w-full bg-[#E8F0FE] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold"
-                        {...register("NewPassword", { required: "Este campo es obligatorio" })}
-                    />
-
+                    <div className="relative">
+                        <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <input
+                            type="password"
+                            id="NewPassword"
+                            placeholder="* * * * * *"
+                            className="w-full bg-white pl-9 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold placeholder-gray-400 text-sm"
+                            {...register("NewPassword", { required: "Este campo es obligatorio" })}
+                        />
+                    </div>
                     {errors.NewPassword && (
                         <p className="text-red-600 text-xs mt-1">
                             {errors.NewPassword.message}
@@ -53,7 +56,7 @@ export const ResetPassword = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-orange text-white font-bold py-2 rounded-lg hover:bg-[#F2CD88] hover:cursor-pointer transition disabled:opacity-60"
+                        className="w-full bg-orange text-white font-bold py-2 rounded-lg hover:bg-[#F2CD88] hover:cursor-pointer transition disabled:opacity-60 mt-2"
                     >
                         {loading ? "Cambiando..." : "Cambiar contraseña"}
                     </button>
@@ -62,7 +65,7 @@ export const ResetPassword = () => {
                         ¿Recordaste tu contraseña?
                         <button
                             type="button"
-                            onClick={() => navigate("/", {replace: true})}
+                            onClick={() => navigate("/", { replace: true })}
                             className=' p-2 text-orange hover:underline hover:cursor-pointer'
                         >
                             Iniciar Sesión
