@@ -3,6 +3,7 @@ import { AuthPage } from "../../features/auth/pages/AuthPage.jsx";
 import { UnauthorizedPage } from '../../features/auth/pages/UnauthorizedPage.jsx'
 import {DashboardPage} from '../layouts/DashboardPage.jsx';
 import {ProtectedRoutes} from './ProtectedRoutes.jsx';
+import { RoleGuard } from "./RoleGuard.jsx";
 import { ResetPassword } from "../../features/auth/components/ResetPassword.jsx";
 import { ActivateUser } from "../../features/auth/components/ActivateUser.jsx";
 
@@ -17,7 +18,9 @@ export const AppRoutes = ()=>{
                 path="/dashboard/*"
                 element={
                     <ProtectedRoutes>
-                        <DashboardPage />
+                        <RoleGuard allowedRoles={["SUPERADMIN_ROLE", "ADMIN_ROLE"]}>
+                            <DashboardPage />
+                        </RoleGuard>
                     </ProtectedRoutes>
                 }
             >

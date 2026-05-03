@@ -8,7 +8,6 @@ import {
     changeTempPassword as changeTempPasswordRequest,
 } from '../../../shared/apis';
 import { showError } from '../../../shared/utils/toast.js';
-import { data } from 'react-router-dom';
 
 export const useAuthStore = create(
     persist(
@@ -72,10 +71,10 @@ export const useAuthStore = create(
                 }
             },
 
-            lostPassword: async (formData) => {
+            lostPassword: async ({email}) => {
                 try {
                     set({ loading: true, error: null });
-                    const { data } = await lostPasswordRequest(formData);
+                    const { data } = await lostPasswordRequest({email});
                     set({ loading: false });
                     return {
                         success: true,
@@ -89,10 +88,10 @@ export const useAuthStore = create(
                 }
             },//Mandar Correo con el token
 
-            resetPassword: async (formData) => {
+            resetPassword: async ({token, NewPassword}) => {
                 try {
                     set({ loading: true, error: null });
-                    const { data } = await resetPasswordRequest(formData);
+                    const { data } = await resetPasswordRequest({token, NewPassword});
                     set({ loading: false })
                     return { success: true, data }
                 } catch (e) {
@@ -102,10 +101,10 @@ export const useAuthStore = create(
                 }
             },//Actualizar la contraseña
 
-            activateUser: async (formData) => {
+            activateUser: async ({token}) => {
                 try {
                     set({ loading: true, error: null });
-                    const { data } = await activateUserRequest(formData);
+                    const { data } = await activateUserRequest({token});
                     set({ loading: false })
                     return { success: true, data }
                 } catch (e) {
@@ -115,10 +114,10 @@ export const useAuthStore = create(
                 }
             },//Verificar Email
 
-            changeTempPassword: async (newPassword) => {
+            changeTempPassword: async (NewPassword) => {
                 try {
                     set({ loading: true, error: null });
-                    const { data } = await changeTempPasswordRequest({ NewPassword: newPassword });
+                    const { data } = await changeTempPasswordRequest({NewPassword});
                     set({
                         token: null,
                         refreshToken: null,
