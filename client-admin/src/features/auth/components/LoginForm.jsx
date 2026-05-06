@@ -18,8 +18,13 @@ export const LoginForm = ({ onForgot, onTempPassword }) => {
     const onSubmit = async (data) => {
         const res = await login(data);
         if (res.success) {
-            navigate('/dashboard');
-            toast.success("¡Bienvenido al sistema!", { duration: 3000 });
+            const role = useAuthStore.getState().user?.role;
+            if (role === "USER_ROLE") {
+                navigate('/inicio');
+            } else {
+                navigate('/dashboard');
+            }
+            toast.success("¡Bienvenido!", { duration: 3000 });
         } else if (res.requiresPasswordChange) {
             onTempPassword();
         } else {
