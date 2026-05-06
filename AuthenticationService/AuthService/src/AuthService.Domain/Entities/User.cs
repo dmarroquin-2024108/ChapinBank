@@ -24,7 +24,9 @@ public class User
     public string Username { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "El DPI es obligatorio")]
-    public int DPI {get; set;} = 0;
+    [RegularExpression(@"^\d{13}$", ErrorMessage = "El DPI debe contener solo números.")]
+    [StringLength(13, MinimumLength =13, ErrorMessage = "El DPI debe tener 13 dígitos.")]
+    public string DPI {get; set;} = string.Empty;
 
     public string Direction {get; set;} = string.Empty;
 

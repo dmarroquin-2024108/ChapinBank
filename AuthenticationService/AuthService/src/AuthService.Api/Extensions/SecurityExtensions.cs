@@ -6,8 +6,8 @@ public static class SecurityExtensions
 {
     private static readonly string[] DefaultAllowedOrigins = ["http://localhost:3000", "https://localhost:3001", "http://localhost:5173"];
     private static readonly string[] DefaultAdminOrigins = ["http://localhost:5173"];
-    private static readonly string[] AllowedHttpMethods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"];
-    private static readonly string[] AdminHttpMethods = ["GET", "POST", "PUT", "DELETE"];
+    private static readonly string[] AllowedHttpMethods = ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"];
+    private static readonly string[] AdminHttpMethods = ["GET", "POST", "PUT", "DELETE", "PATCH"];
     private static readonly string[] AdminAllowedHeaders = ["Content-Type", "Authorization"];
     public static IServiceCollection AddSecurityPolicies(this IServiceCollection services, IConfiguration configuration)
     {

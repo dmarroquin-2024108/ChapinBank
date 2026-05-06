@@ -267,8 +267,14 @@ public class AuthService(
         return new UserDetailsDto
         {
             IdUserDetail = user.IdUser,
+            Name = user.Name,
+            Surname = user.Surname,
+            Email = user.Email,
             Username = user.Username,
-            Role = user.UserRoles.FirstOrDefault()?.Role?.Name ?? RoleConstants.USER_ROLE
+            NameWork = user.NameWork,
+            Role = user.UserRoles.FirstOrDefault()?.Role?.Name ?? RoleConstants.USER_ROLE,
+            Status = user.Status,
+            RequiresPasswordChange = user.RequiereCambioPass
         };
     }
 

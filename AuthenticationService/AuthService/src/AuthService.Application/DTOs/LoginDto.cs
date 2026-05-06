@@ -4,9 +4,9 @@ namespace AuthService.Application.DTOs;
 
 public class LoginDto
 {
-    [Required]
+    [Required (ErrorMessage = "Debe de ingresar el usuario o email")]
     public string EmailOrUsername { get; set; } = string.Empty;
 
-    [Required]
+    [Required(ErrorMessage = "Debe de colocar la contraseña")]
     public string Password { get; set; } = string.Empty;
 }

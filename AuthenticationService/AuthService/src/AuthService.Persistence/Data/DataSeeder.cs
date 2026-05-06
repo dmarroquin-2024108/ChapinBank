@@ -58,7 +58,7 @@ public class DataSeeder
                     Name = "Super Admin",
                     Surname = "Admin Admin",
                     Username = "superadmin",
-                    DPI = 0000000000101,
+                    DPI = "0000000000101",
                     Direction = "Zona 1, Ciudad de Guatemala",
                     Phone = "12345678",
                     Email = "superadmin@example.com",
