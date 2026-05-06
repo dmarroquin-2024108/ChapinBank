@@ -19,3 +19,11 @@ export const activateUser = async({token})=>{
 export const changeTempPassword = async({NewPassword})=>{
     return await axiosAuth.post('/auth/change-temp-password', {NewPassword});
 }
+
+export const getPerfil = async()=>{
+    return await axiosAuth.get('auth/profile');
+}
+
+export const editPerfil = async(data)=>{
+    return await axiosAuth.patch('auth/me', data);
+}

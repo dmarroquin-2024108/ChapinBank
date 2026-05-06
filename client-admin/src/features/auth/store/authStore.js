@@ -8,6 +8,7 @@ import {
     changeTempPassword as changeTempPasswordRequest,
 } from '../../../shared/apis';
 import { showError } from '../../../shared/utils/toast.js';
+import { errorMessage } from '../../../shared/utils/errorMessage.js';
 
 export const useAuthStore = create(
     persist(
@@ -23,11 +24,11 @@ export const useAuthStore = create(
             checkAuth: () => {
                 const token = get().token;
                 if (token) {
-                    set({isLoadingAuth: false,isAuthenticated: true});
-                }else{
+                    set({ isLoadingAuth: false, isAuthenticated: true });
+                } else {
                     set({
-                    isLoadingAuth: false,
-                    isAuthenticated: false
+                        isLoadingAuth: false,
+                        isAuthenticated: false
                     })
                 }
             },
@@ -64,51 +65,51 @@ export const useAuthStore = create(
                         loading: false,
                     })
                     return { success: true };
-                } catch (e) {
-                    const message = e.response?.data?.message || "Error al iniciar sesión";
+                } catch (err) {
+                    const message = errorMessage(err, "Error al iniciar sesión");
                     set({ error: message, loading: false });
                     return { success: false, error: message }
                 }
             },
 
-            lostPassword: async ({email}) => {
+            lostPassword: async ({ email }) => {
                 try {
                     set({ loading: true, error: null });
-                    const { data } = await lostPasswordRequest({email});
+                    const { data } = await lostPasswordRequest({ email });
                     set({ loading: false });
                     return {
                         success: true,
                         emaiVerificationRequired: data?.emaiVerificationRequired,
                         data
                     }
-                } catch (e) {
-                    const message = e.response?.data?.message || "Error al enviar correo con el token";
+                } catch (err) {
+                    const message = errorMessage(err, "Error al enviar el correo");
                     set({ error: message, loading: false });
                     return { success: false, error: message }
                 }
             },//Mandar Correo con el token
 
-            resetPassword: async ({token, NewPassword}) => {
+            resetPassword: async ({ token, NewPassword }) => {
                 try {
                     set({ loading: true, error: null });
-                    const { data } = await resetPasswordRequest({token, NewPassword});
+                    const { data } = await resetPasswordRequest({ token, NewPassword });
                     set({ loading: false })
                     return { success: true, data }
-                } catch (e) {
-                    const message = e.response?.data?.message || "Error al actualizar la contraseña";
+                } catch (err) {
+                    const message = errorMessage(err, "No se pudo actualizar la contraseña");
                     set({ error: message, loading: false });
                     return { success: false, error: message }
                 }
             },//Actualizar la contraseña
 
-            activateUser: async ({token}) => {
+            activateUser: async ({ token }) => {
                 try {
                     set({ loading: true, error: null });
-                    const { data } = await activateUserRequest({token});
+                    const { data } = await activateUserRequest({ token });
                     set({ loading: false })
                     return { success: true, data }
-                } catch (e) {
-                    const message = e.response?.data?.message || "No se puede activar la cuenta";
+                } catch (err) {
+                    const message = errorMessage(err, "No se puede activar la cuenta");
                     set({ error: message, loading: false });
                     return { success: false, error: message }
                 }
@@ -117,15 +118,15 @@ export const useAuthStore = create(
             changeTempPassword: async (NewPassword) => {
                 try {
                     set({ loading: true, error: null });
-                    const { data } = await changeTempPasswordRequest({NewPassword});
+                    const { data } = await changeTempPasswordRequest({ NewPassword });
                     set({
                         token: null,
                         refreshToken: null,
                         loading: false
                     });
                     return { success: true, data };
-                } catch (e) {
-                    const message = e.response?.data?.message || "Error al cambiar la contraseña";
+                } catch (err) {
+                    const message = errorMessage(err, "Error al cambiar la contraseña")
                     set({ error: message, loading: false });
                     return { success: false, error: message };
                 }
