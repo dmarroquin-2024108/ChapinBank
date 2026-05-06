@@ -8,7 +8,7 @@ public class UpdateUserDto
     [MinLength(5, ErrorMessage = "Mínimo de caracteres es de 5")]
     public string? Username { get; set; }
 
-    [EmailAddress]
+    [EmailAddress(ErrorMessage = "Debe de colocar un email válido")]
     public string? Email { get; set; }
 
     public string? Direction {get; set;} 
