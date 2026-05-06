@@ -2,9 +2,8 @@ import { Link, Navigate, replace, useLocation, useNavigate } from "react-router-
 import {LayoutDashboard, Package, Users, CreditCard, History, LogOut, Icon} from "lucide-react";
 import imgLogo from "../../../assets/img/ChapinLogo.png"
 
-export const Sidebar = ()=>{
+export const Sidebar = ({onLogout})=>{
   const location = useLocation();
-  const navigate = useNavigate();
 
   const items =[
     {label: "Resumen", icon: LayoutDashboard, to:"/dashboard"},
@@ -46,7 +45,7 @@ export const Sidebar = ()=>{
       </nav>
 
       <button className="flex items-center gap-3 px-7 py-5 text-sm text-gray-400 hover:text-white transition-colors hover: cursor-pointer border-t-1 border-gray-600"
-      onClick={()=> navigate("/", {replace: true})}
+      onClick={onLogout}
       >
         <LogOut size={16} />
           Cerrar Sesión
