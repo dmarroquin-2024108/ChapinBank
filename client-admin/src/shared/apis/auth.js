@@ -27,3 +27,20 @@ export const getPerfil = async()=>{
 export const editPerfil = async(data)=>{
     return await axiosAuth.patch('auth/me', data);
 }
+
+export const adminCreateUser = async (data) => {
+    return await axiosAuth.post('auth/admin/create-user', data);
+};
+
+export const adminDeleteUser = async (userId) => {
+    return await axiosAuth.delete(`auth/admin/users/${userId}`);
+};
+
+export const requestSelfDelete = async () => {
+    return await axiosAuth.post('auth/me/request-delete');
+};
+
+
+export const confirmSelfDelete = async (token) => {
+    return await axiosAuth.post('auth/me/confirm-delete', { token });
+};

@@ -8,6 +8,7 @@ import { ResetPassword } from "../../features/auth/components/ResetPassword.jsx"
 import { ActivateUser } from "../../features/auth/components/ActivateUser.jsx";
 import { UserPage } from "../../features/users/pages/UserPage.jsx";
 import { useAuthStore } from "../../features/auth/store/authStore.js";
+import { AdminUsersPage } from "../../features/users/pages/AdminUserPage.jsx";
 
 export const AppRoutes = () => {
     const logout = useAuthStore((state) => state.logout);
@@ -29,7 +30,7 @@ export const AppRoutes = () => {
                 }
             />
             <Route
-                path="/dashboard/*"
+                path="/dashboard"
                 element={
                     <ProtectedRoutes>
                         <RoleGuard allowedRoles={["SUPERADMIN_ROLE", "ADMIN_ROLE"]}>
@@ -37,7 +38,10 @@ export const AppRoutes = () => {
                         </RoleGuard>
                     </ProtectedRoutes>
                 }
-            />
+            >
+                <Route index element={<div className="p-6 text-gray-400">Bienvenido al Dashboard</div>} />
+                <Route path="users" element={<AdminUsersPage />} />
+            </Route>
         </Routes>
     );
 };
