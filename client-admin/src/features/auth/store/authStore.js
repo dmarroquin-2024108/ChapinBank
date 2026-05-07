@@ -132,6 +132,14 @@ export const useAuthStore = create(
                 }
             }//CambiarContraseñaTemporal
         }),
-        { name: "auth-CBK-Debbugers" },
+        { name: "auth-CBK-Debbugers", 
+            partialize: (state) => ({
+                user: state.user,
+                token: state.token,
+                refreshToken: state.refreshToken,
+                expiresAt: state.expiresAt,
+                isAuthenticated: state.isAuthenticated,
+            }),
+        },
     ),
 )

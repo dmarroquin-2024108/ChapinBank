@@ -1,22 +1,35 @@
 import { useState, useRef, useEffect } from "react";
-import { ArrowDownToLine, ArrowLeftRight, Clock, Package, ArrowUpRight, ChevronRight, Bell, User, LogOut, } from "lucide-react";
+import {
+    ArrowDownToLine,
+    ArrowLeftRight,
+    Clock,
+    Package,
+    ArrowUpRight,
+    ChevronRight,
+    Bell,
+    User,
+    LogOut,
+    Trash2,
+} from "lucide-react";
 import imgLogo from "../../../assets/img/ChapinLogo.png";
 import { useAuthStore } from "../../auth/store/authStore.js";
 import { ProfileModal } from "../components/ProfileModal.jsx";
+import { DeleteAccountModal } from "../components/DeleteAccountModal.jsx";
 
 const QUICK_ACTIONS = [
-    { label: "Depósitos", sub: "Acredita fondos", icon: ArrowDownToLine }, //iconos
-    { label: "Transferencias", sub: "Envía dinero", icon: ArrowLeftRight }, //icono de las flechitas
-    { label: "Historial", sub: "Tus movimientos", icon: Clock },//icono de reloj
-    { label: "Mis productos", sub: "0 contratados", icon: Package },//icono del pack
-];//visual por this moment
+    { label: "Depósitos", sub: "Acredita fondos", icon: ArrowDownToLine },
+    { label: "Transferencias", sub: "Envía dinero", icon: ArrowLeftRight },
+    { label: "Historial", sub: "Tus movimientos", icon: Clock },
+    { label: "Mis productos", sub: "0 contratados", icon: Package },
+];
 
 const NAV_ITEMS = ["Inicio", "Depósitos", "Transferencias", "Historial", "Productos", "Mis productos"];
 
 const AccountCard = ({ type, currency, dark }) => (
     <div
-        className={`relative rounded-2xl p-5 flex flex-col justify-between min-h-[155px] overflow-hidden transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-xl ${dark ? "bg-[#032340] text-white" : "bg-[#F28C00] text-white"
-            }`}
+        className={`relative rounded-2xl p-5 flex flex-col justify-between min-h-[155px] overflow-hidden transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-xl ${
+            dark ? "bg-[#032340] text-white" : "bg-[#F28C00] text-white"
+        }`}
     >
         <div
             className="absolute -right-6 -top-6 w-28 h-28 rounded-full opacity-10"
@@ -49,6 +62,7 @@ export const UserPage = ({ onLogout }) => {
     const [activeNav, setActiveNav] = useState("Inicio");
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
+    const [showDeleteAccount, setShowDeleteAccount] = useState(false);
     const dropdownRef = useRef(null);
 
     useEffect(() => {
@@ -64,6 +78,11 @@ export const UserPage = ({ onLogout }) => {
     const handleOpenProfile = () => {
         setDropdownOpen(false);
         setTimeout(() => setShowProfile(true), 50);
+    };
+
+    const handleOpenDeleteAccount = () => {
+        setDropdownOpen(false);
+        setTimeout(() => setShowDeleteAccount(true), 50);
     };
 
     return (
@@ -83,10 +102,11 @@ export const UserPage = ({ onLogout }) => {
                                 <button
                                     key={item}
                                     onClick={() => setActiveNav(item)}
-                                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 ${activeNav === item
+                                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 ${
+                                        activeNav === item
                                             ? "bg-[#F28C00] text-white"
                                             : "text-gray-300 hover:text-white hover:bg-white/5"
-                                        }`}
+                                    }`}
                                 >
                                     {item}
                                 </button>
@@ -120,6 +140,7 @@ export const UserPage = ({ onLogout }) => {
                                             {user?.email ?? ""}
                                         </p>
                                     </div>
+
                                     <button
                                         className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition cursor-pointer"
                                         onClick={handleOpenProfile}
@@ -127,13 +148,24 @@ export const UserPage = ({ onLogout }) => {
                                         <User size={15} />
                                         Mi Perfil
                                     </button>
+
+                                    <button
+                                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-red-50 transition cursor-pointer"
+                                        onClick={handleOpenDeleteAccount}
+                                    >
+                                        <Trash2 size={15} />
+                                        Eliminar mi cuenta
+                                    </button>
+
+                                    <div className="border-t border-gray-100 my-1" />
+
                                     <button
                                         onClick={onLogout}
                                         className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition cursor-pointer"
                                     >
                                         <LogOut size={15} />
                                         Cerrar Sesión
-                                    </button> //Boton nivel senior "FUEGO" (no encontré el 🔥)
+                                    </button>
                                 </div>
                             )}
                         </div>
@@ -215,6 +247,11 @@ export const UserPage = ({ onLogout }) => {
                 isOpen={showProfile}
                 onClose={() => setShowProfile(false)}
                 userBase={user}
+            />
+
+            <DeleteAccountModal
+                isOpen={showDeleteAccount}
+                onClose={() => setShowDeleteAccount(false)}
             />
         </div>
     );
