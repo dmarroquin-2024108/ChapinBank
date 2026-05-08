@@ -7,7 +7,7 @@ export const Sidebar = ({ onLogout }) => {
 
     const items = [
         { label: "Resumen", icon: LayoutDashboard, to: "/dashboard", exact: true },
-        { label: "Productos", icon: Package, to: "/" },
+        { label: "Productos", icon: Package, to: "/dashboard/products" },
         { label: "Usuarios", icon: Users, to: "/dashboard/users" },
         { label: "Cuentas", icon: CreditCard, to: "/" },
         { label: "Historial", icon: History, to: "/" },
