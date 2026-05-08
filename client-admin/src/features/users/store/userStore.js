@@ -3,6 +3,7 @@ import {
     getPerfil as getPerfilRequest,
     editPerfil as editPerfilRequest
 } from "../../../shared/apis";
+import { errorMessage } from "../../../shared/utils/errorMessage";
 
 export const useUserStore = create((set) => ({
     profile: null,
@@ -16,9 +17,9 @@ export const useUserStore = create((set) => ({
             set({ profile: data.data, loading: false });
             return { success: true };
         } catch (err) {
-            const message = err.response?.data?.message || "No se pudo obtener el perfil";
+            const message = errorMessage(err, "No se pudo obtener el perfil");
             set({ error: message, loading: false });
-            return { success: false, error: message };
+            return { success: false, error: message }
         }
     },
 
@@ -29,7 +30,7 @@ export const useUserStore = create((set) => ({
             set({ profile: data, loading: false });
             return { success: true };
         } catch (err) {
-            const message = err.response?.data?.message || "Error al actualizar el perfil";
+            const message = errorMessage(err, "Error al actualizar el perfil");
             set({ error: message, loading: false });
             return { success: false, error: message };
         }

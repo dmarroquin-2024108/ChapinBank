@@ -1,14 +1,21 @@
 import { AvatarUser } from "../ui/AvatarUser.jsx";
 
-export const Navbar = ({onLogout}) => {
+export const Navbar = ({ onLogout, title }) => {
     return (
         <nav className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0">
-            <div />
+            <div>
+                <h1 className="text-xl font-semibold text-slate-800">
+                    {title}
+                </h1>
+                <p className="text-xs text-gray-400 mt-0.5">
+                    ¿Qué vamos a realizar hoy?
+                </p>
+            </div>
             <div className="flex items-center gap-3">
                 <span className="text-xs border border-orange text-orange px-3 py-1 rounded-full font-medium flex items-center gap-1">
                     Modo Administrador
                 </span>
-                    <AvatarUser onLogout={onLogout} />
+                <AvatarUser onLogout={onLogout} />
             </div>
         </nav>
     );
