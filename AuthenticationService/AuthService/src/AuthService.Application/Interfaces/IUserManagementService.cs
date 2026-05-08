@@ -8,4 +8,5 @@ public interface IUserManagementService
     Task<IReadOnlyList<string>> GetUserRolesAsync(string userId);
     Task<IReadOnlyList<UserResponseDto>> GetUsersByRoleAsync(string roleName);
     Task<UserSummaryDto> GetUsersSummaryAsync();
+    Task<IReadOnlyList<UserResponseDto>> GetAllUsersAsync();
 }

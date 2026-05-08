@@ -2,6 +2,7 @@ namespace AuthService.Application.DTOs;
 
 public class UserResponseDto
 {
+    public string Dpi {get; set;}= string.Empty;
     public string IdUserResponse { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Surname { get; set; } = string.Empty;
