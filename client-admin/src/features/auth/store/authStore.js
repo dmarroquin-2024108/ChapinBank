@@ -6,6 +6,7 @@ import {
     resetPassword as resetPasswordRequest,
     activateUser as activateUserRequest,
     changeTempPassword as changeTempPasswordRequest,
+    resendActivate as resendActivateRequest
 } from '../../../shared/apis';
 import { showError } from '../../../shared/utils/toast.js';
 import { errorMessage } from '../../../shared/utils/errorMessage.js';
@@ -130,7 +131,24 @@ export const useAuthStore = create(
                     set({ error: message, loading: false });
                     return { success: false, error: message };
                 }
-            }//CambiarContraseñaTemporal
+            },//CambiarContraseñaTemporal
+
+            resendActivate: async ({email})=>{
+                try{
+                    set({ loading: true, error: null });
+                    const { data } = await resendActivateRequest({ email });
+                    set({ loading: false });
+                    return {
+                        success: true,
+                        emaiVerificationRequired: data?.emaiVerificationRequired,
+                        data
+                    }
+                }catch(err){
+                    const message = errorMessage(err, "Error al reenviar el correo de verificación.")
+                    set({ error: message, loading: false });
+                    return { success: false, error: message };
+                }
+            },// ReenviarCorreoVerificación
         }),
         { name: "auth-CBK-Debbugers", 
             partialize: (state) => ({

@@ -4,7 +4,7 @@ import { Mail, Lock } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuthStore } from "../store/authStore.js";
 
-export const LoginForm = ({ onForgot, onTempPassword }) => {
+export const LoginForm = ({ onForgot, onTempPassword, onActivate }) => {
     const navigate = useNavigate();
     const login = useAuthStore((state) => state.login);
     const loading = useAuthStore((state) => state.loading);
@@ -62,12 +62,22 @@ export const LoginForm = ({ onForgot, onTempPassword }) => {
             </div>
 
             <div>
-                <label
-                    htmlFor="password"
-                    className="text-sm font-semibold text-main-blue"
-                >
-                    Contraseña
-                </label>
+                <div className="flex justify-between items-center mb-1">
+                    <label
+                        htmlFor="password"
+                        className="text-sm font-semibold text-main-blue"
+                    >
+                        Contraseña
+                    </label>
+
+                    <button
+                        type="button"
+                        onClick={onForgot}
+                        className="text-orange text-xs hover:underline hover:cursor-pointer ml-1"
+                    >
+                        ¿Olvidaste Contraseña?
+                    </button>
+                </div>
 
                 <div className="relative">
                     <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -97,14 +107,15 @@ export const LoginForm = ({ onForgot, onTempPassword }) => {
             >
                 {loading ? "Iniciando..." : "Iniciar Sesión"}
             </button>
+
             <p className="text-center text-sm text-main-blue">
-                ¿Olvidaste tu Contraseña?
+                ¿No Tienes Activa tu Cuenta?
                 <button
                     type="button"
-                    onClick={onForgot}
                     className="text-orange hover:underline hover:cursor-pointer ml-1"
+                    onClick={onActivate}
                 >
-                    Recuperar Contraseña
+                    Activar Cuenta
                 </button>
             </p>
         </form>
