@@ -1,4 +1,4 @@
-import { createAccountRecord, getAccountsRecord, getAccountById, updateAccountRecord, getAccountByNumberAccount, updateAccountBalanceInternal } from "./account.service.js";
+import { createAccountRecord, getAccountsRecord, getAccountById, updateAccountRecord, getAccountByNumberAccount, updateAccountBalanceInternal, getAccountsSummary } from "./account.service.js";
 
 const formatBalance = (account) => ({
     ...account.toObject(),
@@ -114,6 +114,23 @@ export const updateAccountInternal = async (req, res) => {
         res.status(e.statusCode || 500).json({
             success: false,
             message: 'Error al actualizar cuenta',
+            error: e.message
+        });
+    }
+};
+
+export const getAccountsSummaryAdmin = async (req, res) => {
+    try {
+        const summary = await getAccountsSummary();
+        res.status(200).json({
+            success: true,
+            message: 'Resumen de cuentas obtenido',
+            data: summary
+        });
+    } catch (e) {
+        res.status(e.statusCode || 500).json({
+            success: false,
+            message: 'Error al obtener resumen de cuentas',
             error: e.message
         });
     }
