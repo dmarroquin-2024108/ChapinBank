@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-export const ProductModal = ({ isOpen, onClose, mode = 'add', initialData = {} }) => {
+export const ProductModal = ({ isOpen, onClose, onSubmit, mode = 'add', initialData = {} }) => {
     const [formData, setFormData] = useState({
         name: '',
         price: '',
@@ -38,7 +38,7 @@ export const ProductModal = ({ isOpen, onClose, mode = 'add', initialData = {} }
                     </p>
                 </div>
 
-                <form onSubmit={(e) => { e.preventDefault(); onClose(); }} className="px-8 pb-8">
+                <form onSubmit={(e) => { e.preventDefault(); onSubmit(formData); }} className="px-8 pb-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                         
                         <div className="flex flex-col gap-1">

@@ -50,7 +50,7 @@ export const ProductTable = ({ products = [], onEdit, onDelete }) => {
                                         
                                         {/* BOTÓN ELIMINAR */}
                                         <button 
-                                            onClick={() => onDelete(product.id)} 
+                                            onClick={() => onDelete(product)} 
                                             className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-all active:scale-90"
                                             title="Eliminar producto"
                                         >

@@ -48,7 +48,7 @@ export const AppRoutes = () => {
                 <Route path="users" element={<AdminUsersPage />} />
                 
 
-                <Route path="productos" element={<AdminProductsPage />} />
+                <Route path="products" element={<AdminProductsPage />} />
             </Route>
         </Routes>
     );
