@@ -39,7 +39,7 @@ export const AppRoutes = () => {
                     </ProtectedRoutes>
                 }
             >
-                <Route index element={<div className="p-6 text-gray-400">Bienvenido al Dashboard</div>} />
+                <Route index element={<AdminDashboardPage />} />
                 <Route path="users" element={<AdminUsersPage />} />
             </Route>
         </Routes>
