@@ -79,4 +79,30 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles)
             UpdatedAt = u.UpdatedAt
         }).ToList();
     }
+
+    public async Task<UserSummaryDto> GetUsersSummaryAsync()
+    {
+        var allUsers = await users.GetAllAsync();
+        var recent = allUsers
+        .OrderByDescending(u => u.CreatedAt)
+        .Take(5)
+        .Select(u => new RecentUserDto
+        {
+            IdUser = u.IdUser,
+            Name = u.Name,
+            Surname= u.Surname,
+            Username= u.Username,
+            Email= u.Email,
+            Status= u.Status,
+            CreatedAt = u.CreatedAt
+        }).ToList();
+
+    return new UserSummaryDto
+    {
+        Total = allUsers.Count,
+        Active = allUsers.Count(u => u.Status && !u.IsDeleted),
+        Inactive= allUsers.Count(u => !u.Status && !u.IsDeleted),
+        RecentUsers = recent
+    };
+    }
 }
