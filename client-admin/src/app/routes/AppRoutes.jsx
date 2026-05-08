@@ -9,6 +9,7 @@ import { ActivateUser } from "../../features/auth/components/ActivateUser.jsx";
 import { UserPage } from "../../features/users/pages/UserPage.jsx";
 import { useAuthStore } from "../../features/auth/store/authStore.js";
 import { AdminUsersPage } from "../../features/users/pages/AdminUserPage.jsx";
+import {AdminDashboardPage} from "../../features/admin/pages/AdminDashboardPage.jsx"
 
 export const AppRoutes = () => {
     const logout = useAuthStore((state) => state.logout);
