@@ -490,4 +490,31 @@ public class AuthController : ControllerBase
             data = summary
         });
     }
+
+    /// <summary>
+    /// Listar todos los usuarios (admin)
+    /// </summary>
+    /// <remarks>
+    /// Devuelve todos los usuarios del sistema con su rol y estado.
+    /// Requiere rol ADMIN_ROLE o SUPERADMIN_ROLE.
+    /// </remarks>
+    /// <response code="200">Usuarios obtenidos exitosamente</response>
+    /// <response code="401">No autorizado</response>
+    /// <response code="403">Se requiere rol ADMIN_ROLE o SUPERADMIN_ROLE</response>
+    [HttpGet("admin/users")]
+    [Authorize(Roles = RoleConstants.ADMIN_ROLE + "," + RoleConstants.SUPERADMIN_ROLE)]
+    [ProducesResponseType(typeof(IReadOnlyList<UserResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<IReadOnlyList<UserResponseDto>>> GetAllUsers()
+    {
+        var result = await _userManagementService.GetAllUsersAsync();
+        return Ok(new
+        {
+            success = true,
+            message = "Usuarios obtenidos exitosamente",
+            total = result.Count,
+            data = result
+        });
+    }
 }

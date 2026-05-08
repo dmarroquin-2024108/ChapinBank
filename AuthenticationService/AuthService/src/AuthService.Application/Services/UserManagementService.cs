@@ -105,4 +105,30 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles)
         RecentUsers = recent
     };
     }
+
+    public async Task<IReadOnlyList<UserResponseDto>> GetAllUsersAsync()
+{
+    var allUsers = await users.GetAllAsync();
+    return allUsers
+        .Where(u => !u.IsDeleted)
+        .OrderByDescending(u => u.CreatedAt)
+        .Select(u => new UserResponseDto
+        {
+            IdUserResponse = u.IdUser,
+            Dpi = u.DPI,
+            Name = u.Name,
+            Surname = u.Surname,
+            Username= u.Username,
+            Email= u.Email,
+            Phone = u.Phone,
+            Direction = u.Direction,
+            NameWork = u.NameWork,
+            IngresosMensuales = u.IngresosMensuales,
+            Status= u.Status,
+            Role = u.UserRoles.FirstOrDefault()?.Role?.Name ?? "USER_ROLE",
+            IsEmailVerified = u.UserEmail?.EmailVerified ?? false,
+            CreatedAt= u.CreatedAt,
+            UpdatedAt = u.UpdatedAt
+        }).ToList();
+}
 }

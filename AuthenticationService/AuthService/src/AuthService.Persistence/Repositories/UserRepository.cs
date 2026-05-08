@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.Persistence.Repositories;
 
-public class UserRepository (ApplicationDbContext context) : IUserRepository
+public class UserRepository(ApplicationDbContext context) : IUserRepository
 {
     public async Task<User> GetByIdAsync(string id)
     {
@@ -29,7 +29,7 @@ public class UserRepository (ApplicationDbContext context) : IUserRepository
             .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
             .FirstOrDefaultAsync(u => EF.Functions.ILike(u.Email, email));
-            
+
     }
 
     public async Task<User?> GetByUsernameAsync(string username)
@@ -85,7 +85,7 @@ public class UserRepository (ApplicationDbContext context) : IUserRepository
         {
             throw new InvalidOperationException("El usuario no existe o no se pudo actualizar");
         }
-        
+
     }
 
     public async Task<bool> DeleteAsync(string id)
@@ -99,11 +99,11 @@ public class UserRepository (ApplicationDbContext context) : IUserRepository
     public async Task<User?> GetDeletedByEmailAsync(string email)
     {
         return await context.Users
-            .Include(u=> u.UserEmail)
-            .Include(u=> u.UserPasswordReset)
-            .Include(u=> u.UserRoles)
-                .ThenInclude(ur=> ur.Role)
-            .FirstOrDefaultAsync(u=> EF.Functions.ILike(u.Email, email)&& u.IsDeleted);
+            .Include(u => u.UserEmail)
+            .Include(u => u.UserPasswordReset)
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => EF.Functions.ILike(u.Email, email) && u.IsDeleted);
     }
 
     public async Task<bool> SoftDeleteAsync(string id)
@@ -141,7 +141,7 @@ public class UserRepository (ApplicationDbContext context) : IUserRepository
         var existingRoles = await context.UserRoles
             .Where(ur => ur.UserId == userId)
             .ToListAsync();
-        
+
         context.UserRoles.RemoveRange(existingRoles);
 
         // Add new user-role association with the existing role
@@ -153,7 +153,7 @@ public class UserRepository (ApplicationDbContext context) : IUserRepository
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
-        
+
         context.UserRoles.Add(newUserRole);
         await context.SaveChangesAsync();
     }
@@ -169,9 +169,13 @@ public class UserRepository (ApplicationDbContext context) : IUserRepository
     }
 
     public async Task<List<User>> GetAllAsync()
-{
-    return await context.Users
-        .Where(u => !u.IsDeleted)
-        .ToListAsync();
-}
+    {
+        return await context.Users
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+            .Include(u => u.UserEmail)
+            .Where(u => !u.IsDeleted)
+            .ToListAsync();
+    }
+
 }
