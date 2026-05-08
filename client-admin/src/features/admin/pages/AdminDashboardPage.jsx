@@ -47,8 +47,7 @@ export const AdminDashboardPage = () => {
                     <StatCard
                         key={stat.title}
                         {...stat}
-                        // CORRECCIÓN: Si NO está cargando, muestra el valor. Si carga, muestra "—"
-                        value={!loading ? stat.value : "—"}
+                        value={loading ? stat.value : "—"}
                     />
                 ))}
             </div>

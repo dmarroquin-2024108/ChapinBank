@@ -46,9 +46,9 @@ export const AdminUsersPage = () => {
     }, [search, users]);
 
     const stats = useMemo(() => ({
-        total:    users.length,
-        active:   users.filter(u => u.status).length,
-        inactive: users.filter(u => !u.status).length,
+        total:users.length,
+        active:users.filter(u => u.status).length,
+        inactive:users.filter(u => !u.status).length,
     }), [users]);
 
     const handleDeleteConfirm = async () => {
@@ -88,7 +88,7 @@ export const AdminUsersPage = () => {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Buscar por nombre, usuario o correo..."
-                        className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange/40"
+                        className="w-full pl-9 pr-4 py-2 bg-white text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange/40"
                     />
                 </div>
                 <button

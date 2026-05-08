@@ -1,11 +1,13 @@
+import { useAuthStore } from "../../../features/auth/store/authStore.js";
 import { AvatarUser } from "../ui/AvatarUser.jsx";
 
-export const Navbar = ({ onLogout, title }) => {
+export const Navbar = ({ onLogout }) => {
+    const {user} = useAuthStore();
     return (
         <nav className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0">
             <div>
                 <h1 className="text-xl font-semibold text-slate-800">
-                    {title}
+                    {`¡Hola `+ user.name +`!`}
                 </h1>
                 <p className="text-xs text-gray-400 mt-0.5">
                     ¿Qué vamos a realizar hoy?

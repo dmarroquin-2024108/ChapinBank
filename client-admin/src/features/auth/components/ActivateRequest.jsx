@@ -3,8 +3,8 @@ import { Mail } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuthStore } from "../store/authStore";
 
-export const ForgotPassword = ({ onSwitch }) => {
-  const { lostPassword, error } = useAuthStore();
+export const ActivateRequest = ({ onSwitch }) => {
+  const { resendActivate, error } = useAuthStore();
   const {
     register,
     handleSubmit,
@@ -12,7 +12,7 @@ export const ForgotPassword = ({ onSwitch }) => {
   } = useForm();
 
   const onSubmit = async (formData) => {
-    const resultado = await lostPassword(formData);
+    const resultado = await resendActivate(formData);
     if (resultado.success) {
       toast.success("Correo enviado.", { duration: 3000 });
     } else {
@@ -54,11 +54,11 @@ export const ForgotPassword = ({ onSwitch }) => {
         type="submit"
         className="w-full bg-orange text-white font-bold py-2 rounded-lg hover:bg-[#F2CD88] hover:cursor-pointer transition"
       >
-        Mandar Token
+        Reenviar Token
       </button>
 
       <p className="text-center text-sm">
-        ¿Recordaste tu contraseña?
+        ¿Ya activaste tu cuenta?
         <button
           type="button"
           onClick={onSwitch}

@@ -10,8 +10,9 @@ import { UserPage } from "../../features/users/pages/UserPage.jsx";
 import { useAuthStore } from "../../features/auth/store/authStore.js";
 import { AdminUsersPage } from "../../features/users/pages/AdminUserPage.jsx";
 import { AdminDashboardPage } from "../../features/admin/pages/AdminDashboardPage.jsx";
-// 1. IMPORTAMOS LA PÁGINA DE PRODUCTOS
 import { AdminProductsPage } from "../../features/admin/pages/AdminProductsPage.jsx";
+import { ActivateRequest } from "../../features/auth/components/ActivateRequest.jsx";
+
 
 export const AppRoutes = () => {
     const logout = useAuthStore((state) => state.logout);
@@ -22,7 +23,8 @@ export const AppRoutes = () => {
             <Route path='/unauthorized' element={<UnauthorizedPage />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/verify-email" element={<ActivateUser />} />
-            
+            <Route path="/resend-verification" element={<ActivateRequest/>}/>
+
             <Route
                 path="/inicio"
                 element={
