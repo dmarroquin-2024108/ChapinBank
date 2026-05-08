@@ -2,15 +2,14 @@ import { useNavigate } from "react-router-dom";
 import { Plus, UserPlus, CreditCard, History, ChevronRight } from "lucide-react";
 
 const QUICK_ACTIONS = [
-    { label: "Agregar producto", icon: Plus, to: "/dashboard/productos", color: "bg-green-500/10 text-[#1a6b4a] hover:bg-green-500/20" },
-    { label: "Registrar usuario", icon: UserPlus, to: "/dashboard", color: "bg-orange/10 text-orange hover:bg-orange/20" },
-    { label: "Gestionar cuentas", icon: CreditCard, to: "/dashboard", color: "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20" },
-    { label: "Ver historial", icon: History, to: "/dashboard", color: "bg-purple-500/10 text-purple-600 hover:bg-purple-500/20" },
+    { label: "Agregar producto", icon: Plus, to: "/dashboard",color: "bg-green-500/10 text-[#1a6b4a] hover:bg-green-500/20" },
+    { label: "Registrar usuario",icon: UserPlus, to: "/dashboard",color: "bg-orange/10 text-orange hover:bg-orange/20" },
+    { label: "Gestionar cuentas",icon: CreditCard, to: "/dashboard",color: "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20" },
+    { label: "Ver historial",icon: History, to: "/dashboard",color: "bg-purple-500/10 text-purple-600 hover:bg-purple-500/20" },
 ];
 
 const QuickAccess = () => {
     const navigate = useNavigate();
-    
     return (
         <div className="bg-white rounded-2xl p-5 border border-gray-100">
             <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
@@ -34,29 +33,47 @@ const QuickAccess = () => {
     );
 };
 
-const AVATAR_COLORS = ["bg-[#0d1f35]", "bg-[#1a6b4a]", "bg-orange", "bg-[#6b21a8]", "bg-blue-600"];
+const AVATAR_COLORS = [
+    "bg-[#0d1f35]","bg-[#1a6b4a]","bg-orange","bg-[#6b21a8]","bg-blue-600",
+];
 
-const getInitials = (name = "", surname = "") => `${name.charAt(0)}${surname.charAt(0)}`.toUpperCase();
+const getInitials = (name = "", surname = "") =>
+    `${name.charAt(0)}${surname.charAt(0)}`.toUpperCase();
 
 const RecentClients = ({ users = [] }) => {
     const navigate = useNavigate();
     return (
         <div className="bg-white rounded-2xl p-5 border border-gray-100">
             <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest">Clientes recientes</h2>
-                <button onClick={() => navigate("/dashboard")} className="text-orange text-xs font-medium hover:underline cursor-pointer">Ver todos</button>
+                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest">
+                    Clientes recientes
+                </h2>
+                <button
+                    onClick={() => navigate("/dashboard/users")}
+                    className="text-orange text-xs font-medium hover:underline cursor-pointer"
+                >
+                    Ver todos
+                </button>
             </div>
             <div className="flex flex-col gap-2">
                 {users.length === 0 ? (
                     <p className="text-gray-400 text-sm text-center py-4">Sin clientes recientes</p>
                 ) : (
                     users.map((user, i) => (
-                        <button key={user.idUser} className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer w-full text-left">
+                        <button
+                            key={user.idUser}
+                            //onClick={() => navigate(`/dashboard/usuarios/${user.idUser}`)}
+                            className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer w-full text-left"
+                        >
                             <div className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 ${AVATAR_COLORS[i % AVATAR_COLORS.length]}`}>
                                 {getInitials(user.name, user.surname)}
                             </div>
-                            <p className="flex-1 text-sm font-medium text-gray-800 truncate">{user.name} {user.surname}</p>
-                            <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${user.status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-500"}`}>
+                            <p className="flex-1 text-sm font-medium text-gray-800 truncate">
+                                {user.name} {user.surname}
+                            </p>
+                            <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0
+                                ${user.status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-500"}`}
+                            >
                                 {user.status ? "activo" : "inhabilitado"}
                             </span>
                             <ChevronRight size={14} className="text-gray-400 shrink-0" />

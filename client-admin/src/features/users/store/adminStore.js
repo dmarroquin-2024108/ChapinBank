@@ -1,13 +1,19 @@
 import { create } from "zustand";
 import {
+    getUsers as getUsersRequest,
     adminCreateUser as adminCreateUserRequest,
     adminDeleteUser as adminDeleteUserRequest,
     requestSelfDelete as requestSelfDeleteRequest,
     confirmSelfDelete as confirmSelfDeleteRequest,
 } from "../../../shared/apis";
+import { errorMessage } from "../../../shared/utils/errorMessage";
 
 export const useAdminStore = create((set) => ({
-    loading: false,
+    users: [],
+    loadings:{
+        users: false
+    },
+    loading: null,
     error: null,
 
     // Admin crea un usuario
@@ -63,6 +69,24 @@ export const useAdminStore = create((set) => ({
             const message = err.response?.data?.message || "Token inválido o expirado";
             set({ error: message, loading: false });
             return { success: false, error: message };
+        }
+    },
+
+    getUsers: async () => {
+        try {
+            set((s) => ({loadings: { 
+                ...s.loadings, 
+                users: true },
+                error: null }));
+            const response = await getUsersRequest();
+            set((s) => ({
+                users: response.data,
+                loadings: { ...s.loadings, users: false },
+            }));
+        } catch (err) {
+            const message = errorMessage(err, "Error al obtener los usuarios");
+            set({ error: message, loading: false });
+            return { success: false, error: message }
         }
     },
 }));

@@ -24,6 +24,11 @@ export const getPerfil = async()=>{
     return await axiosAuth.get('auth/profile');
 }
 
+export const getUsers = async()=>{
+    const {data} = await axiosAuth.get('auth/admin/users');
+    return data;
+}
+
 export const editPerfil = async(data)=>{
     return await axiosAuth.patch('auth/me', data);
 }
