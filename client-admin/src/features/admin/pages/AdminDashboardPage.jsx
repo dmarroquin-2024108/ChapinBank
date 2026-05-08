@@ -8,34 +8,35 @@ import { formatBalance } from "../../../shared/utils/formatters.js";
 
 export const AdminDashboardPage = () => {
     const { history, products, accounts, users, loading } = useDashboardStats();
+    
     const stats = useMemo(() => [
         {
             title: "Total usuarios",
-            value:users?.total,
-            subtitle:`${users?.active ?? 0} activos`,
-            icon:Users,
-            color:"dark",
+            value: users?.total,
+            subtitle: `${users?.active ?? 0} activos`,
+            icon: Users,
+            color: "dark",
         },
         {
-            title:"Cuentas activas",
-            value:accounts?.total,
-            subtitle:`${accounts?.disabled ?? 0} inhabilitadas`,
-            icon:CreditCard,
-            color:"orange",
+            title: "Cuentas activas",
+            value: accounts?.total,
+            subtitle: `${accounts?.disabled ?? 0} inhabilitadas`,
+            icon: CreditCard,
+            color: "orange",
         },
         {
-            title:"Productos en catálogo",
+            title: "Productos en catálogo",
             value: products?.length,
             subtitle: "Beneficios de Chapin Bank",
-            icon:Package,
-            color:"green",
+            icon: Package,
+            color: "green",
         },
         {
             title: "Activos administrados",
             value: formatBalance(accounts?.totalBalance),
-            subtitle:"Saldo total del banco",
-            icon:DollarSign,
-            color:"purple",
+            subtitle: "Saldo total del banco",
+            icon: DollarSign,
+            color: "purple",
         },
     ], [users, accounts, products]);
 
@@ -46,7 +47,8 @@ export const AdminDashboardPage = () => {
                     <StatCard
                         key={stat.title}
                         {...stat}
-                        value={loading ? stat.value  :  "—"}
+                        // CORRECCIÓN: Si NO está cargando, muestra el valor. Si carga, muestra "—"
+                        value={!loading ? stat.value : "—"}
                     />
                 ))}
             </div>
