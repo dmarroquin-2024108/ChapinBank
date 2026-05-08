@@ -167,4 +167,11 @@ public class UserRepository (ApplicationDbContext context) : IUserRepository
                 upr.PasswordResetToken == token &&
                 upr.PasswordTokenExpiry > DateTime.UtcNow);
     }
+
+    public async Task<List<User>> GetAllAsync()
+{
+    return await context.Users
+        .Where(u => !u.IsDeleted)
+        .ToListAsync();
+}
 }

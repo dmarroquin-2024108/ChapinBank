@@ -20,4 +20,5 @@ public interface IUserRepository
     Task<UserPassReset?> GetPasswordResetAsync(string token);
     Task UpdateUserRoleAsync(string userId, string roleId);
     Task AddPasswordResetAsync(UserPassReset resetEntry);
+    Task<List<User>> GetAllAsync();
 }
