@@ -1,7 +1,8 @@
 import {Router} from 'express';
-import {createAccount, getAccounts, getAccountId, updateAccount, getAccountInternal, updateAccountInternal} from './account.controller.js';
+import {createAccount, getAccounts, getAccountId, updateAccount, getAccountInternal, updateAccountInternal, getAccountsSummaryAdmin} from './account.controller.js';
 import {createAccountValidator} from '../../middlewares/account-validator.js';
 import {validateJWT} from '../../middlewares/validate-JWT.js';
+import {requireRole} from '../../middlewares/validate-role.js';
 
 const router = Router()
 
@@ -96,6 +97,41 @@ router.post('/', createAccountValidator, createAccount);
  *               message: "Error al obtener las cuentas"
  */
 router.get('/', getAccounts);
+
+/**
+ * @swagger
+ * /chapinbank/v1/accounts/admin/summary:
+ *   get:
+ *     tags: [Accounts]
+ *     summary: Resumen de cuentas (Admin)
+ *     description: Devuelve el total de cuentas, activas, inhabilitadas y saldo total del banco. Solo accesible por administradores.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Resumen obtenido correctamente
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: "Resumen de cuentas obtenido"
+ *               data:
+ *                 total: 7
+ *                 active: 5
+ *                 disabled: 2
+ *                 totalBalance: 295082.60
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: Se requiere rol ADMIN_ROLE o SUPERADMIN_ROLE
+ *       500:
+ *         description: Error al obtener resumen
+ */
+router.get(
+    '/admin/summary',
+    requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
+    getAccountsSummaryAdmin
+);
 
 /**
  * @swagger

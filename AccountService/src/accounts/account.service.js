@@ -80,3 +80,16 @@ export const updateAccountBalanceInternal = async (accountNumber, balance) => {
     }
     return account;
 };
+
+export const getAccountsSummary = async () => {
+    const accounts = await Account.find({});
+    const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0);
+    const active = accounts.filter(acc => acc.balance > 0).length;
+
+    return {
+        total: accounts.length,
+        active,
+        disabled: accounts.length - active,
+        totalBalance: parseFloat(totalBalance.toFixed(2))
+    };
+};

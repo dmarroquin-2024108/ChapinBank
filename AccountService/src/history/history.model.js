@@ -4,7 +4,7 @@ const historySchema = new Schema({
     type: {
         type: String,
         required: true,
-        enum: ['DEPOSIT', 'DEPOSIT_UPDATE','DEPOSIT_REVERT','TRANSFER', 'TRANSACTION']
+        enum: ['DEPOSIT', 'DEPOSIT_REVERT','TRANSFER', 'TRANSACTION']
     },
 
     accountNumber: {

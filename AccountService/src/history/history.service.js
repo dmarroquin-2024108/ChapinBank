@@ -58,6 +58,8 @@ const formatMovement = (doc) => {
 }//Definir que tipo de movimiento se quiere en el historial
 
 const formatDeposit = (doc) => ({
+    id:doc._id,
+    type: doc.type,
     accountNumber: doc.accountNumber,
     amount: doc.amount.toFixed(2),
     currency: doc.currency,
@@ -67,6 +69,8 @@ const formatDeposit = (doc) => ({
 });
 
 const formatTransfer = (doc) => ({
+    id:doc._id,
+    type: doc.type,
     noOperacion: doc.noOperacion,
     amount: doc.amount.toFixed(2),
     currency: doc.currency,
@@ -74,10 +78,13 @@ const formatTransfer = (doc) => ({
     numberAccountDestination: doc.numberAccountDestination,
     commision: doc.commision,
     status: doc.status,
-    description: doc.description ?? 'Sin descripción'
+    description: doc.description ?? 'Sin descripción',
+    date: doc.createdAt
 });
 
 const formatTransaction = (doc) => ({
+    id:doc._id,
+    type: doc.type,
     productId: doc.productId,
     amount: doc.amount,
     status: doc.status
