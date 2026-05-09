@@ -9,13 +9,13 @@ const axiosAuth = axios.create({
     }
 })
 
-const axiosAccount = axios.create({
-    baseURL: import.meta.env.VITE_ACCOUNT_URL,
+const axiosAccounts = axios.create({
+    baseURL: import.meta.env.VITE_ACCOUNTS_URL,
     timeout: 5000,
     headers: {
         'Content-Type': 'application/json'
     }
-})
+});
 
 const axiosProduct = axios.create({
     baseURL: import.meta.env.VITE_PRODUCT_URL,
@@ -35,14 +35,14 @@ axiosAuth.interceptors.request.use((config) => {
     return config;
 });
 
-axiosAccount.interceptors.request.use((config) => {
-    config._axiosClient = 'account';
+axiosAccounts.interceptors.request.use((config) => {
+    config._axiosClient = "accounts";
     const token = useAuthStore.getState().token;
     if (token) {
-        config.headers.Authorization = `Bearer ${token}`
+        config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
-})
+});
 
 axiosProduct.interceptors.request.use((config) => {
     config._axiosClient = 'product';
@@ -127,7 +127,7 @@ const handleRefreshToken = async function (_error) {
 };
 
 axiosAuth.interceptors.response.use((res) => res, handleRefreshToken);
-axiosAccount.interceptors.response.use((res) => res, handleRefreshToken);
+axiosAccounts.interceptors.response.use((res) => res, handleRefreshToken);
 axiosProduct.interceptors.response.use((res) => res, handleRefreshToken);
 
-export { axiosAuth, axiosAccount, axiosProduct };
+export { axiosAuth, axiosAccounts, axiosProduct };
