@@ -4,6 +4,10 @@ export const login = async(data)=>{
     return await axiosAuth.post('/auth/login', data);
 }
 
+export const resendActivate = async({email})=>{
+    return await axiosAuth.post('/auth/resend-verification', {email});
+}
+
 export const lostPassword = async({email})=>{
     return await axiosAuth.post('/auth/forgot-password', {email});
 }
