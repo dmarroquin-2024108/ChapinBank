@@ -1,8 +1,21 @@
-import { axiosAccount } from './api.js';
+import { axiosAccounts } from './api.js';
 
-/**
- * Obtiene todas las cuentas del usuario autenticado.
- */
+export const getAccounts = async () => {
+    return await axiosAccounts.get('/accounts');
+};
+
+export const createAccount = async ({ accountType }) => {
+    return await axiosAccounts.post('/accounts', { accountType });
+};
+
+export const getAccountById = async (accountNumber) => {
+    return await axiosAccounts.get(`/accounts/${accountNumber}`);
+};
+
+export const updateAccount = async (accountNumber, data) => {
+    return await axiosAccounts.patch(`/accounts/${accountNumber}`, data);
+};
+
 export const getMyAccounts = async () => {
-    return await axiosAccount.get('/accounts');
+    return await axiosAccounts.get('/accounts');
 };
