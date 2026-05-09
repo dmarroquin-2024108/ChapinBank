@@ -9,6 +9,7 @@ import { ActivateUser } from "../../features/auth/components/ActivateUser.jsx";
 import { UserPage } from "../../features/users/pages/UserPage.jsx";
 import { useAuthStore } from "../../features/auth/store/authStore.js";
 import { AdminUsersPage } from "../../features/users/pages/AdminUserPage.jsx";
+import { DepositPage } from '../../features/deposits/pages/DepositPage.jsx';
 import { AdminDashboardPage } from "../../features/admin/pages/AdminDashboardPage.jsx";
 import { AdminProductsPage } from "../../features/admin/pages/AdminProductsPage.jsx";
 import { ActivateRequest } from "../../features/auth/components/ActivateRequest.jsx";
@@ -52,6 +53,16 @@ export const AppRoutes = () => {
 
                 <Route path="products" element={<AdminProductsPage />} />
             </Route>
+            <Route
+                path="/depositos"
+                element={
+                    <ProtectedRoutes>
+                        <RoleGuard allowedRoles={["USER_ROLE"]}>
+                            <DepositPage />
+                        </RoleGuard>
+                    </ProtectedRoutes>
+                }
+            />
         </Routes>
     );
 };
