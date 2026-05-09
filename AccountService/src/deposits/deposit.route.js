@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { createDeposit, revertDeposit } from './deposit.controller.js';
+import { createDeposit, revertDeposit, currency } from './deposit.controller.js';
 import { validateCreateDeposit, validateRevertDeposit } from '../../middlewares/deposit-validator.js';
+import { validateJWT } from '../../middlewares/validate-JWT.js';
 
 const router = Router();
 
@@ -10,6 +11,62 @@ const router = Router();
  *   name: Deposits
  *   description: Gestión de depósitos bancarios
  */
+
+/**
+ * @swagger
+ * /chapinbank/v1/deposits/currency:
+ *   get:
+ *     tags: [Deposits]
+ *     summary: Obtener tasa de cambio
+ *     description: Devuelve la tasa de cambio de una moneda extranjera a Quetzales (GTQ).
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: currency
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [USD, EUR, MXN]
+ *         description: Moneda a convertir
+ *         example: "USD"
+ *     responses:
+ *       200:
+ *         description: Tasa de cambio obtenida exitosamente
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               data:
+ *                 currency: "USD"
+ *                 exchangeRate: 7.85
+ *       400:
+ *         description: Moneda no válida o no proporcionada
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "Moneda no válida. Use: USD, EUR o MXN"
+ *       401:
+ *         description: No autorizado (token inválido o no enviado)
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "No se proporcionó un token"
+ *       500:
+ *         description: Error al obtener la tasa de cambio
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "Error al obtener la tasa de cambio"
+ */
+router.get(
+    '/currency',
+    validateJWT,
+    currency
+);
 
 /**
  * @swagger

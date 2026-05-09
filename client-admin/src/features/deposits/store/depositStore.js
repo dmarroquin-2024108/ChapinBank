@@ -3,11 +3,10 @@ import {
     createDeposit as createDepositRequest,
     revertDeposit as revertDepositRequest,
 } from '../../../shared/apis/deposits.js';
-import { showSuccess, showError } from '../../../shared/utils/toast.js';
 import { errorMessage } from '../../../shared/utils/errorMessage.js';
 
 export const useDepositStore = create((set, get) => ({
-    // Estado
+    //Estado
     lastDeposit: null,
     loading: false,
     error: null,
@@ -25,12 +24,10 @@ export const useDepositStore = create((set, get) => ({
             });
 
             set({ lastDeposit: data.data, loading: false });
-            showSuccess(data.message || 'Depósito registrado exitosamente');
             return { success: true, data: data.data };
         } catch (err) {
             const message = errorMessage(err, 'Error al registrar el depósito');
             set({ error: message, loading: false });
-            showError(message);
             return { success: false, error: message };
         }
     },
@@ -42,12 +39,10 @@ export const useDepositStore = create((set, get) => ({
             const { data } = await revertDepositRequest(depositId);
 
             set({ lastDeposit: null, loading: false });
-            showSuccess(data.message || 'Depósito revertido exitosamente');
             return { success: true, data: data.data };
         } catch (err) {
             const message = errorMessage(err, 'No se pudo revertir el depósito');
             set({ error: message, loading: false });
-            showError(message);
             return { success: false, error: message };
         }
     },
