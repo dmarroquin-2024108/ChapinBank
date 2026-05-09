@@ -6,6 +6,7 @@ export const depositSchemas = {
             "userId",
             "amount",
             "currency",
+            "amountInGTQ",
             "depositMethod"
         ],
         properties: {
@@ -23,13 +24,23 @@ export const depositSchemas = {
             },
             amount: {
                 type: "number",
-                description: "Monto del depósito, mínimo 1 y hasta 2 decimales",
-                example: 500.00
+                description: "Monto del depósito en la moneda original, mínimo 1 y hasta 2 decimales",
+                example: 20.00
             },
             currency: {
                 type: "string",
-                enum: ["GTQ"],
-                example: "GTQ"
+                enum: ["GTQ", "USD", "EUR", "MXN"],
+                example: "USD"
+            },
+            amountInGTQ: {
+                type: "number",
+                description: "Monto convertido a GTQ al momento del depósito",
+                example: 155.00
+            },
+            exchangeRate: {
+                type: "number",
+                description: "Tasa de cambio utilizada al momento del depósito",
+                example: 7.75
             },
             depositMethod: {
                 type: "string",

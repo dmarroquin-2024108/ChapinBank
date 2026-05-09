@@ -36,8 +36,8 @@ export const validateCreateDeposit = [
         .withMessage('El tipo de moneda es obligatorio')
         .trim()
         .toUpperCase()
-        .isIn(['GTQ'])
-        .withMessage('Tipo de moneda no válido.'),
+        .isIn(['GTQ', 'USD', 'EUR', 'MXN'])
+        .withMessage('Tipo de moneda no válido. Use: GTQ, USD, EUR o MXN'),
     body('depositMethod')
         .notEmpty()
         .withMessage('El método de depósito es obligatorio')

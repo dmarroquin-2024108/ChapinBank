@@ -2,19 +2,24 @@ import Deposit from './deposit.model.js';
 import History from '../history/history.model.js'
 import { getAccountByNumberAccount, updateAccountBalanceInternal } from '../accounts/account.service.js';
 import { notifyDeposit } from '../notifications/notification.service.js';
+import { convertToGTQ } from '../../helpers/currency.helper.js';
 
 const REVERT_LIMIT_MS = parseInt(process.env.DEPOSIT_REVERT_LIMIT_MS || '60000');//1 minuto para revertir el depósito
 
 export const createDepositRecord = async ({ depositData, accountNumber, userId, token }) => {
+    const { amountInGTQ, exchangeRate } = await convertToGTQ(depositData.amount, depositData.currency || 'GTQ');
+
     const account = await getAccountByNumberAccount(accountNumber);
     const balanceActual = parseFloat(account.balance);
-    const nuevoBalance = parseFloat((balanceActual + depositData.amount).toFixed(2));
+    const nuevoBalance = parseFloat((balanceActual + amountInGTQ).toFixed(2));
 
     const deposit = new Deposit({
         ...depositData,
         accountNumber,
         userId,
-        amount: parseFloat(depositData.amount.toFixed(2))
+        amount: parseFloat(depositData.amount.toFixed(2)),
+        amountInGTQ,
+        exchangeRate
     });
     await deposit.save();
     await updateAccountBalanceInternal(accountNumber, nuevoBalance);
@@ -23,7 +28,7 @@ export const createDepositRecord = async ({ depositData, accountNumber, userId, 
         type: 'DEPOSIT',
         accountNumber,
         userId,
-        amount: parseFloat(depositData.amount.toFixed(2)),
+        amount: amountInGTQ,
         currency: depositData.currency,
         depositMethod: depositData.depositMethod,
         description: depositData.description,
@@ -44,7 +49,6 @@ export const createDepositRecord = async ({ depositData, accountNumber, userId, 
         balanceActual: nuevoBalance.toFixed(2)
     };
 };//Crear deposito
-
 
 export const revertDepositRecord = async ({ depositId, userId, token }) => {
     const deposit = await Deposit.findById(depositId);
@@ -75,7 +79,7 @@ export const revertDepositRecord = async ({ depositId, userId, token }) => {
 
     const account = await getAccountByNumberAccount(deposit.accountNumber);
     const balanceActual = parseFloat(account.balance);
-    const nuevoBalance = parseFloat((balanceActual - deposit.amount).toFixed(2));
+    const nuevoBalance = parseFloat((balanceActual - deposit.amountInGTQ).toFixed(2));
 
     deposit.status = 'REVERTED';
     deposit.revertedAt = new Date();
@@ -87,10 +91,10 @@ export const revertDepositRecord = async ({ depositId, userId, token }) => {
         type: 'DEPOSIT_REVERT',
         accountNumber: deposit.accountNumber,
         userId,
-        amount: deposit.amount,
+        amount: deposit.amountInGTQ,
         currency: deposit.currency,
         depositMethod: deposit.depositMethod,
-        description: `Depósito revertido. Monto descontado: ${deposit.amount.toFixed(2)}`,
+        description: `Depósito revertido. Monto descontado: ${deposit.amountInGTQ.toFixed(2)}`,
         noOperacion: Number(`${Date.now()}${Math.floor(Math.random() * 10000000)}`)
     });
 
