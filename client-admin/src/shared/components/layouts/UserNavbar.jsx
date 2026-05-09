@@ -1,0 +1,149 @@
+import { useState, useRef, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Bell, User, LogOut, Trash2 } from "lucide-react";
+import imgLogo from "../../../assets/img/ChapinLogo.png";
+import { useAuthStore } from "../../../features/auth/store/authStore.js";
+import { ProfileModal } from "../../../features/users/components/ProfileModal.jsx";
+import { DeleteAccountModal } from "../../../features/users/components/DeleteAccountModal.jsx";
+
+const NAV_ITEMS = [
+    { label: "Inicio", to: "/inicio", exact: true },
+    { label: "Depósitos", to: "/inicio/depositos", exact: true },
+    { label: "Transferencias", to: "/" },
+    { label: "Historial", to: "/" },
+    { label: "Productos", to: "/" },
+    { label: "Mis productos", to: "/" },
+];
+
+export const UserNavbar = ({ onLogout }) => {
+    const location = useLocation();
+    const { user } = useAuthStore();
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [showProfile, setShowProfile] = useState(false);
+    const [showDeleteAccount, setShowDeleteAccount] = useState(false);
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(e) {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                setDropdownOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleOpenProfile = () => {
+        setDropdownOpen(false);
+        setTimeout(() => setShowProfile(true), 50);
+    };
+
+    const handleOpenDeleteAccount = () => {
+        setDropdownOpen(false);
+        setTimeout(() => setShowDeleteAccount(true), 50);
+    };
+
+    return (
+        <>
+            <header className="bg-[#032340] sticky top-0 z-40 shadow-md">
+                <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+                    <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-2 mr-2">
+                            <img src={imgLogo} alt="ChapinBank Logo" className="w-7 h-7 object-contain" />
+                            <span className="text-white font-extrabold text-base">
+                                Chapin<span className="text-[#F28C00]">Bank</span>
+                            </span>
+                        </div>
+                        <nav className="hidden md:flex items-center gap-1">
+                            {NAV_ITEMS.map(({ label, to, exact }) => {
+                                const active = exact
+                                    ? location.pathname === to
+                                    : location.pathname === to || location.pathname.startsWith(to + "/");
+                                return (
+                                    <Link
+                                        key={label}
+                                        to={to}
+                                        className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 ${active
+                                                ? "bg-[#F28C00] text-white"
+                                                : "text-gray-300 hover:text-white hover:bg-white/5"
+                                            }`}
+                                    >
+                                        {label}
+                                    </Link>
+                                );
+                            })}
+                        </nav>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        <button className="relative text-gray-400 hover:text-white transition-colors p-1.5">
+                            <Bell size={18} />
+                            <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-[#F28C00] rounded-full" />
+                        </button>
+
+                        <div className="relative" ref={dropdownRef}>
+                            <button
+                                onClick={() => setDropdownOpen((prev) => !prev)}
+                                className="w-8 h-8 rounded-full bg-[#F28C00] flex items-center justify-center text-white text-xs font-black cursor-pointer hover:opacity-90 transition-opacity"
+                            >
+                                {user?.username?.slice(0, 2).toUpperCase() ?? "MJ"}
+                            </button>
+
+                            {dropdownOpen && (
+                                <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                                    <div className="px-4 py-3 border-b border-gray-100 text-center">
+                                        <p className="text-sm font-semibold text-[#032340] truncate">
+                                            {user?.name && user?.surname
+                                                ? `${user.name} ${user.surname}`
+                                                : "Usuario"}
+                                        </p>
+                                        <p className="text-xs text-gray-400 mt-0.5 break-all">
+                                            {user?.email ?? ""}
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition cursor-pointer"
+                                        onClick={handleOpenProfile}
+                                    >
+                                        <User size={15} />
+                                        Mi Perfil
+                                    </button>
+
+                                    <button
+                                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-red-50 transition cursor-pointer"
+                                        onClick={handleOpenDeleteAccount}
+                                    >
+                                        <Trash2 size={15} />
+                                        Eliminar mi cuenta
+                                    </button>
+
+                                    <div className="border-t border-gray-100 my-1" />
+
+                                    <button
+                                        onClick={onLogout}
+                                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition cursor-pointer"
+                                    >
+                                        <LogOut size={15} />
+                                        Cerrar Sesión
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <ProfileModal
+                isOpen={showProfile}
+                onClose={() => setShowProfile(false)}
+                userBase={user}
+            />
+
+            <DeleteAccountModal
+                isOpen={showDeleteAccount}
+                onClose={() => setShowDeleteAccount(false)}
+            />
+        </>
+    );
+};
