@@ -43,6 +43,11 @@ export const UserNavbar = ({ onLogout }) => {
         setTimeout(() => setShowDeleteAccount(true), 50);
     };
 
+    const isActive = (to, exact) =>
+        exact
+            ? location.pathname === to
+            : location.pathname === to || location.pathname.startsWith(to + "/");
+
     return (
         <>
             <header className="bg-[#032340] sticky top-0 z-40 shadow-md">
@@ -54,24 +59,19 @@ export const UserNavbar = ({ onLogout }) => {
                                 Chapin<span className="text-[#F28C00]">Bank</span>
                             </span>
                         </div>
-                        <nav className="hidden md:flex items-center gap-1">
-                            {NAV_ITEMS.map(({ label, to, exact }) => {
-                                const active = exact
-                                    ? location.pathname === to
-                                    : location.pathname === to || location.pathname.startsWith(to + "/");
-                                return (
-                                    <Link
-                                        key={label}
-                                        to={to}
-                                        className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 ${active
-                                                ? "bg-[#F28C00] text-white"
-                                                : "text-gray-300 hover:text-white hover:bg-white/5"
-                                            }`}
-                                    >
-                                        {label}
-                                    </Link>
-                                );
-                            })}
+                        <nav className="hidden sm:flex items-center gap-1">
+                            {NAV_ITEMS.map(({ label, to, exact }) => (
+                                <Link
+                                    key={label}
+                                    to={to}
+                                    className={`px-2 lg:px-3 py-1.5 text-xs lg:text-sm font-medium rounded-md transition-colors duration-150 whitespace-nowrap ${isActive(to, exact)
+                                        ? "bg-[#F28C00] text-white"
+                                        : "text-gray-300 hover:text-white hover:bg-white/5"
+                                        }`}
+                                >
+                                    {label}
+                                </Link>
+                            ))}
                         </nav>
                     </div>
 

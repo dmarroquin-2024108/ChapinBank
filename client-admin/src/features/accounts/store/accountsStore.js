@@ -18,7 +18,7 @@ export const useAccountStore = create((set) => ({
         try {
             set({ loading: true, error: null });
             const { data } = await getAccountsRequest();
-            set({ accounts: data.data, loading: false });
+            set({ accounts: data.data ?? [], loading: false });
         } catch (err) {
             const message = errorMessage(err, 'Error al obtener las cuentas');
             set({ error: message, loading: false });
