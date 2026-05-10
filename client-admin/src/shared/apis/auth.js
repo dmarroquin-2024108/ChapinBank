@@ -1,11 +1,7 @@
 import {axiosAuth} from "./api.js";
 
-export const login = async(data)=>{
-    return await axiosAuth.post('/auth/login', data);
-}
-
-export const resendActivate = async({email})=>{
-    return await axiosAuth.post('/auth/resend-verification', {email});
+export const login = async({emailOrUsername, password})=>{
+    return await axiosAuth.post('/auth/login', {emailOrUsername, password});
 }
 
 export const lostPassword = async({email})=>{
@@ -29,8 +25,7 @@ export const getPerfil = async()=>{
 }
 
 export const getUsers = async()=>{
-    const {data} = await axiosAuth.get('auth/admin/users');
-    return data;
+    return await axiosAuth.get('auth/admin/users');
 }
 
 export const editPerfil = async(data)=>{
@@ -50,6 +45,10 @@ export const requestSelfDelete = async () => {
 };
 
 
-export const confirmSelfDelete = async (token) => {
+export const confirmSelfDelete = async ({token}) => {
     return await axiosAuth.post('auth/me/confirm-delete', { token });
 };
+
+export const resendActivate = async({email})=>{
+    return await axiosAuth.post('/auth/resend-verification', {email});
+}

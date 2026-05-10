@@ -1,4 +1,4 @@
-export { axiosAuth, axiosProduct, axiosAccounts } from './api.js';
+export { axiosAuth, axiosProduct, axiosAccounts, handleRefreshToken } from './api.js';
 export * from './auth.js';
 export * from './accounts.js';
 export * from './admin.js';

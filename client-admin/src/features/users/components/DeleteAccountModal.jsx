@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { X, AlertTriangle } from "lucide-react";
-import { useAdminStore } from "../store/adminStore.js";
+import { useAdminStore } from "../../admin/store/adminStore.js";
 import { useAuthStore } from "../../auth/store/authStore.js";
 import toast from "react-hot-toast";
 

@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+html, body, #root {
+    height: 100%;
+    overflow: hidden;
+}
+
 /* Estilos globales */
 @theme {
   --color-main-blue: #032340; 

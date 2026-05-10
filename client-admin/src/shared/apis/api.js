@@ -10,12 +10,12 @@ const axiosAuth = axios.create({
 })
 
 const axiosAccounts = axios.create({
-    baseURL: import.meta.env.VITE_ACCOUNTS_URL,
+    baseURL: import.meta.env.VITE_ACCOUNT_URL,
     timeout: 5000,
     headers: {
         'Content-Type': 'application/json'
     }
-});
+})
 
 const axiosProduct = axios.create({
     baseURL: import.meta.env.VITE_PRODUCT_URL,
@@ -36,13 +36,13 @@ axiosAuth.interceptors.request.use((config) => {
 });
 
 axiosAccounts.interceptors.request.use((config) => {
-    config._axiosClient = "accounts";
+    config._axiosClient = 'accounts';
     const token = useAuthStore.getState().token;
     if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers.Authorization = `Bearer ${token}`
     }
     return config;
-});
+})
 
 axiosProduct.interceptors.request.use((config) => {
     config._axiosClient = 'product';
@@ -83,7 +83,13 @@ const handleRefreshToken = async function (_error) {
     const shouldRefresh = shouldAttemptRefresh || shouldAttemptRefreshFrom403;
 
     if (shouldRefresh) {
-        const retryClient = _original._axiosClient === 'admin' ? axiosProduct : axiosAuth;
+        const clientMap = {
+            auth: axiosAuth,
+            accounts: axiosAccounts,
+            product: axiosProduct,
+        };
+        const retryClient = clientMap[_original._axiosClient] ?? axiosAuth;
+
         if (_isRefreshing) {
             // Si ya hay un refresh en curso, encola la petición
             return new Promise(function (resolve, reject) {
@@ -131,3 +137,4 @@ axiosAccounts.interceptors.response.use((res) => res, handleRefreshToken);
 axiosProduct.interceptors.response.use((res) => res, handleRefreshToken);
 
 export { axiosAuth, axiosAccounts, axiosProduct };
+export {handleRefreshToken}

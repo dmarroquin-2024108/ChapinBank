@@ -1,21 +1,29 @@
-import { axiosAccounts, axiosAuth, axiosProduct } from './api.js'
+import {axiosAccounts, axiosAuth, axiosProduct} from './api.js'
 
-export const getHistoryBank = async () => {
-    const { data } = await axiosAccount.get('/history/bank/movements');
-    return data;
+export const getHistoryBank = async()=>{
+    return await axiosAccounts.get('/history/bank/movements');
+};
+
+export const getAllProducts = async()=>{
+    return await axiosProduct.get('/products/');
+};
+
+export const getAllUsers = async()=>{
+    return await axiosAuth.get("/auth/admin/users/summary");
+};
+
+export const getAllAccounts = async()=>{
+    return await axiosAccounts.get("/accounts/admin/summary");
+};
+
+export const createProduct = async(data)=>{
+    return await axiosProduct.post(`/products`, data);
+};
+
+export const updateProduct = async(id , data)=>{
+    return await axiosProduct.put(`/products/${id}`, data);
 }
 
-export const getAllProducts = async () => {
-    const { data } = await axiosProduct.get('/products/');
-    return data;
-}
-
-export const getAllUsers = async () => {
-    const { data } = await axiosAuth.get("/auth/admin/users/summary");
-    return data
-}
-
-export const getAllAccounts = async () => {
-    const { data } = await axiosAccounts.get("/accounts/admin/summary")
-    return data;
+export const deleteProduct = async(id)=>{
+    return await axiosProduct.delete(`/products/${id}`);
 }
