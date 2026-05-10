@@ -7,7 +7,7 @@ import { useDashboardStats } from "../hooks/useDashboardStats";
 import { formatBalance } from "../../../shared/utils/formatters.js";
 
 export const AdminDashboardPage = () => {
-    const { history, products, accounts, users, loading } = useDashboardStats();
+    const { history, products, accounts, users, loadings } = useDashboardStats();
     
     const stats = useMemo(() => [
         {
@@ -47,7 +47,7 @@ export const AdminDashboardPage = () => {
                     <StatCard
                         key={stat.title}
                         {...stat}
-                        value={loading ? stat.value : "—"}
+                        value={loadings ? stat.value : "—"}
                     />
                 ))}
             </div>

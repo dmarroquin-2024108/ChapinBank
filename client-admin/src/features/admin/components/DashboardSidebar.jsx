@@ -3,7 +3,7 @@ import { Plus, UserPlus, CreditCard, History, ChevronRight } from "lucide-react"
 
 const QUICK_ACTIONS = [
     { label: "Agregar producto", icon: Plus, to: "/dashboard",color: "bg-green-500/10 text-[#1a6b4a] hover:bg-green-500/20" },
-    { label: "Registrar usuario",icon: UserPlus, to: "/dashboard",color: "bg-orange/10 text-orange hover:bg-orange/20" },
+    { label: "Registrar usuario",icon: UserPlus, to: "/dashboard/users",color: "bg-orange/10 text-orange hover:bg-orange/20" },
     { label: "Gestionar cuentas",icon: CreditCard, to: "/dashboard",color: "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20" },
     { label: "Ver historial",icon: History, to: "/dashboard",color: "bg-purple-500/10 text-purple-600 hover:bg-purple-500/20" },
 ];

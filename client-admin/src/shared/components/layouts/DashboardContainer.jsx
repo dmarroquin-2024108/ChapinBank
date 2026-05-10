@@ -13,11 +13,11 @@ export const DashboardContainer = ({ user, onLogout, children }) => {
     const title = titles[location.pathname] || "Panel";
     
     return (
-        <div className="min-h-screen bg-[#f5f3ef] flex">
+        <div className="h-screen bg-[#f5f3ef] flex">
             <Sidebar onLogout={onLogout} user={user} />
-            <div className="flex-1 flex flex-col min-w-0">
+            <div className="flex-1 flex flex-col overflow-hidden min-w-0">
                 <Navbar onLogout={onLogout} title={title} />
-                <main className="flex-1 p-6 overflow-auto">
+                <main className="flex-1 p-6 overflow-y-auto min-h-0 min-w-0">
                     {children}
                 </main>
             </div>

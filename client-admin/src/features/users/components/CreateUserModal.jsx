@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { X, Shield } from "lucide-react";
-import { useAdminStore } from "../store/adminStore.js";
+import { useAdminStore } from "../../admin/store/adminStore.js";
 import toast from "react-hot-toast";
 
 // Roles disponibles según el seeder y RoleConstants del back
