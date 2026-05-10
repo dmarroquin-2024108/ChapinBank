@@ -1,7 +1,6 @@
-
 const IVA_RATES = {
-    AHORRO:    0.12, // 12% IVA
-    MONETARIA: 0.00  // sin IVA
+  AHORRO: 0.12, // 12% IVA
+  MONETARIA: 0.0, // sin IVA
 };
 
 /**
@@ -11,14 +10,14 @@ const IVA_RATES = {
  * @returns {{ basePrice, ivaRate, ivaAmount, totalAmount }}
  */
 export const calculateFinalAmount = (basePrice, accountType) => {
-    const ivaRate = IVA_RATES[accountType] ?? IVA_RATES['MONETARIA'];
-    const ivaAmount = parseFloat((basePrice * ivaRate).toFixed(2));
-    const totalAmount = parseFloat((basePrice + ivaAmount).toFixed(2));
+  const ivaRate = IVA_RATES[accountType] ?? IVA_RATES['MONETARIA'];
+  const ivaAmount = parseFloat((basePrice * ivaRate).toFixed(2));
+  const totalAmount = parseFloat((basePrice + ivaAmount).toFixed(2));
 
-    return {
-        basePrice,
-        ivaRate,
-        ivaAmount,
-        totalAmount
-    };
+  return {
+    basePrice,
+    ivaRate,
+    ivaAmount,
+    totalAmount,
+  };
 };

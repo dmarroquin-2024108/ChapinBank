@@ -1,42 +1,42 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
-const productSchema = new Schema({
-
+const productSchema = new Schema(
+  {
     name: {
-        type: String,
-        required: [true, 'El nombre es obligatorio'],
-        trim: true,
-        maxLength: [100, 'Máximo 100 caracteres']
+      type: String,
+      required: [true, 'El nombre es obligatorio'],
+      trim: true,
+      maxLength: [100, 'Máximo 100 caracteres'],
     },
 
     description: {
-        type: String,
-        required: [true, 'La descripción es obligatoria'],
-        trim: true,
-        maxLength: [255, 'Máximo 255 caracteres']
+      type: String,
+      required: [true, 'La descripción es obligatoria'],
+      trim: true,
+      maxLength: [255, 'Máximo 255 caracteres'],
     },
 
     type: {
-        type: String,
-        required: true,
-        enum: ['SEGURO', 'VIAJE', 'SUSCRIPCION']
+      type: String,
+      required: true,
+      enum: ['SEGURO', 'VIAJE', 'SUSCRIPCION'],
     },
 
     price: {
-        type: Number,
-        required: true,
-        min: [0, 'El precio no puede ser negativo']
+      type: Number,
+      required: true,
+      min: [0, 'El precio no puede ser negativo'],
     },
 
     isActive: {
-        type: Boolean,
-        default: true
-    }
-
-},
-{
+      type: Boolean,
+      default: true,
+    },
+  },
+  {
     timestamps: true,
-    versionKey: false
-});
+    versionKey: false,
+  }
+);
 
 export default model('Product', productSchema);

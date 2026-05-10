@@ -1,29 +1,29 @@
-import {axiosAccounts, axiosAuth, axiosProduct} from './api.js'
+import { axiosAccounts, axiosAuth, axiosProduct } from './api.js';
 
-export const getHistoryBank = async()=>{
-    return await axiosAccounts.get('/history/bank/movements');
+export const getHistoryBank = async () => {
+  return await axiosAccounts.get('/history/bank/movements');
 };
 
-export const getAllProducts = async()=>{
-    return await axiosProduct.get('/products/');
+export const getAllProducts = async () => {
+  return await axiosProduct.get('/products/');
 };
 
-export const getAllUsers = async()=>{
-    return await axiosAuth.get("/auth/admin/users/summary");
+export const getAllUsers = async () => {
+  return await axiosAuth.get('/auth/admin/users/summary');
 };
 
-export const getAllAccounts = async()=>{
-    return await axiosAccounts.get("/accounts/admin/summary");
+export const getAllAccounts = async () => {
+  return await axiosAccounts.get('/accounts/admin/summary');
 };
 
-export const createProduct = async(data)=>{
-    return await axiosProduct.post(`/products`, data);
+export const createProduct = async (data) => {
+  return await axiosProduct.post(`/products`, data);
 };
 
-export const updateProduct = async(id , data)=>{
-    return await axiosProduct.put(`/products/${id}`, data);
-}
+export const updateProduct = async (id, data) => {
+  return await axiosProduct.put(`/products/${id}`, data);
+};
 
-export const deleteProduct = async(id)=>{
-    return await axiosProduct.delete(`/products/${id}`);
-}
+export const deleteProduct = async (id) => {
+  return await axiosProduct.delete(`/products/${id}`);
+};

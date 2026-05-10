@@ -103,11 +103,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post(
-    '/buy/:productId',
-    validateJWT,
-    buyProduct
-);
+router.post('/buy/:productId', validateJWT, buyProduct);
 
 /**
  * @swagger
@@ -148,10 +144,6 @@ router.post(
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.get(
-    '/my-transactions',
-    validateJWT,
-    listMyTransactions
-);
+router.get('/my-transactions', validateJWT, listMyTransactions);
 
 export default router;

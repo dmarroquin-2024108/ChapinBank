@@ -1,6 +1,14 @@
-import {Router} from 'express';
-import {createTransfer, confirmTransfer, getCurrencyRates, getDailyLimit} from './transfer.controller.js';
-import {validateCreateTransfer, validateConfirmTransfer} from '../../middlewares/transfer-validator.js';
+import { Router } from 'express';
+import {
+  createTransfer,
+  confirmTransfer,
+  getCurrencyRates,
+  getDailyLimit,
+} from './transfer.controller.js';
+import {
+  validateCreateTransfer,
+  validateConfirmTransfer,
+} from '../../middlewares/transfer-validator.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
 
 const router = Router();
@@ -68,11 +76,7 @@ const router = Router();
  *       500:
  *         description: Error al crear la transferencia
  */
-router.post(
-    '/',
-    validateCreateTransfer,
-    createTransfer  
-);
+router.post('/', validateCreateTransfer, createTransfer);
 
 /**
  * @swagger
@@ -117,11 +121,7 @@ router.post(
  *       400:
  *         description: Error al aceptar/rechazar la transferencia
  */
-router.post(
-    '/confirm', 
-    validateConfirmTransfer,
-    confirmTransfer
-);
+router.post('/confirm', validateConfirmTransfer, confirmTransfer);
 
 /**
  * @swagger
@@ -154,11 +154,7 @@ router.post(
  *       500:
  *         description: Error al obtener tasas
  */
-router.get(
-    '/currency',
-    validateJWT,
-    getCurrencyRates
-);
+router.get('/currency', validateJWT, getCurrencyRates);
 
 /**
  * @swagger
@@ -192,10 +188,6 @@ router.get(
  *       500:
  *         description: Error al obtener el límite diario
  */
-router.get(
-    '/daily-limit',
-    validateJWT,
-    getDailyLimit
-);
+router.get('/daily-limit', validateJWT, getDailyLimit);
 
 export default router;

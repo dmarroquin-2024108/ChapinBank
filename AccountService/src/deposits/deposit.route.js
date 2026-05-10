@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import { createDeposit, revertDeposit, currency } from './deposit.controller.js';
-import { validateCreateDeposit, validateRevertDeposit } from '../../middlewares/deposit-validator.js';
+import {
+  validateCreateDeposit,
+  validateRevertDeposit,
+} from '../../middlewares/deposit-validator.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
 
 const router = Router();
@@ -62,11 +65,7 @@ const router = Router();
  *               success: false
  *               message: "Error al obtener la tasa de cambio"
  */
-router.get(
-    '/currency',
-    validateJWT,
-    currency
-);
+router.get('/currency', validateJWT, currency);
 
 /**
  * @swagger
@@ -150,11 +149,7 @@ router.get(
  *               success: false
  *               message: "Error al registrar el depósito"
  */
-router.post(
-    '/',
-    validateCreateDeposit,
-    createDeposit
-);
+router.post('/', validateCreateDeposit, createDeposit);
 
 /**
  * @swagger
@@ -226,10 +221,6 @@ router.post(
  *               success: false
  *               message: "Error al revertir el depósito"
  */
-router.patch(
-    '/:id/revert',
-    validateRevertDeposit,
-    revertDeposit
-);
+router.patch('/:id/revert', validateRevertDeposit, revertDeposit);
 
 export default router;

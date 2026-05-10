@@ -1,10 +1,18 @@
-import {Router} from 'express';
-import {createAccount, getAccounts, getAccountId, updateAccount, getAccountInternal, updateAccountInternal, getAccountsSummaryAdmin} from './account.controller.js';
-import {createAccountValidator} from '../../middlewares/account-validator.js';
-import {validateJWT} from '../../middlewares/validate-JWT.js';
-import {requireRole} from '../../middlewares/validate-role.js';
+import { Router } from 'express';
+import {
+  createAccount,
+  getAccounts,
+  getAccountId,
+  updateAccount,
+  getAccountInternal,
+  updateAccountInternal,
+  getAccountsSummaryAdmin,
+} from './account.controller.js';
+import { createAccountValidator } from '../../middlewares/account-validator.js';
+import { validateJWT } from '../../middlewares/validate-JWT.js';
+import { requireRole } from '../../middlewares/validate-role.js';
 
-const router = Router()
+const router = Router();
 
 router.use(validateJWT);
 
@@ -127,11 +135,7 @@ router.get('/', getAccounts);
  *       500:
  *         description: Error al obtener resumen
  */
-router.get(
-    '/admin/summary',
-    requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
-    getAccountsSummaryAdmin
-);
+router.get('/admin/summary', requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'), getAccountsSummaryAdmin);
 
 /**
  * @swagger

@@ -9,21 +9,11 @@ import { ConfirmModal } from '../../../shared/components/ui/ConfirmModal.jsx';
 import { showError } from '../../../shared/utils/toast.js';
 
 export const AdminProductsPage = () => {
-  const {
-    products,
-    loading,
-    error,
-    getAllProducts,
-    deleteProduct,
-  } = useProductStore();
+  const { products, loading, error, getAllProducts, deleteProduct } = useProductStore();
 
   const { saveProduct } = useSaveProduct();
 
-  const {
-    openConfirm,
-    closeConfirm,
-    confirm,
-  } = useUIStore();
+  const { openConfirm, closeConfirm, confirm } = useUIStore();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -67,25 +57,20 @@ export const AdminProductsPage = () => {
   };
 
   const handleSubmit = async (formData) => {
-    await saveProduct(
-      formData,
-      modalMode === 'edit'
-        ? selectedProduct?._id
-        : null
-    );
+    await saveProduct(formData, modalMode === 'edit' ? selectedProduct?._id : null);
     closeModal();
   };
 
   return (
-    <div className="p-6">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+    <div className='p-6'>
+      <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6'>
         <div>
-          <h1 className="text-2xl font-bold text-[#0d1f35]">Gestión de Productos</h1>
-          <p className="text-gray-500 text-sm">Administre el catálogo de servicios de ChapinBank</p>
+          <h1 className='text-2xl font-bold text-[#0d1f35]'>Gestión de Productos</h1>
+          <p className='text-gray-500 text-sm'>Administre el catálogo de servicios de ChapinBank</p>
         </div>
         <button
           onClick={openAdd}
-          className="inline-flex items-center gap-2 bg-orange hover:bg-[#c07018] cursor-pointer text-white font-semibold py-2.5 px-5 rounded-lg shadow-md transition-all active:scale-95 text-sm"
+          className='inline-flex items-center gap-2 bg-orange hover:bg-[#c07018] cursor-pointer text-white font-semibold py-2.5 px-5 rounded-lg shadow-md transition-all active:scale-95 text-sm'
         >
           + Agregar Producto
         </button>
@@ -112,8 +97,8 @@ export const AdminProductsPage = () => {
           isOpen
           title={confirm.title}
           description={confirm.message}
-          confirmLabel="Sí, eliminar"
-          variant="danger"
+          confirmLabel='Sí, eliminar'
+          variant='danger'
           onConfirm={confirm.onConfirm}
           onCancel={confirm.onCancel}
         />

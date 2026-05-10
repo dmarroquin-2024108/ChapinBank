@@ -1,15 +1,17 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-html, body, #root {
-    height: 100%;
-    overflow: hidden;
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
 }
 
 /* Estilos globales */
 @theme {
-  --color-main-blue: #032340; 
-  --color-gold: #FCDC85;   
-  --color-orange: #F28C00;  
+  --color-main-blue: #032340;
+  --color-gold: #fcdc85;
+  --color-orange: #f28c00;
 }
 
 :root {
@@ -18,8 +20,8 @@ html, body, #root {
   font-weight: 400;
 
   --main-blue: #032340;
-  --main-gold: #FCDC85;
-  --main-orange: #F28C00;
+  --main-gold: #fcdc85;
+  --main-orange: #f28c00;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -46,7 +48,7 @@ html, body, #root {
   position: relative;
 }
 .sidebar-underline.active::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 16px;
   right: 16px;
