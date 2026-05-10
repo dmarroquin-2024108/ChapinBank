@@ -14,7 +14,8 @@ export const validateCreateProduct = [
     body('type')
         .notEmpty()
         .isIn(['SEGURO', 'VIAJE', 'SUSCRIPCION'])
-        .withMessage('Tipo inválido'),
+        .withMessage('Tipo inválido')
+        .toUpperCase(),
 
     body('price')
         .notEmpty()

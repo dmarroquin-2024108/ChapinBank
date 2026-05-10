@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { createProduct, listProducts, getOneProduct, updateProduct, deleteProduct } from './products.controller.js';
-
 import { validateCreateProduct, validateUpdateProduct } from '../../middlewares/products-validator.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
 import { requireRole } from '../../middlewares/validate-role.js';
@@ -158,7 +157,7 @@ router.get('/:id', getOneProduct);
 router.post(
     '/',
     validateJWT,
-    requireRole('ADMIN_ROLE'),
+    requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
     validateCreateProduct,
     createProduct
 );
@@ -233,7 +232,7 @@ router.post(
 router.put(
     '/:id',
     validateJWT,
-    requireRole('ADMIN_ROLE'),
+    requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
     validateUpdateProduct,
     updateProduct
 );
@@ -298,7 +297,7 @@ router.put(
 router.delete(
     '/:id',
     validateJWT,
-    requireRole('ADMIN_ROLE'),
+    requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
     deleteProduct
 );
 
