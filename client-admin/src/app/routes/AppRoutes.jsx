@@ -11,7 +11,7 @@ import { UserPage } from "../../features/users/pages/UserPage.jsx";
 import { AdminUsersPage } from "../../features/users/pages/AdminUserPage.jsx";
 import { DepositPage } from '../../features/deposits/pages/DepositPage.jsx';
 import { AdminDashboardPage } from "../../features/admin/pages/AdminDashboardPage.jsx";
-import { AdminProductsPage } from "../../features/admin/pages/AdminProductsPage.jsx";
+import { AdminProductsPage } from "../../features/products/pages/AdminProductsPage.jsx";
 import { ActivateRequest } from "../../features/auth/components/ActivateRequest.jsx";
 
 export const AppRoutes = () => {
