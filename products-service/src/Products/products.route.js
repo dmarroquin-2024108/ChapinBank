@@ -1,6 +1,15 @@
 import { Router } from 'express';
-import { createProduct, listProducts, getOneProduct, updateProduct, deleteProduct } from './products.controller.js';
-import { validateCreateProduct, validateUpdateProduct } from '../../middlewares/products-validator.js';
+import {
+  createProduct,
+  listProducts,
+  getOneProduct,
+  updateProduct,
+  deleteProduct,
+} from './products.controller.js';
+import {
+  validateCreateProduct,
+  validateUpdateProduct,
+} from '../../middlewares/products-validator.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
 import { requireRole } from '../../middlewares/validate-role.js';
 
@@ -155,11 +164,11 @@ router.get('/:id', getOneProduct);
  *               message: "Error al crear producto"
  */
 router.post(
-    '/',
-    validateJWT,
-    requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
-    validateCreateProduct,
-    createProduct
+  '/',
+  validateJWT,
+  requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
+  validateCreateProduct,
+  createProduct
 );
 
 /**
@@ -230,11 +239,11 @@ router.post(
  *               message: "Error al actualizar producto"
  */
 router.put(
-    '/:id',
-    validateJWT,
-    requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
-    validateUpdateProduct,
-    updateProduct
+  '/:id',
+  validateJWT,
+  requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
+  validateUpdateProduct,
+  updateProduct
 );
 
 /**
@@ -294,11 +303,6 @@ router.put(
  *               success: false
  *               message: "Error al eliminar producto"
  */
-router.delete(
-    '/:id',
-    validateJWT,
-    requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
-    deleteProduct
-);
+router.delete('/:id', validateJWT, requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'), deleteProduct);
 
 export default router;

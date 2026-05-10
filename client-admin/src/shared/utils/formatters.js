@@ -1,16 +1,16 @@
 export const formatAmount = (amount) =>
-    new Intl.NumberFormat("es-GT", { minimumFractionDigits: 2 }).format(Math.abs(amount));
+  new Intl.NumberFormat('es-GT', { minimumFractionDigits: 2 }).format(Math.abs(amount));
 
 export const formatDate = (isoString) => {
-    const date = new Date(isoString);
-    return date.toLocaleDateString('es-GT', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-    });
+  const date = new Date(isoString);
+  return date.toLocaleDateString('es-GT', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
 };
 
 export const formatBalance = (amount) =>
-    amount != null
-        ? `Q ${new Intl.NumberFormat("es-GT", { minimumFractionDigits: 2 }).format(amount)}`
-        : "—";
+  amount != null
+    ? `Q ${new Intl.NumberFormat('es-GT', { minimumFractionDigits: 2 }).format(amount)}`
+    : '—';

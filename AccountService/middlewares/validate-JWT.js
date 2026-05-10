@@ -15,9 +15,7 @@ export const validateJWT = (req, res, next) => {
     });
   }
 
-  const token =
-    req.header('x-token') ||
-    req.header('Authorization')?.replace('Bearer ', '');
+  const token = req.header('x-token') || req.header('Authorization')?.replace('Bearer ', '');
 
   if (!token) {
     return res.status(401).json({
@@ -40,7 +38,10 @@ export const validateJWT = (req, res, next) => {
       id: decoded.sub,
       jti: decoded.jti,
       iat: decoded.iat,
-      role:  decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || decoded.role || 'USER_ROLE',
+      role:
+        decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ||
+        decoded.role ||
+        'USER_ROLE',
     };
 
     next();

@@ -1,38 +1,38 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
-const historySchema = new Schema({
+const historySchema = new Schema(
+  {
     type: {
-        type: String,
-        required: true,
-        enum: ['DEPOSIT', 'DEPOSIT_REVERT','TRANSFER', 'TRANSACTION']
+      type: String,
+      required: true,
+      enum: ['DEPOSIT', 'DEPOSIT_REVERT', 'TRANSFER', 'TRANSACTION'],
     },
 
     accountNumber: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
 
     userId: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
 
     amount: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
 
     currency: {
-        type: String,
-        default: 'GTQ'
+      type: String,
+      default: 'GTQ',
     },
 
     depositMethod: String,
 
-
     noOperacion: {
-        type: String,
-        unique: true
+      type: String,
+      unique: true,
     },
 
     numberAccountOrigin: String,
@@ -42,20 +42,22 @@ const historySchema = new Schema({
     commision: Number,
 
     status: {
-        type: String,
-        enum: ['PENDING', 'COMPLETED', 'FAILED'],
-        default: 'COMPLETED'
+      type: String,
+      enum: ['PENDING', 'COMPLETED', 'FAILED'],
+      default: 'COMPLETED',
     },
 
     productId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Product'
-    }, 
-    
-    description: String
-}, {
+      type: Schema.Types.ObjectId,
+      ref: 'Product',
+    },
+
+    description: String,
+  },
+  {
     timestamps: true,
-    versionKey: false
-});
+    versionKey: false,
+  }
+);
 
 export default model('History', historySchema);

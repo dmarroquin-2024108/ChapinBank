@@ -1,5 +1,10 @@
 import { Router } from 'express';
-import { accountHistory, bankHistory, createHistoryInternal, accountsByMovements } from './history.controller.js';
+import {
+  accountHistory,
+  bankHistory,
+  createHistoryInternal,
+  accountsByMovements,
+} from './history.controller.js';
 import { validateAccountHistory } from '../../middlewares/history.validator.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
 import { requireRole } from '../../middlewares/validate-role.js';
@@ -44,10 +49,10 @@ const router = Router();
  *         description: Error al obtener historial bancario
  */
 router.get(
-    '/bank/movements',
-    validateJWT,
-    requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
-    bankHistory
+  '/bank/movements',
+  validateJWT,
+  requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
+  bankHistory
 );
 
 /**
@@ -105,10 +110,10 @@ router.get(
  *         description: Error al obtener cuentas por movimientos
  */
 router.get(
-    '/bank/accounts-by-movements',
-    validateJWT,
-    requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
-    accountsByMovements
+  '/bank/accounts-by-movements',
+  validateJWT,
+  requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
+  accountsByMovements
 );
 
 /**
@@ -156,12 +161,7 @@ router.get(
  *       500:
  *         description: Error al obtener historial de cuenta
  */
-router.get(
-    '/account/:accountNumber',
-    validateJWT,
-    validateAccountHistory,
-    accountHistory
-);
+router.get('/account/:accountNumber', validateJWT, validateAccountHistory, accountHistory);
 
 /**
  * @swagger
@@ -216,7 +216,7 @@ router.get(
  *                 example: "OP-2024-000456"
  *               numberAccountOrigin:
  *                 type: string
- *                 description: Número de cuenta origen 
+ *                 description: Número de cuenta origen
  *                 example: "AH007845"
  *               originHolder:
  *                 type: string
@@ -266,10 +266,6 @@ router.get(
  *       500:
  *         description: Error al crear el registro de movimiento
  */
-router.post(
-    '/internal',
-    validateJWT,
-    createHistoryInternal
-);
+router.post('/internal', validateJWT, createHistoryInternal);
 
 export default router;
