@@ -27,3 +27,14 @@ export const updateProduct = async (id, data) => {
 export const deleteProduct = async (id) => {
   return await axiosProduct.delete(`/products/${id}`);
 };
+
+export const uploadProductImage = async (id, file) => {
+  const formData = new FormData();
+  formData.append('image', file);
+
+  return await axiosProduct.post(`/products/${id}/image`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};

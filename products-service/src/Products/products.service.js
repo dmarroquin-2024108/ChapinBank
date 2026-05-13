@@ -1,4 +1,5 @@
 import Product from './products.model.js';
+import { cloudinary } from '../../configs/cloudinary.configuration.js';
 
 export const createProductRecord = async ({ productData }) => {
   const product = new Product(productData);
@@ -20,4 +21,24 @@ export const updateProductRecord = async (id, data) => {
 
 export const softDeleteProduct = async (id) => {
   return await Product.findByIdAndUpdate(id, { isActive: false }, { new: true });
+};
+
+//Cloudinary
+export const uploadProductImage = async (id, file) => {
+  const product = await Product.findById(id);
+  if (!product) return null;
+
+  // Eliminar imagen anterior de Cloudinary si existe
+  if (product.imagePublicId) {
+    await cloudinary.uploader.destroy(product.imagePublicId);
+  }
+
+  return await Product.findByIdAndUpdate(
+    id,
+    {
+      imageUrl: file.path,
+      imagePublicId: file.filename,
+    },
+    { new: true }
+  );
 };

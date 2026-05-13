@@ -1,12 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export const ProductModal = ({ isOpen, onClose, onSubmit, mode = 'add', initialData = {} }) => {
   const [formData, setFormData] = useState({
     name: '',
     price: '',
-    type: 'Seguro',
+    type: 'SEGURO',
     description: '',
+    image: null,
   });
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -14,16 +17,20 @@ export const ProductModal = ({ isOpen, onClose, onSubmit, mode = 'add', initialD
         setFormData({
           name: initialData.name || '',
           price: initialData.price || '',
-          type: initialData.type || 'Seguros',
+          type: initialData.type || 'SEGURO',
           description: initialData.description || '',
+          image: null,
         });
+        setImagePreview(initialData.imageUrl || null);
       } else {
         setFormData({
           name: '',
           price: '',
-          type: 'Seguros',
+          type: 'SEGURO',
           description: '',
+          image: null,
         });
+        setImagePreview(null);
       }
     }
   }, [isOpen, mode, initialData]);
@@ -48,6 +55,13 @@ export const ProductModal = ({ isOpen, onClose, onSubmit, mode = 'add', initialD
       ...prev,
       [field]: value,
     }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    handleChange('image', file);
+    setImagePreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = (e) => {
@@ -122,6 +136,41 @@ export const ProductModal = ({ isOpen, onClose, onSubmit, mode = 'add', initialD
                 value={formData.description}
                 onChange={(e) => handleChange('description', e.target.value)}
                 placeholder='Detalles del producto'
+              />
+            </div>
+
+            {/* Campo de imagen - ocupa las 2 columnas */}
+            <div className='flex flex-col gap-2 md:col-span-2'>
+              <label className='text-gray-600 text-sm font-medium'>Imagen del producto</label>
+
+              <div
+                className='border-2 border-dashed border-gray-300 rounded-md p-4 flex flex-col items-center gap-3 cursor-pointer hover:border-blue-400 transition-colors'
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt='Preview'
+                    className='h-32 object-contain rounded'
+                  />
+                ) : (
+                  <div className='text-gray-400 text-sm text-center'>
+                    <p className='font-medium'>Haz clic para seleccionar una imagen</p>
+                    <p className='text-xs mt-1'>JPG, PNG o WEBP · Máx. 5MB</p>
+                  </div>
+                )}
+
+                {imagePreview && (
+                  <p className='text-xs text-blue-500'>Haz clic para cambiar la imagen</p>
+                )}
+              </div>
+
+              <input
+                ref={fileInputRef}
+                type='file'
+                accept='image/jpeg,image/png,image/webp'
+                className='hidden'
+                onChange={handleImageChange}
               />
             </div>
           </div>

@@ -3,6 +3,7 @@ import { useProductStore } from '../store/useProductStore.js';
 export const useSaveProduct = () => {
   const createProduct = useProductStore((state) => state.createProduct);
   const updateProduct = useProductStore((state) => state.updateProduct);
+  const uploadImage = useProductStore((state) => state.uploadImage);
 
   const saveProduct = async (data, productId = null) => {
     const payload = {
@@ -12,11 +13,19 @@ export const useSaveProduct = () => {
       price: Number(data.price),
     };
 
+    let targetId = productId;
+
     if (productId) {
       await updateProduct(productId, payload);
     } else {
-      await createProduct(payload);
+      const newProduct = await createProduct(payload);
+      targetId = newProduct?._id;
+    }
+
+    if (data.image && targetId) {
+      await uploadImage(targetId, data.image);
     }
   };
+
   return { saveProduct };
 };
