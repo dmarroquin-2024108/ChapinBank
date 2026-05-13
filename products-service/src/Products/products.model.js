@@ -32,6 +32,16 @@ const productSchema = new Schema(
       type: Boolean,
       default: true,
     },
+
+    imageUrl: {
+      type: String,
+      default: null,
+    },
+
+    imagePublicId: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,

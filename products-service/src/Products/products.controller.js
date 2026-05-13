@@ -4,6 +4,7 @@ import {
   getProductById,
   updateProductRecord,
   softDeleteProduct,
+  uploadProductImage,
 } from './products.service.js';
 
 export const createProduct = async (req, res) => {
@@ -93,6 +94,38 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error al eliminar producto',
+    });
+  }
+};
+
+export const uploadImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No se proporcionó ninguna imagen',
+      });
+    }
+
+    const product = await uploadProductImage(req.params.id, req.file);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Producto no encontrado',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Imagen subida correctamente',
+      data: product,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: 'Error al subir la imagen',
+      error: err.message,
     });
   }
 };

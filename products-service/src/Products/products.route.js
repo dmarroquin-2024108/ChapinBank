@@ -5,6 +5,7 @@ import {
   getOneProduct,
   updateProduct,
   deleteProduct,
+  uploadImage,
 } from './products.controller.js';
 import {
   validateCreateProduct,
@@ -12,6 +13,7 @@ import {
 } from '../../middlewares/products-validator.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
 import { requireRole } from '../../middlewares/validate-role.js';
+import { upload } from '../../configs/cloudinary.configuration.js';
 
 const router = Router();
 
@@ -304,5 +306,48 @@ router.put(
  *               message: "Error al eliminar producto"
  */
 router.delete('/:id', validateJWT, requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'), deleteProduct);
+
+/**
+ * @swagger
+ * /products/v1/products/{id}/image:
+ *   post:
+ *     summary: Subir o reemplazar la imagen de un producto
+ *     description: Sube una imagen a Cloudinary y la asocia al producto. Requiere JWT y rol ADMIN_ROLE.
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del producto (ObjectId)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Imagen subida correctamente
+ *       400:
+ *         description: No se proporcionó imagen o formato inválido
+ *       404:
+ *         description: Producto no encontrado
+ */
+router.post(
+  '/:id/image',
+  validateJWT,
+  requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
+  upload.single('image'),
+  uploadImage
+);
+
 
 export default router;
