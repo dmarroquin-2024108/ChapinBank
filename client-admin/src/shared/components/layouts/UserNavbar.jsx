@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { label: 'Historial', to: '/' },
   { label: 'Productos', to: '/' },
   { label: 'Mis productos', to: '/' },
+  { label: 'Favoritos', to: '/inicio/favoritos' },
 ];
 
 export const UserNavbar = ({ onLogout }) => {

@@ -13,6 +13,7 @@ import { DepositPage } from '../../features/deposits/pages/DepositPage.jsx';
 import { AdminDashboardPage } from '../../features/admin/pages/AdminDashboardPage.jsx';
 import { AdminProductsPage } from '../../features/products/pages/AdminProductsPage.jsx';
 import { ActivateRequest } from '../../features/auth/components/ActivateRequest.jsx';
+import { FavoritesPage } from '../../features/favorites/pages/FavoritesPage.jsx';
 
 export const AppRoutes = () => {
   return (
@@ -35,6 +36,7 @@ export const AppRoutes = () => {
       >
         <Route index element={<UserPage />} />
         <Route path='depositos' element={<DepositPage />} />
+        <Route path='favoritos' element={<FavoritesPage/>} />
       </Route>
 
       <Route
