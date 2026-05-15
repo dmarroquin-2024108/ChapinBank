@@ -19,3 +19,23 @@ export const updateAccount = async (accountNumber, data) => {
 export const getMyAccounts = async () => {
   return await axiosAccounts.get('/accounts');
 };
+
+export const getFavorites = async () => {
+  return await axiosAccounts.get('/favorite')
+};
+
+export const addFavorite = async ({ accountNumber, alias }) => {
+  return await axiosAccounts.post('/favorite', { accountNumber, alias });
+};
+
+export const updateFavorite = async (id, { alias }) => {
+  return await axiosAccounts.patch(`/favorite/${id}`, { alias });
+};
+
+export const deleteFavorite = async (id)=>{
+  return await axiosAccounts.delete(`/favorite/${id}`);
+};
+
+export const quickTransfer = async( favoriteId, data)=>{
+  return await axiosAccounts.post(`/transfers/quick/${favoriteId}`, data);
+};
