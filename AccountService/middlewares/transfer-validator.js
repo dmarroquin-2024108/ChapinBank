@@ -58,8 +58,8 @@ export const validateConfirmTransfer = [
     .withMessage('La acción es obligatoria')
     .trim()
     .toUpperCase()
-    .isIn(['ACEPTAR', 'CANCELAR'])
-    .withMessage('Acción inválida. Use ACEPTAR o CANCELAR'),
+    .isIn(['ACEPTAR', 'RECHAZAR', 'CANCELAR'])
+    .withMessage('Acción inválida. Use ACEPTAR, RECHAZAR o CANCELAR'),
 
   checkValidators,
 ];

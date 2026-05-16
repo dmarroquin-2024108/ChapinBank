@@ -23,6 +23,10 @@ export const sendTransferRequestEmail = async ({
 }) => {
   const transporter = createTransporter();
 
+  const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const acceptUrl = `${baseUrl}/inicio/confirmar-transferencia?token=${transferToken}&action=ACEPTAR`;
+  const rejectUrl = `${baseUrl}/inicio/confirmar-transferencia?token=${transferToken}&action=RECHAZAR`;
+
   const mailOptions = {
     from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
     to: toEmail,
@@ -31,12 +35,17 @@ export const sendTransferRequestEmail = async ({
             <h2>Hola ${toName},</h2>
             <p><strong>${fromName}</strong> te ha enviado una transferencia por <strong>${currency} ${parseFloat(amount).toFixed(2)}</strong>.</p>
             <p><strong>No. de operación:</strong> ${noOperacion}</p>
-            <p>Para <strong>ACEPTAR o RECHAZAR</strong> la transferencia, usa el siguiente token para confirmar o rechazar la transferencia.</p>
-            <p style="font-size: 14px; background: #f4f4f4; padding: 10px; border-radius: 5px; word-break: break-all;">
-                <strong>Token:</strong> ${transferToken}
-            </p>
-            <p>Este token expira en <strong>1 hora</strong>.</p>
             <p>Tener en cuenta que el emisor puede <strong>cancelar la transferencia</strong> dentro de los primeros <strong>${cancelWindowMinutes} minutos</strong>.</p>
+            <div style="margin: 24px 0;">
+                <a href="${acceptUrl}"
+                   style="display: inline-block; padding: 12px 28px; background-color: #F28C00; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px; margin-right: 12px;">
+                    Aceptar transferencia
+                </a>
+                <a href="${rejectUrl}"
+                   style="display: inline-block; padding: 12px 28px; background-color: #032340; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px;">
+                    Rechazar transferencia
+                </a>
+            </div>
             <p>Si no reconoces esta operación, ignora este correo.</p>
             <br/>
             <p>Equipo Chapin Bank</p>
