@@ -14,6 +14,7 @@ import depositRoutes from '../src/deposits/deposit.route.js';
 import transferRoutes from '../src/transfers/transfer.routes.js';
 import historyRoutes from '../src/history/history.route.js';
 import notificationRoutes from '../src/notifications/notification.route.js';
+import favoriteRoutes from '../src/favorite/favorite.routes.js';
 import { swaggerSpec, swaggerUi } from './documentation.js';
 
 const BASE_PATH = '/chapinbank/v1';
@@ -24,6 +25,7 @@ const routes = (app) => {
   app.use(`${BASE_PATH}/transfers`, transferRoutes);
   app.use(`${BASE_PATH}/history`, historyRoutes);
   app.use(`${BASE_PATH}/notifications`, notificationRoutes);
+  app.use(`${BASE_PATH}/favorite`, favoriteRoutes);
   app.use(`${BASE_PATH}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   app.get(`${BASE_PATH}/health`, (req, res) => {
     res.status(200).json({

@@ -4,7 +4,7 @@
   "description": "Package JSON que ayudará a levantar a todos los servicios del proyecto desde una sola consola.",
   "private": true,
   "scripts": {
-    "install:all": "cd AccountService && pnpm install && cd ../products-service && pnpm install && cd ../client-admin && pnpm install",
+    "install:all": "pnpm install && cd AccountService && pnpm install && cd ../products-service && pnpm install && cd ../client-admin && pnpm install",
     "start": "concurrently -k -n \"AUTH,ACCOUNTS,PRODUCTS,CLIENT\" -c \"cyan,blue,yellow,green,magenta\" \"pnpm run auth\" \"pnpm run accounts\" \"pnpm run products\" \"pnpm run client\"",
     "auth":     "cd AuthenticationService/AuthService/src/AuthService.Api && dotnet run",
     "accounts": "cd AccountService && pnpm run dev",
