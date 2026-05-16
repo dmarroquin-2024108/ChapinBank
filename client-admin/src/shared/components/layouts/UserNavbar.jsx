@@ -5,14 +5,16 @@ import imgLogo from '../../../assets/img/ChapinLogo.png';
 import { useAuthStore } from '../../../features/auth/store/authStore.js';
 import { ProfileModal } from '../../../features/users/components/ProfileModal.jsx';
 import { DeleteAccountModal } from '../../../features/users/components/DeleteAccountModal.jsx';
+import { NotificationPanel } from '../../../features/notifications/components/Notification.jsx';
+import { useNotificationStore } from '../../../features/notifications/store/notificationStore.js';
 
 const NAV_ITEMS = [
   { label: 'Inicio', to: '/inicio', exact: true },
   { label: 'Depósitos', to: '/inicio/depositos', exact: true },
   { label: "Transferencias", to: "/inicio/transferencias" },
   { label: 'Historial', to: '/' },
-  { label: 'Productos', to: '/' },
-  { label: 'Mis productos', to: '/' },
+  { label: 'Productos', to: '/inicio/productos' },
+  { label: 'Mis productos', to: '/inicio/misProductos' },
   { label: 'Favoritos', to: '/inicio/favoritos' },
 ];
 
@@ -21,9 +23,15 @@ export const UserNavbar = ({ onLogout }) => {
   const { user } = useAuthStore();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const [showDeleteAccount, setShowDeleteAccount] = useState(false);
   const dropdownRef = useRef(null);
+  const notifRef = useRef(null);
+  const { unreadCount, fetchNotifications } = useNotificationStore();
 
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
   useEffect(() => {
     function handleClickOutside(e) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -65,11 +73,10 @@ export const UserNavbar = ({ onLogout }) => {
                 <Link
                   key={label}
                   to={to}
-                  className={`px-2 lg:px-3 py-1.5 text-xs lg:text-sm font-medium rounded-md transition-colors duration-150 whitespace-nowrap ${
-                    isActive(to, exact)
+                  className={`px-2 lg:px-3 py-1.5 text-xs lg:text-sm font-medium rounded-md transition-colors duration-150 whitespace-nowrap ${isActive(to, exact)
                       ? 'bg-[#F28C00] text-white'
                       : 'text-gray-300 hover:text-white hover:bg-white/5'
-                  }`}
+                    }`}
                 >
                   {label}
                 </Link>
@@ -78,10 +85,21 @@ export const UserNavbar = ({ onLogout }) => {
           </div>
 
           <div className='flex items-center gap-3'>
-            <button className='relative text-gray-400 hover:text-white transition-colors p-1.5'>
-              <Bell size={18} />
-              <span className='absolute top-0.5 right-0.5 w-2 h-2 bg-[#F28C00] rounded-full' />
-            </button>
+            <div className='relative' ref={notifRef}>
+              <button
+                onClick={() => setNotifOpen((prev) => !prev)}
+                className='relative text-gray-400 hover:text-white cursor-pointer transition-colors p-1.5'
+                aria-label='Notificaciones'
+              >
+                <Bell size={18} />
+                {unreadCount > 0 && (
+                  <span className='absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 bg-[#F28C00] rounded-full flex items-center justify-center text-[10px] font-bold text-white leading-none'>
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </button>
+              <NotificationPanel isOpen={notifOpen} onClose={() => setNotifOpen(false)} />
+            </div>
 
             <div className='relative' ref={dropdownRef}>
               <button

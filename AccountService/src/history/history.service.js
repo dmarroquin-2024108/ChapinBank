@@ -74,6 +74,7 @@ const formatTransfer = (doc) => ({
   currency: doc.currency,
   numberAccountOrigin: doc.numberAccountOrigin,
   numberAccountDestination: doc.numberAccountDestination,
+  accountNumber: doc.accountNumber,
   commision: doc.commision,
   status: doc.status,
   description: doc.description ?? 'Sin descripción',
@@ -85,5 +86,7 @@ const formatTransaction = (doc) => ({
   type: doc.type,
   productId: doc.productId,
   amount: doc.amount,
+  accountNumber: doc.accountNumber,
   status: doc.status,
+  date: doc.createdAt
 });

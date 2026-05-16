@@ -19,14 +19,13 @@ export const createTransactionRecord = async ({
   }
 
   const pricing = calculateFinalAmount(product.price, accountType.toUpperCase());
-
   let originalBalance;
   let newBalance;
   let account;
 
   try {
     const accountResponse = await axios.get(
-      `${process.env.ACCOUNT_SERVICE_URL}/accounts/internal/${accountNumber}`,
+      `${process.env.ACCOUNT_SERVICE_URL}/accounts/account-internal/${accountNumber}`,
       { headers: { 'x-token': token } }
     );
     account = accountResponse.data.data;
@@ -45,25 +44,17 @@ export const createTransactionRecord = async ({
     }
 
     const recheckResponse = await axios.get(
-      `${process.env.ACCOUNT_SERVICE_URL}/accounts/internal/${accountNumber}`,
+      `${process.env.ACCOUNT_SERVICE_URL}/accounts/account-internal/${accountNumber}`,
       { headers: { 'x-token': token } }
     );
 
     const currentBalance = parseFloat(recheckResponse.data.data.balance);
-
     if (currentBalance !== originalBalance) {
       throw new Error('La cuenta fue modificada recientemente. Intente de nuevo.');
     }
-
     newBalance = parseFloat((currentBalance - pricing.totalAmount).toFixed(2));
-
-    console.log('PATCH datos:', {
-      url: `${process.env.ACCOUNT_SERVICE_URL}/accounts/internal/${accountNumber}`,
-      newBalance,
-      token: token?.substring(0, 20) + '...',
-    });
     await axios.patch(
-      `${process.env.ACCOUNT_SERVICE_URL}/accounts/internal/${accountNumber}`,
+      `${process.env.ACCOUNT_SERVICE_URL}/accounts/account-internal/${accountNumber}`,
       { balance: newBalance },
       { headers: { 'x-token': token } }
     );
