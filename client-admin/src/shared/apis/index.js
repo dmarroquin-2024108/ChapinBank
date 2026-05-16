@@ -3,3 +3,4 @@ export * from './auth.js';
 export * from './accounts.js';
 export * from './admin.js';
 export * from './deposits.js';
+export * from './transfers.js';

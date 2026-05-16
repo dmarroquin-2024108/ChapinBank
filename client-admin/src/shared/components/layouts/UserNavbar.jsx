@@ -9,7 +9,7 @@ import { DeleteAccountModal } from '../../../features/users/components/DeleteAcc
 const NAV_ITEMS = [
   { label: 'Inicio', to: '/inicio', exact: true },
   { label: 'Depósitos', to: '/inicio/depositos', exact: true },
-  { label: 'Transferencias', to: '/' },
+  { label: "Transferencias", to: "/inicio/transferencias" },
   { label: 'Historial', to: '/' },
   { label: 'Productos', to: '/' },
   { label: 'Mis productos', to: '/' },

@@ -10,6 +10,8 @@ import { ActivateUser } from '../../features/auth/components/ActivateUser.jsx';
 import { UserPage } from '../../features/users/pages/UserPage.jsx';
 import { AdminUsersPage } from '../../features/users/pages/AdminUserPage.jsx';
 import { DepositPage } from '../../features/deposits/pages/DepositPage.jsx';
+import { TransferPage } from '../../features/transfers/pages/TransfersPage.jsx';
+import { ConfirmTransferPage } from '../../features/transfers/pages/ConfirmTransferPage.jsx';
 import { AdminDashboardPage } from '../../features/admin/pages/AdminDashboardPage.jsx';
 import { AdminProductsPage } from '../../features/products/pages/AdminProductsPage.jsx';
 import { ActivateRequest } from '../../features/auth/components/ActivateRequest.jsx';
@@ -36,7 +38,9 @@ export const AppRoutes = () => {
       >
         <Route index element={<UserPage />} />
         <Route path='depositos' element={<DepositPage />} />
-        <Route path='favoritos' element={<FavoritesPage/>} />
+        <Route path='favoritos' element={<FavoritesPage />} />
+        <Route path='transferencias' element={<TransferPage />} />
+        <Route path='confirmar-transferencia' element={<ConfirmTransferPage />} />
       </Route>
 
       <Route
