@@ -32,6 +32,7 @@ export const UserNavbar = ({ onLogout }) => {
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
+  
   useEffect(() => {
     function handleClickOutside(e) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
