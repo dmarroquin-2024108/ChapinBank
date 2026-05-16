@@ -14,6 +14,7 @@ import { TransferPage } from '../../features/transfers/pages/TransfersPage.jsx';
 import { ConfirmTransferPage } from '../../features/transfers/pages/ConfirmTransferPage.jsx';
 import { AdminDashboardPage } from '../../features/admin/pages/AdminDashboardPage.jsx';
 import { AdminProductsPage } from '../../features/products/pages/AdminProductsPage.jsx';
+import { UserProductPage } from '../../features/products/pages/UserProductPage.jsx';
 import { ActivateRequest } from '../../features/auth/components/ActivateRequest.jsx';
 import { FavoritesPage } from '../../features/favorites/pages/FavoritesPage.jsx';
 
@@ -41,6 +42,7 @@ export const AppRoutes = () => {
         <Route path='favoritos' element={<FavoritesPage />} />
         <Route path='transferencias' element={<TransferPage />} />
         <Route path='confirmar-transferencia' element={<ConfirmTransferPage />} />
+        <Route path='productos' element={<UserProductPage />} />
       </Route>
 
       <Route

@@ -1,4 +1,4 @@
-import { useProductStore } from '../store/useProductStore.js';
+import { useProductStore } from '../store/productStore.js';
 
 export const useSaveProduct = () => {
   const createProduct = useProductStore((state) => state.createProduct);
