@@ -11,6 +11,7 @@ export const Sidebar = ({ onLogout }) => {
     { label: 'Usuarios', icon: Users, to: '/dashboard/users' },
     { label: 'Cuentas', icon: CreditCard, to: '/' },
     { label: 'Historial', icon: History, to: '/' },
+    { label: 'Historial', icon: History, to: '/dashboard/historial' },
   ];
 
   return (
