@@ -22,10 +22,33 @@ export const getBankHistory = async ({ page = 1, limit = 20 } = {}) => {
 export const getAccountsByMovements = async (order) => {
   const sortOrder = order === 'asc' ? 1 : -1;
   return await History.aggregate([
+
+    {
+      $facet: {
+        porAccountNumber: [
+          { $group: { _id: '$accountNumber', count: { $sum: 1 } } },
+        ],
+        porOrigen: [
+          { $match: { numberAccountOrigin: { $exists: true, $ne: null } } },
+          { $group: { _id: '$numberAccountOrigin', count: { $sum: 1 } } },
+        ],
+        porDestino: [
+          { $match: { numberAccountDestination: { $exists: true, $ne: null } } },
+          { $group: { _id: '$numberAccountDestination', count: { $sum: 1 } } },
+        ],
+      },
+    },
+    {
+      $project: {
+        all: { $concatArrays: ['$porAccountNumber', '$porOrigen', '$porDestino'] },
+      },
+    },
+    { $unwind: '$all' },
+    // Se reagrupa sumando todos los conteos por número de cuenta
     {
       $group: {
-        _id: '$accountNumber',
-        totalMovements: { $sum: 1 },
+        _id: '$all._id',
+        totalMovements: { $sum: '$all.count' },
       },
     },
     {
@@ -43,6 +66,9 @@ const formatMovement = (doc) => {
   switch (doc.type) {
     case 'DEPOSIT':
       return formatDeposit(doc);
+
+    case 'DEPOSIT_REVERT':
+      return formatDepositRevert(doc);
 
     case 'TRANSFER':
       return formatTransfer(doc);
@@ -63,6 +89,17 @@ const formatDeposit = (doc) => ({
   currency: doc.currency,
   depositMethod: doc.depositMethod,
   description: doc.description ?? 'Sin descripción',
+  date: doc.createdAt,
+});
+
+const formatDepositRevert = (doc) => ({
+  id: doc._id,
+  type: doc.type,
+  accountNumber: doc.accountNumber,
+  amount: doc.amount.toFixed(2),
+  currency: doc.currency,
+  depositMethod: doc.depositMethod,
+  description: doc.description ?? 'Depósito revertido',
   date: doc.createdAt,
 });
 

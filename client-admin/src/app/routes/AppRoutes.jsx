@@ -16,6 +16,7 @@ import { AdminDashboardPage } from '../../features/admin/pages/AdminDashboardPag
 import { AdminProductsPage } from '../../features/products/pages/AdminProductsPage.jsx';
 import { ActivateRequest } from '../../features/auth/components/ActivateRequest.jsx';
 import { FavoritesPage } from '../../features/favorites/pages/FavoritesPage.jsx';
+import { HistorialPage } from '../../features/transfers/pages/HistorialPage.jsx';
 
 export const AppRoutes = () => {
   return (
@@ -40,6 +41,7 @@ export const AppRoutes = () => {
         <Route path='depositos' element={<DepositPage />} />
         <Route path='favoritos' element={<FavoritesPage />} />
         <Route path='transferencias' element={<TransferPage />} />
+        <Route path='historial' element={<HistorialPage />} />
         <Route path='confirmar-transferencia' element={<ConfirmTransferPage />} />
       </Route>
 

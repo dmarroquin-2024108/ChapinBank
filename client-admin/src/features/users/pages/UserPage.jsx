@@ -6,8 +6,8 @@ import { useAccountStore } from '../../accounts/store/accountsStore.js';
 const QUICK_ACTIONS = [
   { label: 'Depósitos', sub: 'Acredita fondos', icon: ArrowDownToLine, to: '/inicio/depositos' },
   { label: 'Transferencias', sub: 'Envía dinero', icon: ArrowLeftRight, to: '/inicio/transferencias' },
-  { label: 'Historial', sub: 'Tus movimientos', icon: Clock, to: '/' },
-  { label: 'Mis productos', sub: '0 contratados', icon: Package, to: '/' },
+  { label: 'Historial', sub: 'Tus movimientos', icon: Clock, to: '/inicio/historial' },
+  { label: 'Mis productos', sub: '0 contratados', icon: Package, to: '/inicio/misProductos' },
 ];
 
 export const UserPage = () => {

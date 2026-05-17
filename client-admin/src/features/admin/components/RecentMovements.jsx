@@ -24,7 +24,7 @@ export const RecentMovements = ({ history = [] }) => {
           </p>
         </div>
         <button
-          onClick={() => navigate('/dashboard/historial')}
+          onClick={() => navigate('/dashboard')}
           className='text-orange text-xs font-medium hover:underline cursor-pointer'
         >
           Ver historial completo

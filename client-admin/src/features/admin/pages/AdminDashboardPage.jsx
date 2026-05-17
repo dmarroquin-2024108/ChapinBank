@@ -47,7 +47,7 @@ export const AdminDashboardPage = () => {
     <div className='flex flex-col gap-6'>
       <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4'>
         {stats.map((stat) => (
-          <StatCard key={stat.title} {...stat} value={loadings ? stat.value : '—'} />
+          <StatCard key={stat.title} {...stat} value={!loadings ? stat.value : '—'} />
         ))}
       </div>
 

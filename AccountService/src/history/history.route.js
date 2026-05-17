@@ -8,6 +8,7 @@ import {
 import { validateAccountHistory } from '../../middlewares/history.validator.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
 import { requireRole } from '../../middlewares/validate-role.js';
+import { validateAccountOwnership } from '../../middlewares/history.validator.js';
 
 const router = Router();
 
@@ -122,7 +123,10 @@ router.get(
  *   get:
  *     tags: [History]
  *     summary: Obtener historial de una cuenta específica
- *     description: Devuelve todos los movimientos registrados para una cuenta bancaria. El usuario autenticado solo puede consultar sus propias cuentas.
+ *     description: >
+ *       Devuelve todos los movimientos registrados para una cuenta bancaria.
+ *       Los administradores pueden ver cualquier cuenta.
+ *       Los usuarios solo pueden consultar sus propias cuentas.
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -158,10 +162,18 @@ router.get(
  *         description: El número de cuenta es requerido o inválido
  *       401:
  *         description: Token JWT inválido o no proporcionado
+ *       403:
+ *         description: No tienes permiso para ver esta cuenta
  *       500:
  *         description: Error al obtener historial de cuenta
  */
-router.get('/account/:accountNumber', validateJWT, validateAccountHistory, accountHistory);
+router.get(
+  '/account/:accountNumber',
+  validateJWT,
+  validateAccountHistory,
+  validateAccountOwnership,
+  accountHistory
+);
 
 /**
  * @swagger

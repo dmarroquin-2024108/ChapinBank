@@ -272,7 +272,22 @@ export const acceptTransferRecord = async ({ transferToken, token, userId }) => 
   await History.create({
     type: 'TRANSFER',
     noOperacion: transfer.noOperacion,
-    accountNumber: transfer.numberAccountDestination,
+    accountNumber: transfer.numberAccountDestination, 
+    userId: transfer.userId,
+    currency: transfer.currency,
+    amount: transfer.amountInGTQ,
+    numberAccountOrigin: transfer.numberAccountOrigin,
+    numberAccountDestination: transfer.numberAccountDestination,
+    commision: transfer.commision,
+    status: 'COMPLETED',
+    description: transfer.description,
+  });
+
+ 
+  await History.create({
+    type: 'TRANSFER',
+    noOperacion: transfer.noOperacion,
+    accountNumber: transfer.numberAccountOrigin,
     userId: transfer.userId,
     currency: transfer.currency,
     amount: transfer.amountInGTQ,
@@ -394,7 +409,7 @@ export const rejectTransferRecord = async ({ transferToken, token, userId }) => 
   await History.create({
     type: 'TRANSFER',
     noOperacion: transfer.noOperacion,
-    accountNumber: transfer.numberAccountOrigin,
+    accountNumber: transfer.numberAccountOrigin, 
     userId: transfer.userId,
     currency: transfer.currency,
     amount: transfer.amountInGTQ,
@@ -403,6 +418,21 @@ export const rejectTransferRecord = async ({ transferToken, token, userId }) => 
     commision: transfer.commision,
     status: 'FAILED',
     description: 'Transferencia rechazada por el destinatario - reembolso aplicado',
+  });
+
+  
+  await History.create({
+    type: 'TRANSFER',
+    noOperacion: transfer.noOperacion,
+    accountNumber: transfer.numberAccountDestination, 
+    userId: transfer.userId,
+    currency: transfer.currency,
+    amount: transfer.amountInGTQ,
+    numberAccountOrigin: transfer.numberAccountOrigin,
+    numberAccountDestination: transfer.numberAccountDestination,
+    commision: transfer.commision,
+    status: 'FAILED',
+    description: 'Transferencia rechazada',
   });
 
   //F&F
@@ -497,7 +527,22 @@ export const cancelTransferRecord = async ({ transferToken, token, userId }) => 
   await History.create({
     type: 'TRANSFER',
     noOperacion: transfer.noOperacion,
-    accountNumber: transfer.numberAccountDestination,
+    accountNumber: transfer.numberAccountDestination, 
+    userId: transfer.userId,
+    currency: transfer.currency,
+    amount: transfer.amountInGTQ,
+    numberAccountOrigin: transfer.numberAccountOrigin,
+    numberAccountDestination: transfer.numberAccountDestination,
+    commision: transfer.commision,
+    status: 'FAILED',
+    description: 'Transferencia cancelada',
+  });
+
+  
+  await History.create({
+    type: 'TRANSFER',
+    noOperacion: transfer.noOperacion,
+    accountNumber: transfer.numberAccountOrigin, 
     userId: transfer.userId,
     currency: transfer.currency,
     amount: transfer.amountInGTQ,

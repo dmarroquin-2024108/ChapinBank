@@ -39,3 +39,15 @@ export const deleteFavorite = async (id)=>{
 export const quickTransfer = async( favoriteId, data)=>{
   return await axiosAccounts.post(`/transfers/quick/${favoriteId}`, data);
 };
+
+export const getMyNotifications = async () => {
+  return await axiosAccounts.get('/notifications/my');
+};
+
+export const markNotificationRead = async (notificationId) => {
+  return await axiosAccounts.patch(`/notifications/${notificationId}/read`);
+};
+
+export const getAccountHistory = async (accountNumber) => {
+  return await axiosAccounts.get(`/history/account/${accountNumber}`);
+};
