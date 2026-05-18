@@ -18,6 +18,8 @@ import { UserProductPage } from '../../features/products/pages/UserProductPage.j
 import { UserTransactionsPage } from '../../features/transactions/pages/UserTransactionPage.jsx';
 import { ActivateRequest } from '../../features/auth/components/ActivateRequest.jsx';
 import { FavoritesPage } from '../../features/favorites/pages/FavoritesPage.jsx';
+import { HistoryPage } from '../../features/history/pages/Historypage.jsx';
+import { BankHistoryPage } from '../../features/history/pages/Bankhistorypage.jsx';
 
 export const AppRoutes = () => {
   return (
@@ -60,6 +62,7 @@ export const AppRoutes = () => {
         <Route index element={<AdminDashboardPage />} />
         <Route path='users' element={<AdminUsersPage />} />
         <Route path='products' element={<AdminProductsPage />} />
+        <Route path='historial' element={<BankHistoryPage />} />
       </Route>
     </Routes>
   );
