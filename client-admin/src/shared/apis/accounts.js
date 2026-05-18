@@ -47,3 +47,7 @@ export const getMyNotifications = async () => {
 export const markNotificationRead = async (notificationId) => {
   return await axiosAccounts.patch(`/notifications/${notificationId}/read`);
 };
+
+export const getAccountHistory = async (accountNumber) => {
+  return await axiosAccounts.get(`/history/account/${accountNumber}`);
+};

@@ -20,6 +20,7 @@ import { ActivateRequest } from '../../features/auth/components/ActivateRequest.
 import { FavoritesPage } from '../../features/favorites/pages/FavoritesPage.jsx';
 import { HistoryPage } from '../../features/history/pages/Historypage.jsx';
 import { BankHistoryPage } from '../../features/history/pages/Bankhistorypage.jsx';
+import { UserHistoryPage } from '../../features/transactions/pages/UserHistoryPage.jsx';
 
 export const AppRoutes = () => {
   return (
@@ -46,7 +47,8 @@ export const AppRoutes = () => {
         <Route path='transferencias' element={<TransferPage />} />
         <Route path='confirmar-transferencia' element={<ConfirmTransferPage />} />
         <Route path='productos' element={<UserProductPage />} />
-        <Route path='misProductos' element={< UserTransactionsPage/>} />
+        <Route path='misProductos' element={<UserTransactionsPage />} />
+        <Route path='historial' element={<UserHistoryPage />} />
       </Route>
 
       <Route

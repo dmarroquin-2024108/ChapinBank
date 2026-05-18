@@ -9,8 +9,7 @@ export const Sidebar = ({ onLogout }) => {
     { label: 'Resumen', icon: LayoutDashboard, to: '/dashboard', exact: true },
     { label: 'Productos', icon: Package, to: '/dashboard/products' },
     { label: 'Usuarios', icon: Users, to: '/dashboard/users' },
-    { label: 'Cuentas', icon: CreditCard, to: '/' },
-    { label: 'Historial', icon: History, to: '/' },
+    { label: 'Cuentas', icon: CreditCard, to: '/dashboard/accounts' },
     { label: 'Historial', icon: History, to: '/dashboard/historial' },
   ];
 

@@ -4,6 +4,7 @@ import {
   createAccount as createAccountRequest,
   getAccountById as getAccountByIdRequest,
   updateAccount as updateAccountRequest,
+  getAccountHistory as getAccountHistoryRequest,
 } from '../../../shared/apis/accounts.js';
 import { errorMessage } from '../../../shared/utils/errorMessage.js';
 
@@ -13,6 +14,8 @@ export const useAccountStore = create((set) => ({
   loading: false,
   loadingDetail: false,
   error: null,
+  accountHistory: [],
+  loadingHistory: false,
 
   fetchAccounts: async () => {
     try {
@@ -70,6 +73,17 @@ export const useAccountStore = create((set) => ({
       const message = errorMessage(err, 'Error al actualizar la cuenta');
       set({ error: message, loading: false });
       return { success: false, error: message };
+    }
+  },
+
+  fetchAccountHistory: async (accountNumber) => {
+    try {
+      set({ loadingHistory: true });
+      const { data } = await getAccountHistoryRequest(accountNumber);
+      set({ accountHistory: (data.data ?? []).slice(0, 5), loadingHistory: false });
+    } catch (err) {
+      set({ accountHistory: [], loadingHistory: false });
+      return { success: false, error: err };
     }
   },
 
