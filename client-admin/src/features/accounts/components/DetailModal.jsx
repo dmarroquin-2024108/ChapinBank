@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { X, CreditCard } from 'lucide-react';
+import { X, CreditCard, ArrowDownLeft, ArrowUpRight, Loader2 } from 'lucide-react';
 import { useAccountStore } from '../store/accountsStore.js';
 import toast from 'react-hot-toast';
 
@@ -8,15 +8,61 @@ const fmt = (n) =>
     Number(n)
   );
 
+const MOVEMENT_LABELS = {
+  DEPOSIT: 'Depósito',
+  DEPOSIT_REVERT: 'Reversión',
+  TRANSFER: 'Transferencia',
+  TRANSACTION: 'Transacción',
+};
+
+const CREDIT_TYPES = new Set(['DEPOSIT']);
+
+const MovementItem = ({ mov }) => {
+  const isCredit = CREDIT_TYPES.has(mov.type);
+  return (
+    <div className='flex items-center gap-3 py-2 border-b border-gray-100 last:border-0'>
+      <div
+        className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0
+          ${isCredit ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-500'}`}
+      >
+        {isCredit ? <ArrowDownLeft size={14} /> : <ArrowUpRight size={14} />}
+      </div>
+      <div className='flex-1 min-w-0'>
+        <p className='text-xs font-semibold text-[#032340] truncate'>
+          {MOVEMENT_LABELS[mov.type] ?? mov.type}
+        </p>
+        <p className='text-[10px] text-gray-400'>
+          {mov.date ? new Date(mov.date).toLocaleDateString('es-GT', {
+            day: '2-digit', month: 'short', year: 'numeric'
+          }) : '—'}
+        </p>
+      </div>
+      <span className={`text-xs font-bold shrink-0 ${isCredit ? 'text-green-600' : 'text-orange-500'}`}>
+        {isCredit ? '+' : '-'}Q {fmt(mov.amount)}
+      </span>
+    </div>
+  );
+};
+
 export const DetailModal = ({ isOpen, onClose, accountNumber }) => {
-  const { selectedAccount, loadingDetail, loading, fetchAccountById, updateAccount } =
-    useAccountStore();
+  const {
+    selectedAccount,
+    loadingDetail,
+    loading,
+    fetchAccountById,
+    updateAccount,
+    accountHistory,
+    loadingHistory,
+    fetchAccountHistory,
+  } = useAccountStore();
+  
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (isOpen && accountNumber) {
-      useAccountStore.setState({ selectedAccount: null });
+      useAccountStore.setState({ selectedAccount: null, accountHistory: [] });
       fetchAccountById(accountNumber);
+      fetchAccountHistory(accountNumber);
     }
   }, [isOpen, accountNumber]);
 
@@ -98,6 +144,25 @@ export const DetailModal = ({ isOpen, onClose, accountNumber }) => {
                     : '—'}
                 </p>
               </div>
+            </div>
+
+            <div>
+              <p className='text-xs font-bold text-gray-500 uppercase tracking-wider mb-2'>
+                Últimos movimientos
+              </p>
+              {loadingHistory ? (
+                <div className='flex justify-center py-4'>
+                  <Loader2 size={20} className='animate-spin text-gray-400' />
+                </div>
+              ) : accountHistory.length === 0 ? (
+                <p className='text-xs text-gray-400 text-center py-4'>Sin movimientos registrados</p>
+              ) : (
+                <div>
+                  {accountHistory.map((mov) => (
+                    <MovementItem key={mov.id} mov={mov} />
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className='flex justify-end gap-2 pt-2'>
