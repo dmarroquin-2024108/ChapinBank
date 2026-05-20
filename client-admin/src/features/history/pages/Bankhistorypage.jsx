@@ -4,7 +4,6 @@ import {
   Loader2,
   AlertCircle,
   BarChart3,
-  ArrowUpDown,
   RefreshCw,
 } from 'lucide-react';
 import { useHistoryStore } from '../store/Historystore.js';
@@ -76,8 +75,8 @@ export const BankHistoryPage = () => {
     fetchAccountsByMovements(rankOrder);
   }, []);
 
-  const handleToggleOrder = () => {
-    const newOrder = rankOrder === 'desc' ? 'asc' : 'desc';
+  const handleOrderChange = (e) => {
+    const newOrder = e.target.value;
     setRankOrder(newOrder);
     fetchAccountsByMovements(newOrder);
   };
@@ -161,14 +160,15 @@ export const BankHistoryPage = () => {
               </p>
             </div>
 
-            <button
-              onClick={handleToggleOrder}
+            <select
+              value={rankOrder}
+              onChange={handleOrderChange}
               disabled={loadings.accountsByMovements}
-              className="text-gray-400 hover:text-main-blue transition-colors disabled:opacity-50 p-1 cursor-pointer"
-              title={rankOrder === 'desc' ? 'Ver ascendente' : 'Ver descendente'}
+              className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 text-main-blue bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange/30 disabled:opacity-50 cursor-pointer"
             >
-              <ArrowUpDown size={15} />
-            </button>
+              <option value="desc">Descendente</option>
+              <option value="asc">Ascendente</option>
+            </select>
           </div>
 
           {errors.accountsByMovements ? (

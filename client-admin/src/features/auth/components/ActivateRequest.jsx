@@ -16,7 +16,9 @@ export const ActivateRequest = ({ onSwitch }) => {
     if (resultado.success) {
       toast.success('Correo enviado.', { duration: 3000 });
     } else {
-      toast.error('Error al enviar el correo. Inténtelo de nuevo.', { duration: 3000 });
+      toast.error(resultado.error || 'Error al enviar el correo. Inténtelo de nuevo.', {
+        duration: 3000,
+      });
     }
   };
 

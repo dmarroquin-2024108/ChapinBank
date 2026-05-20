@@ -1,9 +1,26 @@
 import { getAccountHistory, getBankHistory, getAccountsByMovements } from './history.service.js';
 import History from './history.model.js';
+import { getAccountByNumberAccount } from '../accounts/account.service.js';
+
+const ADMIN_ROLES = new Set(['ADMIN_ROLE', 'SUPERADMIN_ROLE']);
+
 export const accountHistory = async (req, res) => {
   try {
+    const accountNumber = req.params.accountNumber;
+
+    if (!ADMIN_ROLES.has(req.user.role)) {
+      const account = await getAccountByNumberAccount(accountNumber);
+
+      if (account.userId !== req.user.id) {
+        return res.status(403).json({
+          success: false,
+          message: 'No tienes permisos para consultar el historial de esta cuenta',
+        });
+      }
+    }
+
     const history = await getAccountHistory({
-      accountNumber: req.params.accountNumber,
+      accountNumber,
     });
 
     res.status(200).json({
@@ -13,7 +30,7 @@ export const accountHistory = async (req, res) => {
       data: history,
     });
   } catch (err) {
-    res.status(500).json({
+    res.status(err.statusCode || 500).json({
       success: false,
       message: 'Error al obtener historial de cuenta',
       error: err.message,

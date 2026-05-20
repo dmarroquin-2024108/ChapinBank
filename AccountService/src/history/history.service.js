@@ -23,8 +23,27 @@ export const getAccountsByMovements = async (order) => {
   const sortOrder = order === 'asc' ? 1 : -1;
   return await History.aggregate([
     {
+      $project: {
+        movementAccounts: {
+          $filter: {
+            input: {
+              $setUnion: [
+                ['$accountNumber', '$numberAccountOrigin', '$numberAccountDestination'],
+                [],
+              ],
+            },
+            as: 'account',
+            cond: {
+              $and: [{ $ne: ['$$account', null] }, { $ne: ['$$account', ''] }],
+            },
+          },
+        },
+      },
+    },
+    { $unwind: '$movementAccounts' },
+    {
       $group: {
-        _id: '$accountNumber',
+        _id: '$movementAccounts',
         totalMovements: { $sum: 1 },
       },
     },

@@ -6,8 +6,8 @@ import { useAccountStore } from '../../accounts/store/accountsStore.js';
 const QUICK_ACTIONS = [
   { label: 'Depósitos', sub: 'Acredita fondos', icon: ArrowDownToLine, to: '/inicio/depositos' },
   { label: 'Transferencias', sub: 'Envía dinero', icon: ArrowLeftRight, to: '/inicio/transferencias' },
-  { label: 'Historial', sub: 'Tus movimientos', icon: Clock, to: '/' },
-  { label: 'Mis productos', sub: '0 contratados', icon: Package, to: '/' },
+  { label: 'Historial', sub: 'Tus movimientos', icon: Clock, to: '/inicio/historial' },
+  { label: 'Mis productos', sub: '0 contratados', icon: Package, to: '/inicio/misProductos' },
 ];
 
 export const UserPage = () => {
@@ -36,9 +36,12 @@ export const UserPage = () => {
             Q &nbsp;{accounts.length > 0 ? fmt(totalBalance) : '—'}
           </p>
         </div>
-        <button className='bg-[#F28C00] hover:bg-[#d97b00] text-white font-bold text-sm px-5 py-2.5 rounded-xl flex items-center gap-2 transition-colors duration-150 shrink-0 shadow-lg shadow-orange-900/30'>
+        <Link
+          to='/inicio/transferencias'
+          className='bg-[#F28C00] hover:bg-[#d97b00] text-white font-bold text-sm px-5 py-2.5 rounded-xl flex items-center gap-2 transition-colors duration-150 shrink-0 shadow-lg shadow-orange-900/30'
+        >
           Transferir <ArrowUpRight size={16} />
-        </button>
+        </Link>
       </section>
 
       <section className='grid grid-cols-2 md:grid-cols-4 gap-4'>
@@ -64,9 +67,12 @@ export const UserPage = () => {
         <section className='bg-white rounded-2xl border border-gray-100 p-5'>
           <div className='flex items-center justify-between mb-1'>
             <h2 className='text-sm font-bold text-[#032340]'>Actividad reciente</h2>
-            <button className='text-xs text-[#F28C00] font-semibold hover:underline'>
+            <Link
+              to='/inicio/historial'
+              className='text-xs text-[#F28C00] font-semibold hover:underline'
+            >
               Ver todo
-            </button>
+            </Link>
           </div>
           <div className='flex flex-col items-center justify-center py-10 text-center'>
             <p className='text-sm font-medium text-gray-400'>Sin actividad reciente</p>

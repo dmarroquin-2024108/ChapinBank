@@ -4,8 +4,15 @@ import { useAccountStore } from '../../accounts/store/accountsStore.js';
 import { HistoryList } from '../components/HistoryList.jsx';
 
 export const UserHistoryPage = () => {
-  const { accounts, fetchAccounts, accountHistory, loadingHistory, fetchAccountHistory, loading } =
-    useAccountStore();
+  const {
+    accounts,
+    fetchAccounts,
+    accountHistory,
+    loadingHistory,
+    fetchAccountHistory,
+    loading,
+    error,
+  } = useAccountStore();
 
   const [selectedAccountNumber, setSelectedAccountNumber] = useState(null);
   const [search, setSearch] = useState('');
@@ -25,7 +32,7 @@ export const UserHistoryPage = () => {
 
   const handleAccountChange = (accountNumber) => {
     setSelectedAccountNumber(accountNumber);
-    fetchAccountHistory(accountNumber);
+    if (accountNumber) fetchAccountHistory(accountNumber);
     setSearch('');
     setTypeFilter('all');
   };
@@ -48,11 +55,15 @@ export const UserHistoryPage = () => {
     <div className='p-6 space-y-6'>
       <div>
         <h1 className='text-2xl font-bold text-[#0d1f35]'>Historial de movimientos</h1>
-        <p className='text-gray-500 text-sm mt-1'>Tus últimas transacciones</p>
+        <p className='text-gray-500 text-sm mt-1'>Tus movimientos por cuenta</p>
       </div>
 
       {loading ? (
         <div className='h-10 bg-gray-100 rounded-lg animate-pulse w-full' />
+      ) : error ? (
+        <p className='text-sm text-red-500 bg-red-50 border border-red-100 rounded-lg px-4 py-3'>
+          {error}
+        </p>
       ) : accounts.length > 0 ? (
         <div className='flex flex-col sm:flex-row gap-3'>
           <div className='relative flex-1'>
@@ -98,8 +109,8 @@ export const UserHistoryPage = () => {
         movements={filteredMovements}
         title={
           selectedAccountData
-            ? `Últimos 5 movimientos — ${selectedAccountData.accountType} ···· ${selectedAccountNumber?.slice(-4)}`
-            : 'Últimos 5 movimientos'
+            ? `Movimientos — ${selectedAccountData.accountType} ···· ${selectedAccountNumber?.slice(-4)}`
+            : 'Movimientos'
         }
         loading={loadingHistory}
       />
