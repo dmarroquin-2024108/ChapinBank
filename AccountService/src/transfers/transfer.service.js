@@ -280,7 +280,7 @@ export const acceptTransferRecord = async ({ transferToken, token, userId }) => 
     numberAccountDestination: transfer.numberAccountDestination,
     commision: transfer.commision,
     status: 'COMPLETED',
-    description: transfer.description,
+    description: transfer.description || 'Transferencia aceptada por el destinatario',
   });
 
   await notifyTransferCompleted({

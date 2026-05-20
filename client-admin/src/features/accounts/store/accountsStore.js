@@ -78,12 +78,13 @@ export const useAccountStore = create((set) => ({
 
   fetchAccountHistory: async (accountNumber) => {
     try {
-      set({ loadingHistory: true });
+      set({ loadingHistory: true, error: null });
       const { data } = await getAccountHistoryRequest(accountNumber);
-      set({ accountHistory: (data.data ?? []).slice(0, 5), loadingHistory: false });
+      set({ accountHistory: data.data ?? [], loadingHistory: false });
     } catch (err) {
-      set({ accountHistory: [], loadingHistory: false });
-      return { success: false, error: err };
+      const message = errorMessage(err, 'Error al obtener el historial de la cuenta');
+      set({ accountHistory: [], loadingHistory: false, error: message });
+      return { success: false, error: message };
     }
   },
 

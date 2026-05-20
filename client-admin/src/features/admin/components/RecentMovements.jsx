@@ -13,6 +13,7 @@ const CREDIT_TYPES = new Set(['DEPOSIT']);
 
 export const RecentMovements = ({ history = [] }) => {
   const navigate = useNavigate();
+  const recentHistory = Array.isArray(history) ? history.slice(0, 5) : [];
 
   return (
     <div className='bg-[#0d1f35] rounded-2xl overflow-hidden'>
@@ -32,10 +33,10 @@ export const RecentMovements = ({ history = [] }) => {
       </div>
 
       <div className='bg-white/100 divide-y divide-white/5'>
-        {history.length === 0 ? (
+        {recentHistory.length === 0 ? (
           <p className='text-gray-400 text-sm text-center py-8'>Sin movimientos registrados</p>
         ) : (
-          history.map((mov) => {
+          recentHistory.map((mov) => {
             const isCredit = CREDIT_TYPES.has(mov.type);
             return (
               <div
