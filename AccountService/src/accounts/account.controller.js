@@ -6,7 +6,11 @@ import {
   getAccountByNumberAccount,
   updateAccountBalanceInternal,
   getAccountsSummary,
+  getAllAccountsRecord,
+  toggleAccountStatusRecord
 } from './account.service.js';
+import { notifyAccountStatusChanged }from '../notifications/notification.service.js';
+import { authServiceClient} from '../../configs/axios.configuration.js';
 
 const formatBalance = (account) => ({
   ...account.toObject(),
@@ -137,5 +141,60 @@ export const getAccountsSummaryAdmin = async (req, res) => {
       message: 'Error al obtener resumen de cuentas',
       error: e.message,
     });
+  }
+};
+
+export const getAllAccountsAdmin = async (req, res) => {
+  try {
+    const [accounts, usersResponse] = await Promise.all([
+      getAllAccountsRecord(),
+      authServiceClient.get('/api/v1/auth/admin/users', {
+        headers: { Authorization: req.headers.authorization },
+      }),
+    ]);
+
+    const usersMap = Object.fromEntries(
+      (usersResponse.data?.data ?? []).map((u) => [u.idUserResponse, u])
+    );
+    const enriched = accounts.map((acc) => {
+      const owner = usersMap[acc.userId] ?? {};
+      return {
+        ...acc.toObject(),
+        balance: Number(acc.balance).toFixed(2),
+        ownerName: owner.name && owner.surname ? `${owner.name} ${owner.surname}` : '—',
+        ownerUsername: owner.username ?? null,
+        ownerEmail: owner.email ?? null,
+      };
+    });
+    res.status(200).json({ success: true, total: enriched.length, data: enriched });
+  } catch (e) {
+    res.status(e.statusCode || 500).json({
+      success: false,
+      message: 'Error al obtener las cuentas',
+      error: e.message,
+    });
+  }
+};
+
+export const toggleAccountStatusAdmin = async (req, res) => {
+  const { accountNumber } = req.params;
+  const { status } = req.body;
+  if (typeof status !== 'boolean') {
+    return res.status(400).json({ success: false, message: 'El campo status debe ser un booleano' });
+  }
+  try {
+    const account = await toggleAccountStatusRecord(accountNumber, status);
+    notifyAccountStatusChanged({
+      userId: account.userId,
+      accountNumber,
+      status,
+    }).catch((err) => console.error('[notify] Error al notificar estado de cuenta:', err.message));
+    res.status(200).json({
+      success: true,
+      message: `Cuenta ${status ? 'habilitada' : 'inhabilitada'} correctamente`,
+      data: formatBalance(account),
+    });
+  } catch (e) {
+    res.status(e.statusCode || 500).json({ success: false, message: 'Error al cambiar el estado', error: e.message });
   }
 };

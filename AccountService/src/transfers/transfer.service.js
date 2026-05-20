@@ -18,6 +18,7 @@ import {
   sendTransferAcceptedEmail,
   sendTransferAcceptEmail,
 } from './../../helpers/Email.helper.js';
+import {validateActiveAccount} from '../../helpers/activeAccount.helper.js';
 
 const COMISION = 3.0; //Comisión para cuenta de ahorro
 const LIMITE_MOVIMIENTO = 2000.0; //Establecer límite de dinero que se puede transferir
@@ -88,6 +89,7 @@ export const createTransferRecord = async ({ transferData, userId, token }) => {
     e.statusCode = err.response?.status || 404;
     throw e;
   } //try-cath
+  validateActiveAccount(accountOrigin, 'cuenta origen');
 
   if (accountOrigin.userId !== userId) {
     const e = new Error('No tienes permiso para usar esta cuenta');
@@ -104,7 +106,7 @@ export const createTransferRecord = async ({ transferData, userId, token }) => {
     e.statusCode = err.response?.status || 404;
     throw e;
   } //try-catch
-
+  validateActiveAccount(accountDestination, 'cuenta destino');
   const { amountInGTQ, exchangeRate } = await convertToGTQ(transferData.amount, currency); //Conversión
 
   //Si la cuenta es de ahorro una comision de 3 quetzales
@@ -252,6 +254,7 @@ export const acceptTransferRecord = async ({ transferToken, token, userId }) => 
     e.statusCode = 404;
     throw e;
   } //try-catch
+  validateActiveAccount(accountDestination, 'cuenta destino');
 
   if (accountDestination.userId !== userId) {
     const error = new Error('No tienes permiso para aceptar esta transferencia');

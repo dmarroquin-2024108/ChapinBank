@@ -144,6 +144,17 @@ export const DetailModal = ({ isOpen, onClose, accountNumber }) => {
                     : '—'}
                 </p>
               </div>
+              <div>
+                <p className='text-xs text-gray-400 mb-1'>Estado de cuenta</p>
+                <span
+                  className={`text-xs font-bold px-2 py-1 rounded-full text-center ${selectedAccount.status
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-red-100 text-red-700'
+                    }`}
+                >
+                  {selectedAccount.status ? 'ACTIVA' : 'DESHABILITADA'}
+                </span>
+              </div>
             </div>
 
             <div>

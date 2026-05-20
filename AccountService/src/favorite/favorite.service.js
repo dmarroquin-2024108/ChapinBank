@@ -1,10 +1,12 @@
 import Favorite from './favorite.model.js';
 import { getAccountByNumberAccount } from '../accounts/account.service.js';
 import { createTransferRecord } from '../transfers/transfer.service.js';
+import { validateActiveAccount } from '../../helpers/activeAccount.helper.js';
 
 export const addFavoriteRecord = async ({ userId, accountNumber, alias }) => {
     // Verificar que la cuenta exista antes de guardarla
     const account = await getAccountByNumberAccount(accountNumber);
+    validateActiveAccount(account, 'cuenta favorita');
 
     if (account.userId === userId) {
         const e = new Error('No puedes agregar tus propias cuentas como favorito');
@@ -74,7 +76,7 @@ export const updateFavoriteRecord = async ({ favoriteId, userId, alias }) => {
     const favorite = await Favorite.findOneAndUpdate(
         { _id: favoriteId, userId},
         { alias },
-        { new: true, runValidators: true }
+        { returnDocument: 'after', runValidators: true }
     );
     if (!favorite) {
         const e = new Error('Favorito no encontrado');

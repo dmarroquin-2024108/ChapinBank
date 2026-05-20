@@ -122,6 +122,21 @@ export const notifyTransferCompleted = async ({
   });
 };
 
+export const notifyAccountStatusChanged = async ({ userId, accountNumber, status }) => {
+  const enabled = status === true;
+  await saveNotification({
+    userId,
+    accountNumber,
+    title: enabled ? 'Cuenta habilitada' : 'Cuenta inhabilitada',
+    message: enabled
+      ? `Tu cuenta ${accountNumber} ha sido habilitada por el banco. Ya puedes operar con normalidad.`
+      : `Tu cuenta ${accountNumber} ha sido inhabilitada por el banco. Comunícate con soporte si tienes dudas.`,
+    type: enabled ? 'CUENTA_HABILITADA' : 'CUENTA_DESHABILITADA',
+    severity: enabled ? 'INFO' : 'ADVERTENCIA',
+    metadata: { accountNumber, status },
+  });
+};
+
 export const getNotificationByUser = async (userId) => {
   return await Notification.find({ userId }).sort({ createdAt: -1 });
 };
@@ -130,7 +145,7 @@ export const markAsRead = async (notificationId, userId) => {
   const notification = await Notification.findOneAndUpdate(
     { _id: notificationId, userId },
     { read: true },
-    { new: true }
+    { returnDocument: 'after' }
   );
   if (!notification) throw new Error('Notificación no encontrada');
   return notification;

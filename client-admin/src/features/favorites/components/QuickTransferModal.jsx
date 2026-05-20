@@ -7,7 +7,7 @@ const CURRENCIES = ['GTQ', 'USD', 'EUR', 'MXN'];
 
 export const QuickTransferModal = ({ isOpen, onClose, favorite }) => {
     const { accounts, loadingAccounts, quickTransfer, loadingAction } = useQuickTransfer();
-
+    const activeAccounts = accounts.filter(acc => acc.status);
     const {
         register,
         handleSubmit,
@@ -77,25 +77,22 @@ export const QuickTransferModal = ({ isOpen, onClose, favorite }) => {
                         <label className='text-xs text-gray-400 mb-1 block'>Cuenta de origen</label>
                         {loadingAccounts ? (
                             <div className='h-9 bg-gray-100 animate-pulse rounded-lg' />
-                        ) : accounts.length > 0 ? (
+                        ) : activeAccounts.length > 0 ? (
                             <select
                                 className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange/40 ${errors.numberAccountOrigin ? 'border-red-400' : 'border-gray-200'}`}
                                 {...register('numberAccountOrigin', { required: 'Selecciona una cuenta de origen' })}
                             >
                                 <option value=''>Seleccionar cuenta...</option>
-                                {accounts.map((acc) => (
+                                {activeAccounts.map((acc) => (
                                     <option key={acc.accountNumber} value={acc.accountNumber}>
                                         {acc.accountNumber} · {acc.accountType} · Q {acc.balance}
                                     </option>
                                 ))}
                             </select>
                         ) : (
-                            <input
-                                type='text'
-                                placeholder='Ej. MO12345678'
-                                className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange/40 uppercase ${errors.numberAccountOrigin ? 'border-red-400' : 'border-gray-200'}`}
-                                {...register('numberAccountOrigin', { required: 'La cuenta de origen es obligatoria' })}
-                            />
+                            <div className='text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg p-3'>
+                                No tienes cuentas activas para realizar transferencias.
+                            </div>
                         )}
                         {errors.numberAccountOrigin && (
                             <p className='text-red-500 text-xs mt-0.5'>{errors.numberAccountOrigin.message}</p>
@@ -162,7 +159,7 @@ export const QuickTransferModal = ({ isOpen, onClose, favorite }) => {
                         </button>
                         <button
                             type='submit'
-                            disabled={loadingAction}
+                            disabled={loadingAction || activeAccounts.length === 0}
                             className='px-4 py-2 text-sm bg-[#F28C00] text-white font-semibold rounded-lg hover:bg-[#d97b00] transition disabled:opacity-50 flex items-center gap-1.5'
                         >
                             <Send size={14} />

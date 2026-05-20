@@ -115,10 +115,16 @@ export const DepositModal = ({ accounts, accountsLoading, accountsError, onSubmi
 
   const amount = watch('amount');
 
-  const accountOptions = accounts.map((acc) => ({
-    value: acc.accountNumber,
-    label: `${acc.accountType === 'AHORRO' ? 'Cuenta de Ahorro' : 'Cuenta Monetaria'} · •••• ${acc.accountNumber.slice(-4)} · Q ${parseFloat(acc.balance).toLocaleString('es-GT', { minimumFractionDigits: 2 })}`,
-  }));
+  const accountOptions = accounts
+    .filter((acc) => acc.status)
+    .map((acc) => ({
+      value: acc.accountNumber,
+      label: `${acc.accountType === 'AHORRO'
+        ? 'Cuenta de Ahorro'
+        : 'Cuenta Monetaria'} · •••• ${acc.accountNumber.slice(-4)} · Q ${parseFloat(acc.balance).toLocaleString('es-GT', {
+          minimumFractionDigits: 2,
+        })}`,
+    }));
 
   const currentAccount = accounts.find((a) => a.accountNumber === selectedAccount);
 

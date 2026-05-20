@@ -9,6 +9,8 @@ import {
   getAllProducts as getAllProductsRequest,
   getAllAccounts as getAllAccountsRequest,
   getAllUsers as getAllUsersRequest,
+  getAccountsList as getAccountsListRequest,
+  toggleAccountStatus as toggleAccountStatusRequest,
 } from '../../../shared/apis';
 import { errorMessage } from '../../../shared/utils/errorMessage.js';
 
@@ -17,12 +19,13 @@ export const useAdminStore = create((set, get) => ({
   history: [],
   products: [],
   accounts: null,
+  accountsList: [],
   loadings: {
     users: false,
     history: false,
     products: false,
     accounts: false,
-
+    accountsList: false,
     action: false,
   },
   error: null,
@@ -141,6 +144,57 @@ export const useAdminStore = create((set, get) => ({
     } catch (err) {
       const message = errorMessage(err, 'Error al obtener los usuarios');
       set((s) => ({ error: message, loadings: { ...s.loadings, users: false } }));
+      return { success: false, error: message };
+    }
+  },
+
+  getAccountsList: async () => {
+    try {
+      set((s) => ({ loadings: { ...s.loadings, accountsList: true }, error: null }));
+      const response = await getAccountsListRequest();
+      set((s) => ({
+        accountsList: response.data.data ?? [],
+        loadings: { ...s.loadings, accountsList: false },
+      }));
+    } catch (err) {
+      const message = errorMessage(err, 'Error al obtener las cuentas');
+      set((s) => ({ error: message, loadings: { ...s.loadings, accountsList: false } }));
+      return { success: false, error: message };
+    }
+  },
+
+  toggleAccount: async ({ accountNumber, currentStatus }) => {
+    const newStatus = !currentStatus;
+    try {
+      set((s) => ({ loadings: { ...s.loadings, action: true }, error: null }));
+      await toggleAccountStatusRequest(accountNumber, newStatus);
+      set((s) => {
+        const updatedAccountsList = s.accountsList.map((acc) =>
+          acc.accountNumber === accountNumber
+            ? { ...acc, status: newStatus }
+            : acc
+        );
+
+        const active = updatedAccountsList.filter(acc => acc.status).length;
+        const disabled = updatedAccountsList.filter(acc => !acc.status).length;
+
+        return {
+          accountsList: updatedAccountsList,
+          accounts: s.accounts
+            ? {
+              ...s.accounts,
+              total: updatedAccountsList.length,
+              active,
+              disabled,
+            }
+            : s.accounts,
+          loadings: { ...s.loadings, action: false },
+        };
+      });
+      return { success: true, newStatus };
+    } catch (err) {
+      const message = errorMessage(err, 'Error al cambiar el estado de la cuenta');
+      set((s) => ({ error: message, loadings: { ...s.loadings, action: false } }));
       return { success: false, error: message };
     }
   },

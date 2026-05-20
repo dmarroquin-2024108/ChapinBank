@@ -46,6 +46,12 @@ const accountSchema = new Schema(
       default: 0,
       set: (val) => parseFloat(val.toFixed(2)),
     },
+
+    status: {
+      type: Boolean,
+      default: true,
+      index: true,
+    },
   },
   {
     timestamps: true,
