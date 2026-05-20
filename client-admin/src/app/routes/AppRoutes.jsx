@@ -21,6 +21,7 @@ import { FavoritesPage } from '../../features/favorites/pages/FavoritesPage.jsx'
 import { HistoryPage } from '../../features/history/pages/Historypage.jsx';
 import { BankHistoryPage } from '../../features/history/pages/Bankhistorypage.jsx';
 import { UserHistoryPage } from '../../features/transactions/pages/UserHistoryPage.jsx';
+import { AdminAccountsPage } from '../../features/accounts/pages/AdminAccountsPage.jsx';
 
 export const AppRoutes = () => {
   return (
@@ -65,6 +66,7 @@ export const AppRoutes = () => {
         <Route path='users' element={<AdminUsersPage />} />
         <Route path='products' element={<AdminProductsPage />} />
         <Route path='historial' element={<BankHistoryPage />} />
+        <Route path='accounts' element={< AdminAccountsPage />} />
       </Route>
     </Routes>
   );

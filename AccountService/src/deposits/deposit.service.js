@@ -6,6 +6,7 @@ import {
 } from '../accounts/account.service.js';
 import { notifyDeposit } from '../notifications/notification.service.js';
 import { convertToGTQ } from '../../helpers/currency.helper.js';
+import {validateActiveAccount} from '../../helpers/activeAccount.helper.js'
 
 const REVERT_LIMIT_MS = parseInt(process.env.DEPOSIT_REVERT_LIMIT_MS || '60000'); //1 minuto para revertir el depósito
 
@@ -16,6 +17,7 @@ export const createDepositRecord = async ({ depositData, accountNumber, userId, 
   );
 
   const account = await getAccountByNumberAccount(accountNumber);
+  validateActiveAccount(account);
   const balanceActual = parseFloat(account.balance);
   const nuevoBalance = parseFloat((balanceActual + amountInGTQ).toFixed(2));
 

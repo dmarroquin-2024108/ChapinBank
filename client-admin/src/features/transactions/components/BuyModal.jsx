@@ -4,12 +4,12 @@ import { ShoppingCart, X } from 'lucide-react';
 export const BuyModal = ({ isOpen, product, accounts = [], onClose, onConfirm, loading = false }) => {
     const [selectedAccount, setSelectedAccount] = useState('');
     const selectRef = useRef(null);
-
+    const activeAccounts = accounts.filter(acc => acc.status);
     useEffect(() => {
         if (isOpen) {
-            setSelectedAccount(accounts[0]?.accountNumber ?? '');
+            setSelectedAccount(activeAccounts[0]?.accountNumber ?? '');
         }
-    }, [isOpen, accounts]);
+    }, [isOpen, activeAccounts]);
 
     useEffect(() => {
         const handleEscape = (e) => { if (e.key === 'Escape') onClose(); };
@@ -60,7 +60,7 @@ export const BuyModal = ({ isOpen, product, accounts = [], onClose, onConfirm, l
 
                 <div className='px-6 mb-6'>
                     <label className='block text-sm font-medium text-gray-600 mb-2'>Cuenta bancaria</label>
-                    {accounts.length === 0 ? (
+                    {activeAccounts.length === 0 ? (
                         <p className='text-sm text-red-500 bg-red-50 rounded-lg p-3'>
                             No tienes cuentas disponibles para realizar esta compra.
                         </p>
@@ -71,9 +71,9 @@ export const BuyModal = ({ isOpen, product, accounts = [], onClose, onConfirm, l
                             onChange={(e) => setSelectedAccount(e.target.value)}
                             className='w-full border border-gray-300 rounded-xl p-3 text-gray-700 text-sm outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all'
                         >
-                            {accounts.map((acc) => (
+                            {activeAccounts.map((acc) => (
                                 <option key={acc.accountNumber} value={acc.accountNumber}>
-                                    {acc.accountNumber} — Q {Number(acc.balance).toFixed(2)} ({acc.type})
+                                    {acc.accountNumber} — Q {Number(acc.balance).toFixed(2)} ({acc.accountType})
                                 </option>
                             ))}
                         </select>
@@ -93,7 +93,7 @@ export const BuyModal = ({ isOpen, product, accounts = [], onClose, onConfirm, l
                     <button
                         type='button'
                         onClick={handleConfirm}
-                        disabled={loading || accounts.length === 0}
+                        disabled={loading || activeAccounts.length === 0}
                         className='inline-flex items-center gap-2 px-6 py-2.5 bg-[#f59e0b] hover:bg-[#d97706] disabled:opacity-60 text-white rounded-xl font-bold shadow-md shadow-amber-200 transition-all active:scale-95 text-sm cursor-pointer'
                     >
                         {loading ? (

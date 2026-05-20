@@ -31,8 +31,9 @@ const notificationSchema = new Schema(
       type: String,
       required: true,
       enum: {
-        values: ['DEPÓSITO', 'TRANSFERENCIA_ENVIADA', 'TRANSFERENCIA_RECIBIDA', 'ALERTA'],
-        message: 'Tipo de notificación no válido',
+        values: ['DEPÓSITO', 'TRANSFERENCIA_ENVIADA', 'TRANSFERENCIA_RECIBIDA', 'ALERTA', 'CUENTA_HABILITADA',
+          'CUENTA_DESHABILITADA'],
+          message: 'Tipo de notificación no válido',
       },
     },
 

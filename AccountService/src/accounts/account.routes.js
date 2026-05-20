@@ -7,6 +7,8 @@ import {
   getAccountInternal,
   updateAccountInternal,
   getAccountsSummaryAdmin,
+  getAllAccountsAdmin,
+  toggleAccountStatusAdmin
 } from './account.controller.js';
 import { createAccountValidator } from '../../middlewares/account-validator.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
@@ -136,6 +138,13 @@ router.get('/', getAccounts);
  *         description: Error al obtener resumen
  */
 router.get('/admin/summary', requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'), getAccountsSummaryAdmin);
+
+router.get(
+  '/admin/all', requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'), getAllAccountsAdmin);
+
+router.patch(
+  '/admin/:accountNumber/status', requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'), toggleAccountStatusAdmin
+);
 
 /**
  * @swagger

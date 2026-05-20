@@ -5,7 +5,7 @@ const QUICK_ACTIONS = [
   {
     label: 'Agregar producto',
     icon: Plus,
-    to: '/dashboard',
+    to: '/dashboard/products',
     color: 'bg-green-500/10 text-[#1a6b4a] hover:bg-green-500/20',
   },
   {
@@ -17,7 +17,7 @@ const QUICK_ACTIONS = [
   {
     label: 'Gestionar cuentas',
     icon: CreditCard,
-    to: '/dashboard',
+    to: '/dashboard/accounts',
     color: 'bg-blue-500/10 text-blue-600 hover:bg-blue-500/20',
   },
   {

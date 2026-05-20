@@ -102,9 +102,26 @@ export const TransferModal = ({ accounts, accountsLoading, accountsError, onSubm
 
     const amount = watch('amount');
 
+    const originOptions = accounts
+        .filter(acc => acc.status)
+        .map(acc => ({
+            value: acc.accountNumber,
+            label: `${acc.accountType === 'AHORRO' ? 'Ahorro' : 'Monetaria'} · •••• ${acc.accountNumber.slice(-4)} · Q ${parseFloat(acc.balance).toLocaleString('es-GT', {
+                minimumFractionDigits: 2
+            })}`,
+        }));
+    const hasActiveAccounts = accounts.some(acc => acc.status);
+
     useEffect(() => {
-        if (accounts.length > 0) setOriginAccount(accounts[0].accountNumber);
+        const activeAccount = accounts.find(acc => acc.status);
+        if (activeAccount) {
+            setOriginAccount(activeAccount.accountNumber);
+        }
     }, [accounts]);
+
+    const currentOriginAccount = accounts.find(
+        a => a.accountNumber === originAccount
+    );
 
     useEffect(() => {
         if (currency === 'GTQ') { setExchangeRate(null); return; }
@@ -139,14 +156,10 @@ export const TransferModal = ({ accounts, accountsLoading, accountsError, onSubm
             description: formData.description,
         });
     };
-
-    const currentOriginAccount = accounts.find(a => a.accountNumber === originAccount);
-    const originOptions = accounts.map(acc => ({
-        value: acc.accountNumber,
-        label: `${acc.accountType === 'AHORRO' ? 'Ahorro' : 'Monetaria'} · •••• ${acc.accountNumber.slice(-4)} · Q ${parseFloat(acc.balance).toLocaleString('es-GT', { minimumFractionDigits: 2 })}`,
-    }));
-    const canSubmit = transferType === 'externa' || (transferType === 'favorita' && selectedFavorite !== null);
-
+    const canSubmit =
+    originAccount &&
+    (transferType === 'externa' ||
+        (transferType === 'favorita' && selectedFavorite !== null));
     return (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <h2 className="text-sm font-bold text-main-blue mb-5">Detalles de la transferencia</h2>
@@ -161,7 +174,14 @@ export const TransferModal = ({ accounts, accountsLoading, accountsError, onSubm
                     <AlertCircle size={16} />{accountsError}
                 </div>
             ) : accounts.length === 0 ? (
-                <p className="text-center py-8 text-gray-400 text-sm">No tienes cuentas registradas.</p>
+                <p className="text-center py-8 text-gray-400 text-sm">
+                    No tienes cuentas registradas.
+                </p>
+            ) : !hasActiveAccounts ? (
+                <div className="flex items-center gap-2 text-red-500 text-sm py-4">
+                    <AlertCircle size={16} />
+                    No tienes cuentas activas para realizar transferencias.
+                </div>
             ) : (
                 <form onSubmit={handleSubmit(handleFormSubmit)} noValidate className="space-y-5">
 

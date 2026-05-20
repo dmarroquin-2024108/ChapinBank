@@ -16,10 +16,28 @@ const generateAccountNumber = async (accountType) => {
 export const createAccountRecord = async ({ accountType, userId }) => {
   const accountNumber = await generateAccountNumber(accountType);
   const balance = DEFAULT_BALANCES[accountType];
+  const existingAccount = await Account.findOne({
+    userId,
+    accountType,
+  });
+
+  if (existingAccount) {
+    if (!existingAccount.status) {
+      const error = new Error(
+        'Ya posee una cuenta de este tipo deshabilitada. Debe solicitar al banco su reactivación.'
+      );
+      error.statusCode = 400;
+      throw error;
+    }
+    const error = new Error(
+      'Ya posee una cuenta de este tipo.'
+    );
+    error.statusCode = 400;
+    throw error;
+  }
 
   const account = new Account({ userId, accountType, accountNumber, balance });
   await account.save();
-
   return account;
 }; //Crear una Cuenta
 
@@ -29,7 +47,6 @@ export const getAccountsRecord = async (userId) => {
 
 export const getAccountById = async ({ accountNumber, userId }) => {
   const account = await Account.findOne({ accountNumber, userId });
-
   if (!account) {
     const error = new Error('Cuenta no encontrada');
     error.statusCode = 404;
@@ -57,7 +74,7 @@ export const updateAccountRecord = async ({ accountNumber, userId, data }) => {
       userId,
     },
     safeData,
-    { new: true, runValidators: true }
+    { returnDocument: 'after', runValidators: true }
   );
 
   if (!account) {
@@ -73,7 +90,7 @@ export const updateAccountBalanceInternal = async (accountNumber, balance) => {
   const account = await Account.findOneAndUpdate(
     { accountNumber },
     { balance },
-    { new: true, runValidators: true }
+    { returnDocument: 'after', runValidators: true }
   );
   if (!account) {
     const e = new Error('Cuenta no encontrada');
@@ -83,15 +100,35 @@ export const updateAccountBalanceInternal = async (accountNumber, balance) => {
   return account;
 };
 
+export const getAllAccountsRecord = async () => {
+  return await Account.find({}).sort({ createdAt: -1 });
+}
+
 export const getAccountsSummary = async () => {
   const accounts = await Account.find({});
-  const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0);
-  const active = accounts.filter((acc) => acc.balance > 0).length;
-
+  const totalBalance = accounts.reduce(
+    (sum, acc) => sum + acc.balance, 0);
+  const active = accounts.filter((acc) => acc.status).length;
+  const disabled = accounts.filter((acc) => !acc.status).length;
+  
   return {
     total: accounts.length,
     active,
-    disabled: accounts.length - active,
+    disabled,
     totalBalance: parseFloat(totalBalance.toFixed(2)),
   };
+};
+
+export const toggleAccountStatusRecord = async (accountNumber, status) => {
+  const account = await Account.findOneAndUpdate(
+    { accountNumber },
+    { status },
+    { returnDocument: 'after', runValidators: true }
+  );
+  if (!account) {
+    const error = new Error('Cuenta no encontrada');
+    error.statusCode = 404;
+    throw error;
+  }
+  return account;
 };

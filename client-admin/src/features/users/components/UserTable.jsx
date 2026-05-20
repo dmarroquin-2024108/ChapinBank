@@ -1,13 +1,8 @@
 import { UserRow } from './UserRow.jsx';
-
-const TableSpinner = () => (
-  <div className='w-full py-20 flex items-center justify-center'>
-    <div className='animate-spin rounded-full h-10 w-10 border-4 border-[#0d1f35] border-t-transparent' />
-  </div>
-);
+import {Spinner} from '../../auth/components/Spinner.jsx';
 
 export const UserTable = ({ users = [], loading = false, search = '', onDelete }) => {
-  if (loading) return <TableSpinner />;
+  if (loading) return <Spinner />;
 
   return (
     <div className='overflow-x-auto bg-white rounded-2xl border border-gray-100 shadow-sm'>
