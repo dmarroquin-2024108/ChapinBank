@@ -84,3 +84,34 @@ export const accountsByMovements = async (req, res) => {
     });
   }
 }; //Cuentas con más movimientos
+
+export const userRecentMovements = async (req, res) => {
+  try {
+    const { getUserRecentMovements } = await import('./history.service.js');
+    const history = await getUserRecentMovements(req.user.id);
+    res.status(200).json({
+      success: true,
+      message: 'Ultimos movimientos del usuario',
+      total: history.length,
+      data: history,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Error al obtener movimientos recientes', error: err.message });
+  }
+};
+
+export const accountHistoryByType = async (req, res) => {
+  try {
+    const { getAccountHistoryByType } = await import('./history.service.js');
+    const { accountNumber, accountType, limit } = req.query;
+    const history = await getAccountHistoryByType({ accountNumber, accountType, limit });
+    res.status(200).json({
+      success: true,
+      message: 'Historial por cuenta obtenido',
+      total: history.length,
+      data: history,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Error al filtrar historial', error: err.message });
+  }
+};

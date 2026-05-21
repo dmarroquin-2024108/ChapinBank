@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { History, Loader2, AlertCircle, SlidersHorizontal } from 'lucide-react';
 import { useHistoryStore } from '../store/historyStore.js';
-import { MovementCard } from '../components/MovementCard.jsx';
+import { MovementCard } from '../components/Movementcard.jsx';
 import { getMyAccounts } from '../../../shared/apis/accounts.js';
 
 const FILTER_OPTIONS = [

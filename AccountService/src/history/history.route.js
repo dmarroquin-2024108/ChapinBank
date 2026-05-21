@@ -4,6 +4,8 @@ import {
   bankHistory,
   createHistoryInternal,
   accountsByMovements,
+  userRecentMovements,
+  accountHistoryByType,
 } from './history.controller.js';
 import { validateAccountHistory } from '../../middlewares/history.validator.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
@@ -267,5 +269,8 @@ router.get('/account/:accountNumber', validateJWT, validateAccountHistory, accou
  *         description: Error al crear el registro de movimiento
  */
 router.post('/internal', validateJWT, createHistoryInternal);
+
+router.get("/user/recent", validateJWT, userRecentMovements);
+router.get("/bank/account-filter", validateJWT, requireRole("ADMIN_ROLE", "SUPERADMIN_ROLE"), accountHistoryByType);
 
 export default router;

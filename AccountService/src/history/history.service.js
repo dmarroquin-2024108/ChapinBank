@@ -66,6 +66,9 @@ const formatMovement = (doc) => {
     case 'TRANSFER':
       return formatTransfer(doc);
 
+    case 'DEPOSIT_REVERT':
+      return formatDeposit(doc);
+
     case 'TRANSACTION':
       return formatTransaction(doc);
 
@@ -109,3 +112,49 @@ const formatTransaction = (doc) => ({
   status: doc.status,
   date: doc.createdAt
 });
+
+export const getUserRecentMovements = async (userId) => {
+  const history = await History.find({ userId })
+    .sort({ createdAt: -1 })
+    .limit(5);
+  return history.map(formatMovement);
+};
+
+export const getAccountHistoryByType = async ({ accountNumber, accountType, limit = 5 }) => {
+  const query = {};
+
+  if (accountNumber && accountType) {
+    // Ambos filtros: verificar que el numero de cuenta coincida con el tipo seleccionado
+    const prefix = accountType === 'MONETARIA' ? 'MO' : 'AH';
+    if (!accountNumber.startsWith(prefix)) {
+      // La cuenta no pertenece al tipo seleccionado, retornar vacio
+      return [];
+    }
+    query.$or = [
+      { accountNumber },
+      { numberAccountOrigin: accountNumber },
+      { numberAccountDestination: accountNumber },
+    ];
+  } else if (accountNumber) {
+    // Solo numero de cuenta
+    query.$or = [
+      { accountNumber },
+      { numberAccountOrigin: accountNumber },
+      { numberAccountDestination: accountNumber },
+    ];
+  } else if (accountType) {
+    // Solo tipo de cuenta (MONETARIA = MO, AHORRO = AH)
+    const prefix = accountType === 'MONETARIA' ? 'MO' : 'AH';
+    const accountRegex = new RegExp(`^${prefix}`);
+    query.$or = [
+      { accountNumber: accountRegex },
+      { numberAccountOrigin: accountRegex },
+      { numberAccountDestination: accountRegex },
+    ];
+  }
+
+  const history = await History.find(query)
+    .sort({ createdAt: -1 })
+    .limit(Number(limit));
+  return history.map(formatMovement);
+};
