@@ -119,11 +119,14 @@ export const DepositModal = ({ accounts, accountsLoading, accountsError, onSubmi
     .filter((acc) => acc.status)
     .map((acc) => ({
       value: acc.accountNumber,
-      label: `${acc.accountType === 'AHORRO'
-        ? 'Cuenta de Ahorro'
-        : 'Cuenta Monetaria'} · •••• ${acc.accountNumber.slice(-4)} · Q ${parseFloat(acc.balance).toLocaleString('es-GT', {
+      label: `${
+        acc.accountType === 'AHORRO' ? 'Cuenta de Ahorro' : 'Cuenta Monetaria'
+      } · •••• ${acc.accountNumber.slice(-4)} · Q ${parseFloat(acc.balance).toLocaleString(
+        'es-GT',
+        {
           minimumFractionDigits: 2,
-        })}`,
+        }
+      )}`,
     }));
 
   const currentAccount = accounts.find((a) => a.accountNumber === selectedAccount);

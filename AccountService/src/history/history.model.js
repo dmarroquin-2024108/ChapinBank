@@ -33,7 +33,7 @@ const historySchema = new Schema(
     noOperacion: {
       type: String,
       unique: true,
-      sparse: true
+      sparse: true,
     },
 
     numberAccountOrigin: String,

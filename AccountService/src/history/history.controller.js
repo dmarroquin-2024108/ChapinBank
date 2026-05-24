@@ -96,7 +96,13 @@ export const userRecentMovements = async (req, res) => {
       data: history,
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Error al obtener movimientos recientes', error: err.message });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: 'Error al obtener movimientos recientes',
+        error: err.message,
+      });
   }
 };
 
@@ -112,6 +118,8 @@ export const accountHistoryByType = async (req, res) => {
       data: history,
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Error al filtrar historial', error: err.message });
+    res
+      .status(500)
+      .json({ success: false, message: 'Error al filtrar historial', error: err.message });
   }
 };

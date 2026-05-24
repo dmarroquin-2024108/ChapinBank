@@ -40,26 +40,30 @@ export const UserRow = ({ user, index, onDelete }) => {
         </span>
       </td>
 
-      <td className='py-3 sm:py-4 px-3 sm:px-6 whitespace-nowrap'>
-        {formatDate(user.createdAt)}
-      </td>
+      <td className='py-3 sm:py-4 px-3 sm:px-6 whitespace-nowrap'>{formatDate(user.createdAt)}</td>
 
       <td className='py-3 sm:py-4 px-3 sm:px-6 whitespace-nowrap'>
         <span
           className={`flex items-center gap-1 text-xs font-medium w-fit px-2 py-0.5 rounded-full ${user.status ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-500'}`}
         >
           {user.isDeleted ? (
-            <><XCircle size={11} /> Eliminado</>
+            <>
+              <XCircle size={11} /> Eliminado
+            </>
           ) : user.status ? (
-            <><CheckCircle size={11} /> Activo</>
+            <>
+              <CheckCircle size={11} /> Activo
+            </>
           ) : (
-            <><XCircle size={11} /> Sin activar</>
+            <>
+              <XCircle size={11} /> Sin activar
+            </>
           )}
         </span>
       </td>
 
       <td className='py-3 sm:py-4 px-3 sm:px-6 whitespace-nowrap'>
-        {user.status && !user.isDeleted &&(
+        {user.status && !user.isDeleted && (
           <button
             onClick={() => onDelete(user)}
             className='p-1.5 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition cursor-pointer'

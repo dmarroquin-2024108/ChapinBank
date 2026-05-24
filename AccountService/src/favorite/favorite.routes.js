@@ -1,15 +1,15 @@
 import { Router } from 'express';
 import {
-    addFavorite,
-    getFavorites,
-    getFavoriteById,
-    updateFavorite,
-    deleteFavorite,
+  addFavorite,
+  getFavorites,
+  getFavoriteById,
+  updateFavorite,
+  deleteFavorite,
 } from './favorite.controller.js';
 import {
-    validateAddFavorite,
-    validateUpdateFavorite,
-    validateFavoriteId,
+  validateAddFavorite,
+  validateUpdateFavorite,
+  validateFavoriteId,
 } from '../../middlewares/favorite-validator.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
 

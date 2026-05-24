@@ -36,15 +36,14 @@ export const Sidebar = ({ onLogout }) => {
               key={label}
               to={to}
               className={`flex items-center justify-center md:justify-start gap-3 px-3 md:px-5 py-3 text-sm font-medium transition-colors duration-150
-                            ${active
-                  ? 'bg-orange text-white rounded-lg mx-2'
-                  : 'text-gray-400 hover:text-white hover:bg-white/5 mx-2 rounded-lg'
-                }`}
+                            ${
+                              active
+                                ? 'bg-orange text-white rounded-lg mx-2'
+                                : 'text-gray-400 hover:text-white hover:bg-white/5 mx-2 rounded-lg'
+                            }`}
             >
               <Icon size={17} className='shrink-0' />
-              <span className='hidden md:inline whitespace-nowrap'>
-                {label}
-              </span>
+              <span className='hidden md:inline whitespace-nowrap'>{label}</span>
             </Link>
           );
         })}
@@ -55,9 +54,7 @@ export const Sidebar = ({ onLogout }) => {
         onClick={onLogout}
       >
         <LogOut size={16} className='shrink-0' />
-        <span className='hidden md:inline whitespace-nowrap'>
-          Cerrar Sesión
-        </span>
+        <span className='hidden md:inline whitespace-nowrap'>Cerrar Sesión</span>
       </button>
     </aside>
   );

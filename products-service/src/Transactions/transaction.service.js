@@ -31,13 +31,11 @@ export const createTransactionRecord = async ({
     account = accountResponse.data.data;
 
     if (!account.status) {
-      const error = new Error(
-        'La cuenta está deshabilitada. Solicite al banco su reactivación.'
-      );
+      const error = new Error('La cuenta está deshabilitada. Solicite al banco su reactivación.');
       error.statusCode = 403;
       throw error;
     }
-    
+
     if (account.userId !== userId) {
       const error = new Error('La cuenta no pertenece al usuario');
       error.statusCode = 403;

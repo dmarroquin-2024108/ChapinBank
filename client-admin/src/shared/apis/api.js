@@ -65,7 +65,7 @@ function _processQueue(_error, token = null) {
 }
 
 const handleRefreshToken = async function (_error) {
-  if (!_error.response) return Promise.reject(_error)//Por si se cae el servidor
+  if (!_error.response) return Promise.reject(_error); //Por si se cae el servidor
   const _original = _error.config;
 
   if (!_original || _original._retry) {
@@ -120,9 +120,9 @@ const handleRefreshToken = async function (_error) {
     try {
       const response = await axiosAuth.post('/auth/refresh', { refreshToken });
       const { accessToken, refreshToken: newRefreshToken, expiresIn, userDetails } = response.data;
-      
+
       const token = accessToken;
-      const expiresAt = new Date(Date.now() + expiresIn*1000).toISOString();
+      const expiresAt = new Date(Date.now() + expiresIn * 1000).toISOString();
 
       useAuthStore.setState({
         token,
@@ -136,7 +136,6 @@ const handleRefreshToken = async function (_error) {
       _original.headers['Authorization'] = 'Bearer ' + token;
       return retryClient(_original);
     } catch (err) {
-
       _processQueue(err, null);
       useAuthStore.getState().logout();
       return Promise.reject(err);

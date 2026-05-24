@@ -110,13 +110,11 @@ const formatTransaction = (doc) => ({
   amount: doc.amount,
   accountNumber: doc.accountNumber,
   status: doc.status,
-  date: doc.createdAt
+  date: doc.createdAt,
 });
 
 export const getUserRecentMovements = async (userId) => {
-  const history = await History.find({ userId })
-    .sort({ createdAt: -1 })
-    .limit(5);
+  const history = await History.find({ userId }).sort({ createdAt: -1 }).limit(5);
   return history.map(formatMovement);
 };
 
@@ -153,8 +151,6 @@ export const getAccountHistoryByType = async ({ accountNumber, accountType, limi
     ];
   }
 
-  const history = await History.find(query)
-    .sort({ createdAt: -1 })
-    .limit(Number(limit));
+  const history = await History.find(query).sort({ createdAt: -1 }).limit(Number(limit));
   return history.map(formatMovement);
 };

@@ -10,7 +10,7 @@ import { useNotificationStore } from '../../../features/notifications/store/noti
 const NAV_ITEMS = [
   { label: 'Inicio', to: '/inicio', exact: true },
   { label: 'Depósitos', to: '/inicio/depositos', exact: true },
-  { label: "Transferencias", to: "/inicio/transferencias" },
+  { label: 'Transferencias', to: '/inicio/transferencias' },
   { label: 'Historial', to: '/inicio/historial', exact: true },
   { label: 'Productos', to: '/inicio/productos' },
   { label: 'Mis productos', to: '/inicio/misProductos' },
@@ -31,7 +31,7 @@ export const UserNavbar = ({ onLogout }) => {
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
-  
+
   useEffect(() => {
     function handleClickOutside(e) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -63,7 +63,11 @@ export const UserNavbar = ({ onLogout }) => {
         <div className='max-w-7xl mx-auto px-6 h-14 flex items-center justify-between'>
           <div className='flex items-center gap-4 flex-1 min-w-0'>
             <div className='flex items-center gap-2 mr-2'>
-              <img src={imgLogo} alt='ChapinBank Logo' className='w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 object-contain' />
+              <img
+                src={imgLogo}
+                alt='ChapinBank Logo'
+                className='w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 object-contain'
+              />
               <span className='text-white font-extrabold text-xs sm:text-sm lg:text-base'>
                 Chapin<span className='text-[#F28C00]'>Bank</span>
               </span>
@@ -73,10 +77,11 @@ export const UserNavbar = ({ onLogout }) => {
                 <Link
                   key={label}
                   to={to}
-                  className={`flex-shrink-0 px-2 lg:px-3 py-1.5 text-xs lg:text-sm font-medium rounded-md transition-colors duration-150 whitespace-nowrap ${isActive(to, exact)
+                  className={`flex-shrink-0 px-2 lg:px-3 py-1.5 text-xs lg:text-sm font-medium rounded-md transition-colors duration-150 whitespace-nowrap ${
+                    isActive(to, exact)
                       ? 'bg-[#F28C00] text-white'
                       : 'text-gray-300 hover:text-white hover:bg-white/5'
-                    }`}
+                  }`}
                 >
                   {label}
                 </Link>

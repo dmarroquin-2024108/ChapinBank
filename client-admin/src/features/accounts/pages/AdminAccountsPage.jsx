@@ -18,8 +18,8 @@ export const AdminAccountsPage = () => {
   const [confirmData, setConfirmData] = useState(null);
 
   useEffect(() => {
-    getAllAccounts(); 
-    getAccountsList(); 
+    getAllAccounts();
+    getAccountsList();
   }, [getAllAccounts, getAccountsList]);
 
   const filtered = useMemo(() => {
@@ -110,8 +110,8 @@ export const AdminAccountsPage = () => {
             isLoadingStats
               ? '...'
               : stats.totalBalance != null
-              ? `Q ${Number(stats.totalBalance).toLocaleString('es-GT', { minimumFractionDigits: 2 })}`
-              : '—'
+                ? `Q ${Number(stats.totalBalance).toLocaleString('es-GT', { minimumFractionDigits: 2 })}`
+                : '—'
           }
           icon={DollarSign}
           color='dark'

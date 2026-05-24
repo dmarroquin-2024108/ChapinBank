@@ -8,7 +8,7 @@ import {
   updateAccountInternal,
   getAccountsSummaryAdmin,
   getAllAccountsAdmin,
-  toggleAccountStatusAdmin
+  toggleAccountStatusAdmin,
 } from './account.controller.js';
 import { createAccountValidator } from '../../middlewares/account-validator.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
@@ -139,11 +139,12 @@ router.get('/', getAccounts);
  */
 router.get('/admin/summary', requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'), getAccountsSummaryAdmin);
 
-router.get(
-  '/admin/all', requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'), getAllAccountsAdmin);
+router.get('/admin/all', requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'), getAllAccountsAdmin);
 
 router.patch(
-  '/admin/:accountNumber/status', requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'), toggleAccountStatusAdmin
+  '/admin/:accountNumber/status',
+  requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
+  toggleAccountStatusAdmin
 );
 
 /**

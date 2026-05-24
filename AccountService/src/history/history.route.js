@@ -270,7 +270,12 @@ router.get('/account/:accountNumber', validateJWT, validateAccountHistory, accou
  */
 router.post('/internal', validateJWT, createHistoryInternal);
 
-router.get("/user/recent", validateJWT, userRecentMovements);
-router.get("/bank/account-filter", validateJWT, requireRole("ADMIN_ROLE", "SUPERADMIN_ROLE"), accountHistoryByType);
+router.get('/user/recent', validateJWT, userRecentMovements);
+router.get(
+  '/bank/account-filter',
+  validateJWT,
+  requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
+  accountHistoryByType
+);
 
 export default router;

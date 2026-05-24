@@ -1,5 +1,5 @@
 import { UserRow } from './UserRow.jsx';
-import {Spinner} from '../../auth/components/Spinner.jsx';
+import { Spinner } from '../../auth/components/Spinner.jsx';
 
 export const UserTable = ({ users = [], loading = false, search = '', onDelete }) => {
   if (loading) return <Spinner />;
