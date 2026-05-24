@@ -40,14 +40,6 @@ export const adminDeleteUser = async (userId) => {
   return await axiosAuth.delete(`auth/admin/users/${userId}`);
 };
 
-export const requestSelfDelete = async () => {
-  return await axiosAuth.post('auth/me/request-delete');
-};
-
-export const confirmSelfDelete = async ({ token }) => {
-  return await axiosAuth.post('auth/me/confirm-delete', { token });
-};
-
 export const resendActivate = async ({ email }) => {
   return await axiosAuth.post('/auth/resend-verification', { email });
 };
