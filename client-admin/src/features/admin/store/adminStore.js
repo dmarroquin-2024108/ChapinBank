@@ -3,8 +3,6 @@ import {
   getUsers as getUsersRequest,
   adminCreateUser as adminCreateUserRequest,
   adminDeleteUser as adminDeleteUserRequest,
-  requestSelfDelete as requestSelfDeleteRequest,
-  confirmSelfDelete as confirmSelfDeleteRequest,
   getHistoryBank as getHistoryBankRequest,
   getAllProducts as getAllProductsRequest,
   getAllAccounts as getAllAccountsRequest,
@@ -54,32 +52,6 @@ export const useAdminStore = create((set, get) => ({
       return { success: true };
     } catch (err) {
       const message = errorMessage(err, 'Error al eliminar el usuario');
-      set((s) => ({ error: message, loadings: { ...s.loadings, action: false } }));
-      return { success: false, error: message };
-    }
-  },
-
-  requestSelfDelete: async () => {
-    try {
-      set((s) => ({ loadings: { ...s.loadings, action: true }, error: null }));
-      await requestSelfDeleteRequest();
-      set((s) => ({ loadings: { ...s.loadings, action: false } }));
-      return { success: true };
-    } catch (err) {
-      const message = errorMessage(err, 'Error al solicitar eliminación');
-      set((s) => ({ error: message, loadings: { ...s.loadings, action: false } }));
-      return { success: false, error: message };
-    }
-  },
-
-  confirmSelfDelete: async ({ token }) => {
-    try {
-      set((s) => ({ loadings: { ...s.loadings, action: true }, error: null }));
-      await confirmSelfDeleteRequest({ token });
-      set((s) => ({ loadings: { ...s.loadings, action: false } }));
-      return { success: true };
-    } catch (err) {
-      const message = errorMessage(err, 'Token inválido o expirado');
       set((s) => ({ error: message, loadings: { ...s.loadings, action: false } }));
       return { success: false, error: message };
     }

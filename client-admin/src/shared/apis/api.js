@@ -29,9 +29,12 @@ const axiosProduct = axios.create({
 axiosAuth.interceptors.request.use((config) => {
   config._axiosClient = 'auth';
   const token = useAuthStore.getState().token;
-  if (token) {
+  const isRefreshEndpoint = config.url?.includes('/auth/refresh');
+
+  if (token && !isRefreshEndpoint) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
@@ -62,11 +65,14 @@ function _processQueue(_error, token = null) {
 }
 
 const handleRefreshToken = async function (_error) {
+  if (!_error.response) return Promise.reject(_error)//Por si se cae el servidor
   const _original = _error.config;
+
   if (!_original || _original._retry) {
     // Ya se reintentó o no hay config
     return Promise.reject(_error);
   }
+
   const status = _error.response?.status;
   const errorCode = _error.response?.data?.error;
   const requestUrl = _original.url || '';
@@ -104,24 +110,33 @@ const handleRefreshToken = async function (_error) {
     _original._retry = true;
     _isRefreshing = true;
     const refreshToken = useAuthStore.getState().refreshToken;
+
     if (!refreshToken) {
+      _isRefreshing = false;
       useAuthStore.getState().logout();
       return Promise.reject(_error);
     }
+
     try {
       const response = await axiosAuth.post('/auth/refresh', { refreshToken });
-      const { token, refreshToken: newRefreshToken, expiresAt, userDetails } = response.data;
+      const { accessToken, refreshToken: newRefreshToken, expiresIn, userDetails } = response.data;
+      
+      const token = accessToken;
+      const expiresAt = new Date(Date.now() + expiresIn*1000).toISOString();
+
       useAuthStore.setState({
-        token: token,
+        token,
         refreshToken: newRefreshToken,
-        expiresAt: expiresAt,
+        expiresAt,
         user: userDetails || useAuthStore.getState().user,
         isAuthenticated: true,
       });
+
       _processQueue(null, token);
       _original.headers['Authorization'] = 'Bearer ' + token;
       return retryClient(_original);
     } catch (err) {
+
       _processQueue(err, null);
       useAuthStore.getState().logout();
       return Promise.reject(err);
