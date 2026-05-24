@@ -4,7 +4,6 @@ import { Bell, User, LogOut, Trash2 } from 'lucide-react';
 import imgLogo from '../../../assets/img/ChapinLogo.png';
 import { useAuthStore } from '../../../features/auth/store/authStore.js';
 import { ProfileModal } from '../../../features/users/components/ProfileModal.jsx';
-import { DeleteAccountModal } from '../../../features/users/components/DeleteAccountModal.jsx';
 import { NotificationPanel } from '../../../features/notifications/components/Notification.jsx';
 import { useNotificationStore } from '../../../features/notifications/store/notificationStore.js';
 
@@ -62,19 +61,19 @@ export const UserNavbar = ({ onLogout }) => {
     <>
       <header className='bg-[#032340] sticky top-0 z-40 shadow-md'>
         <div className='max-w-7xl mx-auto px-6 h-14 flex items-center justify-between'>
-          <div className='flex items-center gap-6'>
+          <div className='flex items-center gap-4 flex-1 min-w-0'>
             <div className='flex items-center gap-2 mr-2'>
-              <img src={imgLogo} alt='ChapinBank Logo' className='w-7 h-7 object-contain' />
-              <span className='text-white font-extrabold text-base'>
+              <img src={imgLogo} alt='ChapinBank Logo' className='w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 object-contain' />
+              <span className='text-white font-extrabold text-xs sm:text-sm lg:text-base'>
                 Chapin<span className='text-[#F28C00]'>Bank</span>
               </span>
             </div>
-            <nav className='hidden sm:flex items-center gap-1'>
+            <nav className='flex items-center gap-1 overflow-x-auto whitespace-nowrap flex-1 min-w-0 no-scrollbar'>
               {NAV_ITEMS.map(({ label, to, exact }) => (
                 <Link
                   key={label}
                   to={to}
-                  className={`px-2 lg:px-3 py-1.5 text-xs lg:text-sm font-medium rounded-md transition-colors duration-150 whitespace-nowrap ${isActive(to, exact)
+                  className={`flex-shrink-0 px-2 lg:px-3 py-1.5 text-xs lg:text-sm font-medium rounded-md transition-colors duration-150 whitespace-nowrap ${isActive(to, exact)
                       ? 'bg-[#F28C00] text-white'
                       : 'text-gray-300 hover:text-white hover:bg-white/5'
                     }`}
@@ -126,17 +125,7 @@ export const UserNavbar = ({ onLogout }) => {
                     <User size={15} />
                     Mi Perfil
                   </button>
-
-                  <button
-                    className='w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-red-50 transition cursor-pointer'
-                    onClick={handleOpenDeleteAccount}
-                  >
-                    <Trash2 size={15} />
-                    Eliminar mi cuenta
-                  </button>
-
                   <div className='border-t border-gray-100 my-1' />
-
                   <button
                     onClick={onLogout}
                     className='w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition cursor-pointer'
@@ -152,8 +141,6 @@ export const UserNavbar = ({ onLogout }) => {
       </header>
 
       <ProfileModal isOpen={showProfile} onClose={() => setShowProfile(false)} userBase={user} />
-
-      <DeleteAccountModal isOpen={showDeleteAccount} onClose={() => setShowDeleteAccount(false)} />
     </>
   );
 };

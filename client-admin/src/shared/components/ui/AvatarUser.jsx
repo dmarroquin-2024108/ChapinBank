@@ -35,7 +35,7 @@ export const AvatarUser = ({ onLogout }) => {
       <div className='relative' ref={dropdownRef}>
         <button
           onClick={() => setOpen((prev) => !prev)}
-          className='w-9 h-9 rounded-full bg-[#0d1f35] text-white flex items-center justify-center text-sm font-bold hover:opacity-80 transition cursor-pointer border-2 border-orange/30'
+          className='w-9 h-9 rounded-full bg-orange text-white flex items-center justify-center text-sm font-bold hover:opacity-80 transition cursor-pointer border-2 border-orange/30'
         >
           {user?.username?.slice(0, 2).toUpperCase() ?? 'AD'}
         </button>

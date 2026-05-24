@@ -55,6 +55,7 @@ export const useAuthStore = create(
           refreshToken: null,
           expiresAt: null,
           isAuthenticated: false,
+          isLoadingAuth: false,
         });
       },
 
