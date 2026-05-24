@@ -366,9 +366,14 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult> SoftDeleteUser(string userId)
     {
+        var currentUserId = User.Claims
+            .FirstOrDefault(c => c.Type == "sub" ||
+            c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
+        ?.Value?? string.Empty;
+
         try
         {
-            await _authService.SoftDeleteUserAsync(userId);
+            await _authService.SoftDeleteUserAsync(userId, currentUserId);
             return Ok(new
             {
                 success = true,

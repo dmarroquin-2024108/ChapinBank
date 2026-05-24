@@ -38,12 +38,11 @@ const EmptyState = ({ message = 'Sin datos registrados' }) => (
 
 const AccountMovementRow = ({ item, index }) => (
   <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
-    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
-      index === 0 ? 'bg-yellow-100 text-yellow-600'
+    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${index === 0 ? 'bg-yellow-100 text-yellow-600'
       : index === 1 ? 'bg-gray-200 text-gray-500'
-      : index === 2 ? 'bg-orange/15 text-orange'
-      : 'bg-gray-100 text-gray-400'
-    }`}>
+        : index === 2 ? 'bg-orange/15 text-orange'
+          : 'bg-gray-100 text-gray-400'
+      }`}>
       {index + 1}
     </div>
     <p className="flex-1 text-sm font-mono font-medium text-main-blue">{item.accountNumber}</p>
@@ -62,15 +61,13 @@ const AccountCard = ({ account, selected, onClick }) => {
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left cursor-pointer ${
-        selected
-          ? 'border-main-blue bg-main-blue/5 shadow-sm'
-          : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50'
-      }`}
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left cursor-pointer ${selected
+        ? 'border-main-blue bg-main-blue/5 shadow-sm'
+        : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50'
+        }`}
     >
-      <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-        isMonetaria ? 'bg-orange/10 text-orange' : 'bg-green-100 text-green-600'
-      }`}>
+      <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isMonetaria ? 'bg-orange/10 text-orange' : 'bg-green-100 text-green-600'
+        }`}>
         <Icon size={16} />
       </div>
       <div className="flex-1 min-w-0">
@@ -168,11 +165,10 @@ export const BankHistoryPage = () => {
               <button
                 key={type}
                 onClick={() => { setTypeFilter(type); setSelectedAccount(null); }}
-                className={`flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl border transition-all cursor-pointer ${
-                  typeFilter === type
-                    ? 'bg-main-blue text-white border-main-blue'
-                    : 'text-gray-500 border-gray-200 hover:border-gray-300'
-                }`}
+                className={`flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl border transition-all cursor-pointer ${typeFilter === type
+                  ? 'bg-main-blue text-white border-main-blue'
+                  : 'text-gray-500 border-gray-200 hover:border-gray-300'
+                  }`}
               >
                 {type === 'MONETARIA' ? <Wallet size={13} /> : <PiggyBank size={13} />}
                 {type === 'MONETARIA' ? 'Cuentas Monetarias' : 'Cuentas Ahorro'}
@@ -257,7 +253,9 @@ export const BankHistoryPage = () => {
           ) : bankHistory.length === 0 ? (
             <EmptyState message="Sin movimientos registrados en el banco" />
           ) : (
-            <div>{bankHistory.map((mov) => <MovementCard key={mov.id ?? mov._id} mov={mov} showAccount />)}</div>
+            <div>{bankHistory.map((mov, i) => (
+              <MovementCard key={mov.id ?? mov._id ?? i} mov={mov} showAccount />
+            ))}</div>
           )}
         </div>
 

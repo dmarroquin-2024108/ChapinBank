@@ -37,7 +37,7 @@ export const CreateUserModal = ({ isOpen, onClose, currentUserRole }) => {
     if (response.success) {
       toast.success('Usuario creado correctamente. Se enviará un correo de verificación.');
       reset();
-      onClose();
+      onClose(true);
     } else {
       toast.error(response.error);
     }

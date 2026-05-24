@@ -37,7 +37,8 @@ export const AdminUsersPage = () => {
     () => ({
       total: safeUsers.length,
       active: safeUsers.filter((u) => u.status).length,
-      inactive: safeUsers.filter((u) => !u.status).length,
+      pending: safeUsers.filter((u) => !u.status && !u.isDeleted).length,
+      deleted: safeUsers.filter((u)=> u.isDeleted).length,
     }),
     [safeUsers]
   );
@@ -89,10 +90,16 @@ export const AdminUsersPage = () => {
           color='green'
         />
         <StatCard
-          title='Inhabilitados'
-          value={loadings.users ? '...' : stats.inactive}
+          title='Sin Activar'
+          value={loadings.users ? '...' : stats.pending}
           icon={UserX}
           color='orange'
+        />
+        <StatCard
+          title='Inhabilitados'
+          value={loadings.users ? '...' : stats.deleted}
+          icon={UserX}
+          color='purple'
         />
       </div>
 

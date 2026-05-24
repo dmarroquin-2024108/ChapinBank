@@ -274,7 +274,8 @@ public class AuthService(
             NameWork = user.NameWork,
             Role = user.UserRoles.FirstOrDefault()?.Role?.Name ?? RoleConstants.USER_ROLE,
             Status = user.Status,
-            RequiresPasswordChange = user.RequiereCambioPass
+            RequiresPasswordChange = user.RequiereCambioPass,
+            IsDeleted = user.IsDeleted
         };
     }
 
@@ -518,7 +519,7 @@ public class AuthService(
         };
     }//Actualizar el Usuario (PATCH)
 
-    public async Task<bool> SoftDeleteUserAsync(string userId)
+    public async Task<bool> SoftDeleteUserAsync(string userId, string currentUserId)
     {
         var user = await userRepository.GetByIdAsync(userId);
         if (user == null) throw new Exception("Usuario no encontrado");
@@ -528,7 +529,8 @@ public class AuthService(
         var isSuperAdmin = user.UserRoles.Any(r => r.Role?.Name == RoleConstants.SUPERADMIN_ROLE)
         ;
         if (isSuperAdmin) throw new Exception("No se puede eliminar una cuenta de Superadmin");
-
+        if (userId == currentUserId)
+        throw new InvalidOperationException("No puedes eliminar tu propia cuenta");
         return await userRepository.SoftDeleteAsync(userId);
     }//Lógica para el admin si quiere desactivar cuentas
 
