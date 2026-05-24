@@ -11,5 +11,5 @@ public class UserDetailsDto
     public string Role { get; set; } = string.Empty;
     public bool Status {get; set;}
     public bool RequiresPasswordChange { get; set; }
-
+    public bool IsDeleted { get; set; }
 }

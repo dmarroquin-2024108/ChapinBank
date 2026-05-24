@@ -43,10 +43,14 @@ export const useAdminStore = create((set, get) => ({
 
   deleteUser: async (userId) => {
     try {
-      set((s) => ({ loadings: { ...s.loadings, action: true }, error: null }));
+      set((s) => ({ loadings: { ...s.loadings, action: true } }));
       await adminDeleteUserRequest(userId);
       set((s) => ({
-        users: s.users.filter((u) => u.idUserResponse !== userId),
+        users: s.users.map((u) =>
+          u.idUserResponse === userId
+            ? { ...u, isDeleted: true, status: false }
+            : u
+        ),
         loadings: { ...s.loadings, action: false },
       }));
       return { success: true };

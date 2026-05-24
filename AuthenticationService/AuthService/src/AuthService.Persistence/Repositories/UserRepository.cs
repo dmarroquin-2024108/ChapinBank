@@ -174,7 +174,6 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
             .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
             .Include(u => u.UserEmail)
-            .Where(u => !u.IsDeleted)
             .ToListAsync();
     }
 
