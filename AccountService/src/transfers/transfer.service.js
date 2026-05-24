@@ -18,7 +18,7 @@ import {
   sendTransferAcceptedEmail,
   sendTransferAcceptEmail,
 } from './../../helpers/Email.helper.js';
-import {validateActiveAccount} from '../../helpers/activeAccount.helper.js';
+import { validateActiveAccount } from '../../helpers/activeAccount.helper.js';
 
 const COMISION = 3.0; //Comisión para cuenta de ahorro
 const LIMITE_MOVIMIENTO = 2000.0; //Establecer límite de dinero que se puede transferir
@@ -116,7 +116,7 @@ export const createTransferRecord = async ({ transferData, userId, token }) => {
   if (amountInGTQ > LIMITE_MOVIMIENTO) {
     const e = new Error(
       `No se puede transferir más de Q. ${LIMITE_MOVIMIENTO} en un solo movimiento.` +
-      (currency !== 'GTQ' ? `(Tu monto equivale a Q. ${amountInGTQ.toFixed(2)})` : '')
+        (currency !== 'GTQ' ? `(Tu monto equivale a Q. ${amountInGTQ.toFixed(2)})` : '')
     );
     e.statusCode = 400;
     throw e;
@@ -128,8 +128,8 @@ export const createTransferRecord = async ({ transferData, userId, token }) => {
   if (balanceOrigen < newBalance) {
     const e = new Error(
       `Saldo insuficiente. Necesita Q.${newBalance.toFixed(2)}` +
-      `(monto: Q.${amountInGTQ.toFixed(2)} + comisión: Q.${commision.toFixed(2)})` +
-      `pero su saldo es de: Q.${balanceOrigen.toFixed(2)}`
+        `(monto: Q.${amountInGTQ.toFixed(2)} + comisión: Q.${commision.toFixed(2)})` +
+        `pero su saldo es de: Q.${balanceOrigen.toFixed(2)}`
     );
     e.statusCode = 400;
     throw e;
@@ -142,8 +142,8 @@ export const createTransferRecord = async ({ transferData, userId, token }) => {
     const restante = parseFloat((LIMITE_DIARIO - totalDiario).toFixed(2));
     const e = new Error(
       `Límite diario de Q.${LIMITE_DIARIO.toFixed(2)} alcanzado. ` +
-      `Ya transferió Q.${totalDiario.toFixed(2)} hoy.` +
-      `Puede transferir como máximo: Q.${Math.max(0, restante).toFixed(2)} más.`
+        `Ya transferió Q.${totalDiario.toFixed(2)} hoy.` +
+        `Puede transferir como máximo: Q.${Math.max(0, restante).toFixed(2)} más.`
     );
     e.statusCode = 400;
     throw e;
@@ -203,7 +203,9 @@ export const createTransferRecord = async ({ transferData, userId, token }) => {
       noOperacion: transfer.noOperacion,
       transferToken,
       cancelWindowMinutes: CANCEL_WINDOW_MINUTES,
-    }).catch(emailE => console.error('Error al enviar el email al destinatario:', emailE.message));
+    }).catch((emailE) =>
+      console.error('Error al enviar el email al destinatario:', emailE.message)
+    );
   }
 
   return {
@@ -297,7 +299,7 @@ export const acceptTransferRecord = async ({ transferToken, token, userId }) => 
   });
 
   //F&F
-  getUserEmail(transfer.userId, token).then(originUserInfo => {
+  getUserEmail(transfer.userId, token).then((originUserInfo) => {
     if (originUserInfo) {
       sendTransferAcceptedEmail({
         toEmail: originUserInfo.email,
@@ -305,11 +307,11 @@ export const acceptTransferRecord = async ({ transferToken, token, userId }) => 
         amount: transfer.amount,
         currency: transfer.currency,
         noOperacion: transfer.noOperacion,
-      }).catch(e => console.error('Error al enviar email al emisor:', e.message));
+      }).catch((e) => console.error('Error al enviar email al emisor:', e.message));
     }
   });
 
-  getUserEmail(accountDestination.userId, token).then(destinationUserInfo => {
+  getUserEmail(accountDestination.userId, token).then((destinationUserInfo) => {
     if (destinationUserInfo) {
       sendTransferAcceptEmail({
         toEmail: destinationUserInfo.email,
@@ -317,7 +319,7 @@ export const acceptTransferRecord = async ({ transferToken, token, userId }) => 
         amount: transfer.amount,
         currency: transfer.currency,
         noOperacion: transfer.noOperacion,
-      }).catch(e => console.error('Error al enviar email al destinatario:', e.message));
+      }).catch((e) => console.error('Error al enviar email al destinatario:', e.message));
     }
   });
 
@@ -409,7 +411,7 @@ export const rejectTransferRecord = async ({ transferToken, token, userId }) => 
   });
 
   //F&F
-  getUserEmail(transfer.userId, token).then(originUserInfo => {
+  getUserEmail(transfer.userId, token).then((originUserInfo) => {
     if (originUserInfo) {
       sendTransferRejectedEmail({
         toEmail: originUserInfo.email,
@@ -417,7 +419,7 @@ export const rejectTransferRecord = async ({ transferToken, token, userId }) => 
         amount: transfer.amount,
         currency: transfer.currency,
         noOperacion: transfer.noOperacion,
-      }).catch(e => console.error('Error al enviar email de rechazo:', e.message));
+      }).catch((e) => console.error('Error al enviar email de rechazo:', e.message));
     }
   });
 
@@ -463,7 +465,7 @@ export const cancelTransferRecord = async ({ transferToken, token, userId }) => 
   if (minutosTranscurridos > CANCEL_WINDOW_MINUTES) {
     const error = new Error(
       `El tiempo para cancelar ha expirado. Solo puedes cancelar dentro de los primeros ${CANCEL_WINDOW_MINUTES} minutos. ` +
-      `Han pasado ${Math.floor(minutosTranscurridos)} minutos.`
+        `Han pasado ${Math.floor(minutosTranscurridos)} minutos.`
     );
     error.statusCode = 400;
     throw error;
@@ -522,21 +524,23 @@ export const cancelTransferRecord = async ({ transferToken, token, userId }) => 
   });
 
   //F&F
-  getAccount(transfer.numberAccountDestination).catch(() => null).then(destinationAccount => {
-    if (destinationAccount) {
-      getUserEmail(destinationAccount.userId, token).then(destinationUserInfo => {
-        if (destinationUserInfo) {
-          sendTransferCancelledEmail({
-            toEmail: destinationUserInfo.email,
-            toName: destinationUserInfo.username,
-            amount: transfer.amount,
-            currency: transfer.currency,
-            noOperacion: transfer.noOperacion,
-          }).catch(e => console.error('Error al enviar email de cancelación:', e.message));
-        }
-      });
-    }
-  });
+  getAccount(transfer.numberAccountDestination)
+    .catch(() => null)
+    .then((destinationAccount) => {
+      if (destinationAccount) {
+        getUserEmail(destinationAccount.userId, token).then((destinationUserInfo) => {
+          if (destinationUserInfo) {
+            sendTransferCancelledEmail({
+              toEmail: destinationUserInfo.email,
+              toName: destinationUserInfo.username,
+              amount: transfer.amount,
+              currency: transfer.currency,
+              noOperacion: transfer.noOperacion,
+            }).catch((e) => console.error('Error al enviar email de cancelación:', e.message));
+          }
+        });
+      }
+    });
 
   return {
     transfer,

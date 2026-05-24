@@ -72,7 +72,10 @@ export const useHistoryStore = create((set) => ({
       }));
     } catch (err) {
       set((s) => ({
-        errors: { ...s.errors, userRecent: errorMessage(err, 'Error al obtener movimientos recientes') },
+        errors: {
+          ...s.errors,
+          userRecent: errorMessage(err, 'Error al obtener movimientos recientes'),
+        },
         loadings: { ...s.loadings, userRecent: false },
       }));
     }
@@ -91,7 +94,10 @@ export const useHistoryStore = create((set) => ({
       }));
     } catch (err) {
       set((s) => ({
-        errors: { ...s.errors, bankHistory: errorMessage(err, 'Error al obtener historial del banco') },
+        errors: {
+          ...s.errors,
+          bankHistory: errorMessage(err, 'Error al obtener historial del banco'),
+        },
         loadings: { ...s.loadings, bankHistory: false },
       }));
     }
@@ -137,7 +143,10 @@ export const useHistoryStore = create((set) => ({
       }));
     } catch (err) {
       set((s) => ({
-        errors: { ...s.errors, accountsByMovements: errorMessage(err, 'Error al obtener cuentas por movimientos') },
+        errors: {
+          ...s.errors,
+          accountsByMovements: errorMessage(err, 'Error al obtener cuentas por movimientos'),
+        },
         loadings: { ...s.loadings, accountsByMovements: false },
       }));
     }

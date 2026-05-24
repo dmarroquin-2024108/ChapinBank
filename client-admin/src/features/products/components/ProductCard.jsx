@@ -49,7 +49,12 @@ export const ProductCard = ({
           <div className='absolute inset-0 opacity-10'>
             <svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'>
               <defs>
-                <pattern id={`grid-${product._id}`} width='20' height='20' patternUnits='userSpaceOnUse'>
+                <pattern
+                  id={`grid-${product._id}`}
+                  width='20'
+                  height='20'
+                  patternUnits='userSpaceOnUse'
+                >
                   <path d='M 20 0 L 0 0 0 20' fill='none' stroke='white' strokeWidth='0.5' />
                 </pattern>
               </defs>
@@ -58,7 +63,9 @@ export const ProductCard = ({
           </div>
         )}
         <div className='absolute top-3 left-3'>
-          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${config.badge} backdrop-blur-sm`}>
+          <span
+            className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${config.badge} backdrop-blur-sm`}
+          >
             {product.type}
           </span>
         </div>
@@ -103,9 +110,10 @@ export const ProductCard = ({
             className={`
               flex-1 flex items-center justify-center gap-1.5
               py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95
-              ${alreadyOwned
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-[#f59e0b] hover:bg-[#d97706] text-white shadow-md shadow-amber-200/60 cursor-pointer'
+              ${
+                alreadyOwned
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-[#f59e0b] hover:bg-[#d97706] text-white shadow-md shadow-amber-200/60 cursor-pointer'
               }
             `}
           >

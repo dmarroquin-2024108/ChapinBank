@@ -65,45 +65,39 @@ export const validateConfirmTransfer = [
 ];
 
 export const validateQuickTransfer = [
-  validateJWT, 
+  validateJWT,
 
-    param('favoriteId')
-        .notEmpty()
-        .withMessage('El id del favorito es obligatorio')
-        .isMongoId()
-        .withMessage('Id de favorito inválido'),
+  param('favoriteId')
+    .notEmpty()
+    .withMessage('El id del favorito es obligatorio')
+    .isMongoId()
+    .withMessage('Id de favorito inválido'),
 
-    body('numberAccountOrigin')
-        .notEmpty()
-        .withMessage('La cuenta de origen es obligatoria')
-        .trim(),
+  body('numberAccountOrigin').notEmpty().withMessage('La cuenta de origen es obligatoria').trim(),
 
-    body('originHolder')
-        .notEmpty()
-        .withMessage('El titular de origen es obligatorio')
-        .trim(),
+  body('originHolder').notEmpty().withMessage('El titular de origen es obligatorio').trim(),
 
-    body('amount')
-        .notEmpty()
-        .withMessage('El monto es obligatorio')
-        .matches(/^\d+(\.\d{1,2})?$/)
-        .withMessage('El monto solo admite hasta 2 decimales')
-        .toFloat()
-        .isFloat({ min: 1 })
-        .withMessage('El monto debe ser mayor o igual a 1'),
+  body('amount')
+    .notEmpty()
+    .withMessage('El monto es obligatorio')
+    .matches(/^\d+(\.\d{1,2})?$/)
+    .withMessage('El monto solo admite hasta 2 decimales')
+    .toFloat()
+    .isFloat({ min: 1 })
+    .withMessage('El monto debe ser mayor o igual a 1'),
 
-    body('currency')
-        .notEmpty()
-        .withMessage('El tipo de moneda es obligatorio')
-        .trim()
-        .toUpperCase()
-        .isIn(['GTQ', 'USD', 'EUR', 'MXN'])
-        .withMessage('Tipo de moneda no válido. Use: GTQ, USD, EUR o MXN'),
+  body('currency')
+    .notEmpty()
+    .withMessage('El tipo de moneda es obligatorio')
+    .trim()
+    .toUpperCase()
+    .isIn(['GTQ', 'USD', 'EUR', 'MXN'])
+    .withMessage('Tipo de moneda no válido. Use: GTQ, USD, EUR o MXN'),
 
-    body('description')
-        .optional()
-        .trim()
-        .isLength({ max: 255 })
-        .withMessage('La descripción no puede exceder 255 caracteres'),
-    checkValidators,
+  body('description')
+    .optional()
+    .trim()
+    .isLength({ max: 255 })
+    .withMessage('La descripción no puede exceder 255 caracteres'),
+  checkValidators,
 ];

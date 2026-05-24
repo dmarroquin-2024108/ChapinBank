@@ -1,6 +1,13 @@
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowDownToLine, ArrowLeftRight, Clock, Package, ArrowUpRight, Loader2 } from 'lucide-react';
+import {
+  ArrowDownToLine,
+  ArrowLeftRight,
+  Clock,
+  Package,
+  ArrowUpRight,
+  Loader2,
+} from 'lucide-react';
 import { Cuentas } from '../../accounts/components/Accounts.jsx';
 import { useAccountStore } from '../../accounts/store/accountsStore.js';
 import { useHistoryStore } from '../../history/store/Historystore.js';
@@ -8,7 +15,12 @@ import { MovementCard } from '../../history/components/Movementcard.jsx';
 
 const QUICK_ACTIONS = [
   { label: 'Depositos', sub: 'Acredita fondos', icon: ArrowDownToLine, to: '/inicio/depositos' },
-  { label: 'Transferencias', sub: 'Envia dinero', icon: ArrowLeftRight, to: '/inicio/transferencias' },
+  {
+    label: 'Transferencias',
+    sub: 'Envia dinero',
+    icon: ArrowLeftRight,
+    to: '/inicio/transferencias',
+  },
   { label: 'Historial', sub: 'Tus movimientos', icon: Clock, to: '/inicio/historial' },
   { label: 'Mis productos', sub: '0 contratados', icon: Package, to: '/' },
 ];
@@ -20,7 +32,9 @@ export const UserPage = () => {
 
   const totalBalance = accounts.reduce((sum, acc) => sum + Number(acc.balance), 0);
   const fmt = (n) =>
-    new Intl.NumberFormat('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    new Intl.NumberFormat('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+      n
+    );
 
   useEffect(() => {
     fetchUserRecentMovements();
@@ -35,8 +49,12 @@ export const UserPage = () => {
           style={{ background: 'radial-gradient(circle at 80% 50%, #F28C00 0%, transparent 70%)' }}
         />
         <div>
-          <p className='text-gray-400 text-xs font-medium uppercase tracking-widest mb-1'>Bienvenido</p>
-          <p className='text-gray-500 text-xs font-semibold uppercase tracking-widest mb-2'>Saldo Total Disponible</p>
+          <p className='text-gray-400 text-xs font-medium uppercase tracking-widest mb-1'>
+            Bienvenido
+          </p>
+          <p className='text-gray-500 text-xs font-semibold uppercase tracking-widest mb-2'>
+            Saldo Total Disponible
+          </p>
           <p className='text-white text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight break-all'>
             Q &nbsp;{accounts.length > 0 ? fmt(totalBalance) : '—'}
           </p>
@@ -75,7 +93,10 @@ export const UserPage = () => {
         <section className='bg-white rounded-2xl border border-gray-100 overflow-hidden'>
           <div className='flex items-center justify-between px-5 py-4 border-b border-gray-100'>
             <h2 className='text-sm font-bold text-[#032340]'>Movimientos recientes</h2>
-            <Link to='/inicio/historial' className='text-xs text-[#F28C00] font-semibold hover:underline'>
+            <Link
+              to='/inicio/historial'
+              className='text-xs text-[#F28C00] font-semibold hover:underline'
+            >
               Ver todo
             </Link>
           </div>

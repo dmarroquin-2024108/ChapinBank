@@ -29,9 +29,7 @@ export const createAccountRecord = async ({ accountType, userId }) => {
       error.statusCode = 400;
       throw error;
     }
-    const error = new Error(
-      'Ya posee una cuenta de este tipo.'
-    );
+    const error = new Error('Ya posee una cuenta de este tipo.');
     error.statusCode = 400;
     throw error;
   }
@@ -102,15 +100,14 @@ export const updateAccountBalanceInternal = async (accountNumber, balance) => {
 
 export const getAllAccountsRecord = async () => {
   return await Account.find({}).sort({ createdAt: -1 });
-}
+};
 
 export const getAccountsSummary = async () => {
   const accounts = await Account.find({});
-  const totalBalance = accounts.reduce(
-    (sum, acc) => sum + acc.balance, 0);
+  const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0);
   const active = accounts.filter((acc) => acc.status).length;
   const disabled = accounts.filter((acc) => !acc.status).length;
-  
+
   return {
     total: accounts.length,
     active,

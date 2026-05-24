@@ -98,7 +98,7 @@ export const AdminProductsPage = () => {
         initialData={selectedProduct ?? {}}
         onSubmit={handleSubmit}
       />
-      
+
       {confirm && (
         <ConfirmModal
           isOpen

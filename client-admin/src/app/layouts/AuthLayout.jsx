@@ -11,7 +11,9 @@ export const AuthLayout = ({ title, subtitle, children }) => {
         </div>
         <div className='text-center mb-4 sm:mb-6'>
           <h1 className='text-xl sm:text-2xl lg:text-3xl font-bold mb-2 break-words'>{title}</h1>
-          <p className='text-sm sm:text-base text-gray-600 max-w-md mx-auto leading-relaxed'>{subtitle}</p>
+          <p className='text-sm sm:text-base text-gray-600 max-w-md mx-auto leading-relaxed'>
+            {subtitle}
+          </p>
         </div>
         {children}
       </div>

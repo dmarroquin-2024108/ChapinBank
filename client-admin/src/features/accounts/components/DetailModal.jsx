@@ -32,12 +32,18 @@ const MovementItem = ({ mov }) => {
           {MOVEMENT_LABELS[mov.type] ?? mov.type}
         </p>
         <p className='text-[10px] text-gray-400'>
-          {mov.date ? new Date(mov.date).toLocaleDateString('es-GT', {
-            day: '2-digit', month: 'short', year: 'numeric'
-          }) : '—'}
+          {mov.date
+            ? new Date(mov.date).toLocaleDateString('es-GT', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+              })
+            : '—'}
         </p>
       </div>
-      <span className={`text-xs font-bold shrink-0 ${isCredit ? 'text-green-600' : 'text-orange-500'}`}>
+      <span
+        className={`text-xs font-bold shrink-0 ${isCredit ? 'text-green-600' : 'text-orange-500'}`}
+      >
         {isCredit ? '+' : '-'}Q {fmt(mov.amount)}
       </span>
     </div>
@@ -45,19 +51,14 @@ const MovementItem = ({ mov }) => {
 };
 
 export const DetailModal = ({ isOpen, onClose, accountNumber }) => {
-  const {
-    selectedAccount,
-    loadingDetail,
-    loading,
-    fetchAccountById,
-    updateAccount,
-  } = useAccountStore();
-  
+  const { selectedAccount, loadingDetail, loading, fetchAccountById, updateAccount } =
+    useAccountStore();
+
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (isOpen && accountNumber) {
-      useAccountStore.setState({ selectedAccount: null});
+      useAccountStore.setState({ selectedAccount: null });
       fetchAccountById(accountNumber);
     }
   }, [isOpen, accountNumber]);
@@ -143,10 +144,11 @@ export const DetailModal = ({ isOpen, onClose, accountNumber }) => {
               <div>
                 <p className='text-xs text-gray-400 mb-1'>Estado de cuenta</p>
                 <span
-                  className={`text-xs font-bold px-2 py-1 rounded-full text-center ${selectedAccount.status
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-red-100 text-red-700'
-                    }`}
+                  className={`text-xs font-bold px-2 py-1 rounded-full text-center ${
+                    selectedAccount.status
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700'
+                  }`}
                 >
                   {selectedAccount.status ? 'ACTIVA' : 'DESHABILITADA'}
                 </span>

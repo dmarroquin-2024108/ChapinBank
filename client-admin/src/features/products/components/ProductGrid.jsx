@@ -2,7 +2,6 @@ import { PackageX } from 'lucide-react';
 import { ProductCard } from './ProductCard.jsx';
 import { Spinner } from '../../auth/components/Spinner.jsx';
 
-
 const EmptyState = ({ message }) => (
   <div className='w-full py-24 flex flex-col items-center justify-center gap-3 text-gray-400'>
     <PackageX size={40} strokeWidth={1.5} />
@@ -10,12 +9,11 @@ const EmptyState = ({ message }) => (
   </div>
 );
 
-
 export const ProductGrid = ({
   products = [],
   loading = false,
   emptyMessage = 'No hay productos disponibles.',
-  ownedProductIds = [],   
+  ownedProductIds = [],
   canEdit = false,
   canDelete = false,
   canBuy = false,

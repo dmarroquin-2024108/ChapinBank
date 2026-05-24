@@ -38,7 +38,7 @@ export const AdminUsersPage = () => {
       total: safeUsers.length,
       active: safeUsers.filter((u) => u.status).length,
       pending: safeUsers.filter((u) => !u.status && !u.isDeleted).length,
-      deleted: safeUsers.filter((u)=> u.isDeleted).length,
+      deleted: safeUsers.filter((u) => u.isDeleted).length,
     }),
     [safeUsers]
   );

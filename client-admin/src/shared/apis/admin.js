@@ -39,10 +39,10 @@ export const uploadProductImage = async (id, file) => {
   });
 };
 
-export const getAccountsList = async ()=>{
+export const getAccountsList = async () => {
   return await axiosAccounts.get('accounts/admin/all');
-}
+};
 
-export const toggleAccountStatus = async(accountNumber, status)=>{
-  return await axiosAccounts.patch(`/accounts/admin/${accountNumber}/status`, {status});
-}
+export const toggleAccountStatus = async (accountNumber, status) => {
+  return await axiosAccounts.patch(`/accounts/admin/${accountNumber}/status`, { status });
+};

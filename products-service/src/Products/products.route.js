@@ -349,5 +349,4 @@ router.post(
   uploadImage
 );
 
-
 export default router;

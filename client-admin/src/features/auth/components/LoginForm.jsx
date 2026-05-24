@@ -59,7 +59,10 @@ export const LoginForm = ({ onForgot, onTempPassword, onActivate }) => {
 
       <div>
         <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 mb-1'>
-          <label htmlFor='password' className='block text-xs sm:text-sm font-semibold text-main-blue mb-1.5'>
+          <label
+            htmlFor='password'
+            className='block text-xs sm:text-sm font-semibold text-main-blue mb-1.5'
+          >
             Contraseña
           </label>
 

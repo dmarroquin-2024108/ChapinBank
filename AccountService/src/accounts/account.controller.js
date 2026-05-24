@@ -7,10 +7,10 @@ import {
   updateAccountBalanceInternal,
   getAccountsSummary,
   getAllAccountsRecord,
-  toggleAccountStatusRecord
+  toggleAccountStatusRecord,
 } from './account.service.js';
-import { notifyAccountStatusChanged }from '../notifications/notification.service.js';
-import { authServiceClient} from '../../configs/axios.configuration.js';
+import { notifyAccountStatusChanged } from '../notifications/notification.service.js';
+import { authServiceClient } from '../../configs/axios.configuration.js';
 
 const formatBalance = (account) => ({
   ...account.toObject(),
@@ -180,7 +180,9 @@ export const toggleAccountStatusAdmin = async (req, res) => {
   const { accountNumber } = req.params;
   const { status } = req.body;
   if (typeof status !== 'boolean') {
-    return res.status(400).json({ success: false, message: 'El campo status debe ser un booleano' });
+    return res
+      .status(400)
+      .json({ success: false, message: 'El campo status debe ser un booleano' });
   }
   try {
     const account = await toggleAccountStatusRecord(accountNumber, status);
@@ -195,6 +197,8 @@ export const toggleAccountStatusAdmin = async (req, res) => {
       data: formatBalance(account),
     });
   } catch (e) {
-    res.status(e.statusCode || 500).json({ success: false, message: 'Error al cambiar el estado', error: e.message });
+    res
+      .status(e.statusCode || 500)
+      .json({ success: false, message: 'Error al cambiar el estado', error: e.message });
   }
 };

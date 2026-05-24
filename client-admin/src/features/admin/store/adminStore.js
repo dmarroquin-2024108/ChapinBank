@@ -47,9 +47,7 @@ export const useAdminStore = create((set, get) => ({
       await adminDeleteUserRequest(userId);
       set((s) => ({
         users: s.users.map((u) =>
-          u.idUserResponse === userId
-            ? { ...u, isDeleted: true, status: false }
-            : u
+          u.idUserResponse === userId ? { ...u, isDeleted: true, status: false } : u
         ),
         loadings: { ...s.loadings, action: false },
       }));
@@ -146,23 +144,21 @@ export const useAdminStore = create((set, get) => ({
       await toggleAccountStatusRequest(accountNumber, newStatus);
       set((s) => {
         const updatedAccountsList = s.accountsList.map((acc) =>
-          acc.accountNumber === accountNumber
-            ? { ...acc, status: newStatus }
-            : acc
+          acc.accountNumber === accountNumber ? { ...acc, status: newStatus } : acc
         );
 
-        const active = updatedAccountsList.filter(acc => acc.status).length;
-        const disabled = updatedAccountsList.filter(acc => !acc.status).length;
+        const active = updatedAccountsList.filter((acc) => acc.status).length;
+        const disabled = updatedAccountsList.filter((acc) => !acc.status).length;
 
         return {
           accountsList: updatedAccountsList,
           accounts: s.accounts
             ? {
-              ...s.accounts,
-              total: updatedAccountsList.length,
-              active,
-              disabled,
-            }
+                ...s.accounts,
+                total: updatedAccountsList.length,
+                active,
+                disabled,
+              }
             : s.accounts,
           loadings: { ...s.loadings, action: false },
         };
