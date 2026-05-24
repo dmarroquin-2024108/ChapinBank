@@ -13,28 +13,28 @@ export const UserTable = ({ users = [], loading = false, search = '', onDelete }
           </p>
         </div>
       ) : (
-        <table className='min-w-full leading-normal text-sm'>
+        <table className='min-w-[850px] w-full leading-normal text-xs sm:text-sm'>
           <thead>
             <tr className='bg-gray-50/60 border-b border-gray-100'>
-              <th className='py-5 px-6 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap'>
+              <th className='py-3 sm:py-5 px-3 sm:px-6 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap'>
                 Cliente
               </th>
-              <th className='py-5 px-6 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap'>
+              <th className='py-3 sm:py-5 px-3 sm:px-6 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap'>
                 Username
               </th>
-              <th className='py-5 px-6 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap'>
+              <th className='py-3 sm:py-5 px-3 sm:px-6 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap'>
                 Correo
               </th>
-              <th className='py-5 px-6 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap'>
+              <th className='py-3 sm:py-5 px-3 sm:px-6 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap'>
                 Rol
               </th>
-              <th className='py-5 px-6 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap'>
+              <th className='py-3 sm:py-5 px-3 sm:px-6 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap'>
                 Registro
               </th>
-              <th className='py-5 px-6 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap'>
+              <th className='py-3 sm:py-5 px-3 sm:px-6 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap'>
                 Estado
               </th>
-              <th className='py-5 px-6 w-10' />
+              <th className='py-3 sm:py-5 px-3 sm:px-6 w-10' />
             </tr>
           </thead>
           <tbody className='text-gray-700'>

@@ -51,18 +51,14 @@ export const DetailModal = ({ isOpen, onClose, accountNumber }) => {
     loading,
     fetchAccountById,
     updateAccount,
-    accountHistory,
-    loadingHistory,
-    fetchAccountHistory,
   } = useAccountStore();
   
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (isOpen && accountNumber) {
-      useAccountStore.setState({ selectedAccount: null, accountHistory: [] });
+      useAccountStore.setState({ selectedAccount: null});
       fetchAccountById(accountNumber);
-      fetchAccountHistory(accountNumber);
     }
   }, [isOpen, accountNumber]);
 
@@ -155,25 +151,6 @@ export const DetailModal = ({ isOpen, onClose, accountNumber }) => {
                   {selectedAccount.status ? 'ACTIVA' : 'DESHABILITADA'}
                 </span>
               </div>
-            </div>
-
-            <div>
-              <p className='text-xs font-bold text-gray-500 uppercase tracking-wider mb-2'>
-                Últimos movimientos
-              </p>
-              {loadingHistory ? (
-                <div className='flex justify-center py-4'>
-                  <Loader2 size={20} className='animate-spin text-gray-400' />
-                </div>
-              ) : accountHistory.length === 0 ? (
-                <p className='text-xs text-gray-400 text-center py-4'>Sin movimientos registrados</p>
-              ) : (
-                <div>
-                  {accountHistory.map((mov) => (
-                    <MovementItem key={mov.id} mov={mov} />
-                  ))}
-                </div>
-              )}
             </div>
 
             <div className='flex justify-end gap-2 pt-2'>

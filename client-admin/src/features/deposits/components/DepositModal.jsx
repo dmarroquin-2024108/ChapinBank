@@ -246,7 +246,7 @@ export const DepositModal = ({ accounts, accountsLoading, accountsError, onSubmi
           <div className='flex gap-3 pt-1'>
             <Link
               to='/inicio'
-              className='flex-1 flex items-center justify-center border border-gray-200 text-gray-600 text-sm font-semibold py-3 rounded-xl hover:bg-gray-50 transition-all duration-150'
+              className='flex-1 flex items-center justify-center border border-gray-200 text-gray-600 text-sm font-semibold py-3 rounded-xl hover:bg-gray-50 transition-all duration-150 text-center'
             >
               Cancelar movimiento
             </Link>

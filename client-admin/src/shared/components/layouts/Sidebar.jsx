@@ -14,13 +14,13 @@ export const Sidebar = ({ onLogout }) => {
   ];
 
   return (
-    <aside className='w-50 min-h-screen bg-[#0d1f35] flex flex-col'>
+    <aside className='w-16 sm:w-20 md:w-50 min-h-screen bg-[#032340] flex flex-col transition-all duration-300'>
       <div className='px-5 py-5 border-b-1 border-gray-600'>
-        <div className='flex items-center gap-2 mb-1'>
-          <div className='w-8 h-8 rounded-full flex items-center justify-center'>
+        <div className='flex items-center justify-center md:justify-start gap-2'>
+          <div className='w-8 h-8 flex items-center justify-center shrink-0'>
             <img src={imgLogo} alt='ChapinBank Logo' />
           </div>
-          <span className='text-white font-bold text-lg'>
+          <span className='hidden md:block text-white font-bold text-lg whitespace-nowrap'>
             Chapin<span className='text-orange'>Bank</span>
           </span>
         </div>
@@ -35,26 +35,29 @@ export const Sidebar = ({ onLogout }) => {
             <Link
               key={label}
               to={to}
-              className={`flex items-center gap-3 px-5 py-3 text-sm font-medium transition-colors duration-150
-                            ${
-                              active
-                                ? 'bg-orange text-white rounded-lg mx-2'
-                                : 'text-gray-400 hover:text-white hover:bg-white/5 mx-2 rounded-lg'
-                            }`}
+              className={`flex items-center justify-center md:justify-start gap-3 px-3 md:px-5 py-3 text-sm font-medium transition-colors duration-150
+                            ${active
+                  ? 'bg-orange text-white rounded-lg mx-2'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5 mx-2 rounded-lg'
+                }`}
             >
-              <Icon size={17} />
-              {label}
+              <Icon size={17} className='shrink-0' />
+              <span className='hidden md:inline whitespace-nowrap'>
+                {label}
+              </span>
             </Link>
           );
         })}
       </nav>
 
       <button
-        className='flex items-center gap-3 px-7 py-5 text-sm text-gray-400 hover:text-white transition-colors cursor-pointer border-t-1 border-gray-600'
+        className='flex items-center justify-center md:justify-start gap-3 px-3 md:px-7 py-5 text-sm text-gray-400 hover:text-white transition-colors cursor-pointer border-t border-gray-600'
         onClick={onLogout}
       >
-        <LogOut size={16} />
-        Cerrar Sesión
+        <LogOut size={16} className='shrink-0' />
+        <span className='hidden md:inline whitespace-nowrap'>
+          Cerrar Sesión
+        </span>
       </button>
     </aside>
   );

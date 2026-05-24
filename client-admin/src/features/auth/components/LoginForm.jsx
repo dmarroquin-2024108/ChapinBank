@@ -32,11 +32,11 @@ export const LoginForm = ({ onForgot, onTempPassword, onActivate }) => {
     }
   };
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='space-y-5'>
+    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 sm:space-y-5'>
       <div>
         <label
           htmlFor='emailOrUsername'
-          className='block text-sm font-semibold text-main-blue mb-1.5'
+          className='block text-xs sm:text-sm font-semibold text-main-blue mb-1.5'
         >
           Email o Username
         </label>
@@ -46,7 +46,7 @@ export const LoginForm = ({ onForgot, onTempPassword, onActivate }) => {
             type='text'
             id='emailOrUsername'
             placeholder='correo@example.com o Username'
-            className='w-full bg-white pl-9 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold placeholder-gray-400 text-sm'
+            className='w-full bg-white pl-9 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold placeholder-gray-400 text-sm min-w-0'
             {...register('emailOrUsername', {
               required: 'Este campo es obligatorio',
             })}
@@ -58,15 +58,15 @@ export const LoginForm = ({ onForgot, onTempPassword, onActivate }) => {
       </div>
 
       <div>
-        <div className='flex justify-between items-center mb-1'>
-          <label htmlFor='password' className='text-sm font-semibold text-main-blue'>
+        <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 mb-1'>
+          <label htmlFor='password' className='block text-xs sm:text-sm font-semibold text-main-blue mb-1.5'>
             Contraseña
           </label>
 
           <button
             type='button'
             onClick={onForgot}
-            className='text-orange text-xs hover:underline hover:cursor-pointer ml-1'
+            className='text-orange text-xs hover:underline hover:cursor-pointer sm:ml-1 text-left'
           >
             ¿Olvidaste Contraseña?
           </button>
@@ -78,7 +78,7 @@ export const LoginForm = ({ onForgot, onTempPassword, onActivate }) => {
             type='password'
             id='password'
             placeholder='* * * * * * *'
-            className='w-full bg-white pl-9 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold placeholder-gray-400 text-sm'
+            className='w-full bg-white pl-9 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold placeholder-gray-400 text-sm min-w-0'
             {...register('password', {
               required: 'Este campo es obligatorio',
             })}
@@ -90,12 +90,12 @@ export const LoginForm = ({ onForgot, onTempPassword, onActivate }) => {
       <button
         type='submit'
         disabled={loading}
-        className='w-full bg-orange hover:bg-[#c07018] text-white font-bold py-3 rounded-xl transition-colors duration-200 text-base hover:cursor-pointer'
+        className='w-full bg-orange hover:bg-[#c07018] text-white font-bold py-2.5 sm:py-3 rounded-xl transition-colors duration-200 text-sm sm:text-base hover:cursor-pointer'
       >
         {loading ? 'Iniciando...' : 'Iniciar Sesión'}
       </button>
 
-      <p className='text-center text-sm text-main-blue'>
+      <p className='text-center text-xs sm:text-sm text-main-blue leading-relaxed'>
         ¿No Tienes Activa tu Cuenta?
         <button
           type='button'

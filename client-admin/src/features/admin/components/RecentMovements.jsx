@@ -17,16 +17,16 @@ export const RecentMovements = ({ history = [] }) => {
 
   return (
     <div className='bg-[#0d1f35] rounded-2xl overflow-hidden'>
-      <div className='flex items-center justify-between px-6 py-4'>
+      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 sm:px-6 py-4'>
         <div>
-          <h2 className='text-white font-semibold text-base'>Movimientos recientes del banco</h2>
+          <h2 className='text-white font-semibold text-sm sm:text-base'>Movimientos recientes del banco</h2>
           <p className='text-gray-400 text-xs mt-0.5'>
             Últimas transacciones de todos los clientes
           </p>
         </div>
         <button
           onClick={() => navigate('/dashboard/historial')}
-          className='text-orange text-xs font-medium hover:underline cursor-pointer'
+          className='text-white text-[11px] sm:text-xs font-medium hover:underline cursor-pointer self-start sm:self-auto'
         >
           Ver historial completo
         </button>
@@ -41,17 +41,17 @@ export const RecentMovements = ({ history = [] }) => {
             return (
               <div
                 key={mov.id}
-                className='flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-colors border-b-2 border-gray-300'
+                className='flex items-center gap-3 px-3 sm:px-6 py-3 sm:py-4 hover:bg-white/5 transition-colors border-b-2 border-gray-300'
               >
                 <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center shrink-0
                                     ${isCredit ? 'bg-green-200/20 text-green-400' : 'bg-orange/15 text-orange'}`}
                 >
                   {isCredit ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}
                 </div>
 
                 <div className='flex-1 min-w-0'>
-                  <p className='text-black text-sm font-medium truncate'>
+                  <p className='text-black text-xs sm:text-sm font-medium truncate'>
                     {MOVEMENT_LABELS[mov.type] ?? mov.type}
                   </p>
                   <p className='text-gray-400 text-xs mt-0.5'>
@@ -59,7 +59,7 @@ export const RecentMovements = ({ history = [] }) => {
                   </p>
                 </div>
                 <span
-                  className={`text-sm font-semibold shrink-0
+                  className={`text-[11px] sm:text-sm font-semibold shrink-0
                                     ${isCredit ? 'text-green-400' : 'text-orange'}`}
                 >
                   {isCredit ? '+' : '-'}Q {formatAmount(mov.amount)}

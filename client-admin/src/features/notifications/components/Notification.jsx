@@ -55,7 +55,7 @@ const NotificationItem = ({ notification, onMarkRead }) => {
 
     return (
         <div
-            className={`flex items-start gap-3 px-4 py-3 transition-colors duration-150 cursor-pointer hover:bg-gray-50 ${isUnread ? 'bg-orange-50/40' : ''
+            className={`flex items-start gap-3 px-4 py-4 transition-colors duration-150 cursor-pointer hover:bg-gray-50 ${isUnread ? 'bg-orange-50/40' : ''
                 }`}
             onClick={() => isUnread && onMarkRead(notification._id)}
         >
@@ -64,12 +64,14 @@ const NotificationItem = ({ notification, onMarkRead }) => {
             </div>
             <div className='flex-1 min-w-0'>
                 <div className='flex items-center justify-between gap-2'>
-                    <p className={`text-sm leading-tight truncate ${isUnread ? 'font-semibold text-[#032340]' : 'font-medium text-gray-700'}`}>
+                    <p className={`text-sm leading-snug break-words ${isUnread ? 'font-semibold text-[#032340]' : 'font-medium text-gray-700'
+                        }`}>
                         {notification.title}
                     </p>
                     {isUnread && <span className={`flex-shrink-0 w-2 h-2 rounded-full ${cfg.dot}`} />}
                 </div>
-                <p className='text-xs text-gray-500 mt-0.5 line-clamp-2 leading-relaxed'>
+
+                <p className='text-xs text-gray-500 mt-1 leading-relaxed break-words'>
                     {notification.message}
                 </p>
                 <p className='text-[11px] text-gray-400 mt-1'>{formatDate(notification.createdAt)}</p>
@@ -110,11 +112,11 @@ export const NotificationPanel = ({ isOpen, onClose }) => {
     return (
         <div
             ref={panelRef}
-            className='absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden'
+            className='absolute right-0 mt-2 w-80 sm:w-96 max-w-[95vw] bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden'
         >
-            <div className='flex items-center justify-between px-4 py-3 border-b border-gray-100'>
+            <div className='flex items-center justify-between gap-2 px-4 py-3 border-b border-gray-100'>
                 <h3 className='text-sm font-bold text-[#032340]'>Notificaciones</h3>
-                <div className='flex items-center gap-2'>
+                <div className='flex items-center gap-2 shrink-0'>
                     {unreadCount > 0 && (
                         <button
                             onClick={markAllAsRead}

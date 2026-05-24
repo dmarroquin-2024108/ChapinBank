@@ -135,9 +135,9 @@ export const BankHistoryPage = () => {
   const filteredAccounts = allAccounts.filter((a) => a.accountType === typeFilter);
 
   return (
-    <div className="px-6 py-6 space-y-6">
+    <div className="px-3 sm:px-6 py-4 sm:py-6 space-y-6">
       {/* Encabezado */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-main-blue/10 flex items-center justify-center shrink-0">
             <History size={22} className="text-main-blue" />
@@ -150,7 +150,7 @@ export const BankHistoryPage = () => {
         <button
           onClick={() => { fetchBankHistory(); fetchAccountsByMovements(rankOrder); }}
           disabled={loadings.bankHistory}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-main-blue border border-gray-200 rounded-xl px-3 py-2 transition-colors disabled:opacity-50 cursor-pointer"
+          className="bg-main-blue flex items-center gap-1.5 text-sm text-white hover:cursor-pointer border border-gray-200 rounded-xl px-3 py-2 transition-colors disabled:opacity-50 cursor-pointer"
         >
           <RefreshCw size={14} className={loadings.bankHistory ? 'animate-spin' : ''} />
           Actualizar
@@ -163,7 +163,7 @@ export const BankHistoryPage = () => {
           <h2 className="text-sm font-bold text-main-blue mb-3">Movimientos por cuenta</h2>
 
           {/* Tabs tipo de cuenta */}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {['MONETARIA', 'AHORRO'].map((type) => (
               <button
                 key={type}
@@ -189,7 +189,7 @@ export const BankHistoryPage = () => {
                 {filteredAccounts.length} cuenta{filteredAccounts.length !== 1 ? 's' : ''}
               </p>
             </div>
-            <div className="overflow-y-auto max-h-80 p-3 space-y-1.5">
+            <div className="overflow-y-auto max-h-72 sm:max-h-80 p-2 sm:p-3 space-y-1.5">
               {accountsLoading ? (
                 <LoadingState />
               ) : filteredAccounts.length === 0 ? (
@@ -262,7 +262,7 @@ export const BankHistoryPage = () => {
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+          <div className="px-4 sm:px-5 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
                 <BarChart3 size={15} className="text-orange" />

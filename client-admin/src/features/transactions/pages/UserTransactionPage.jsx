@@ -7,27 +7,27 @@ const TransactionCard = ({ transaction }) => {
     const product = transaction.productId;
 
     return (
-        <article className='bg-white rounded-2xl border border-gray-100 shadow-sm flex gap-4 p-4 hover:shadow-md transition-shadow'>
+        <article className='bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row gap-4 p-4 hover:shadow-md transition-shadow'>
             {product?.imageUrl ? (
                 <img
                     src={product.imageUrl}
                     alt={product.name}
-                    className='w-14 h-14 rounded-xl object-cover shrink-0'
+                    className='w-full sm:w-14 h-40 sm:h-14 rounded-xl object-cover shrink-0'
                 />
             ) : (
-                <div className='w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center shrink-0'>
+                <div className='w-full sm:w-14 h-40 sm:h-14 rounded-xl bg-gray-100 flex items-center justify-center shrink-0'>
                     <Package size={22} className='text-gray-400' />
                 </div>
             )}
             <div className='flex-1 min-w-0'>
-                <div className='flex items-start justify-between gap-2'>
+                <div className='flex flex-col sm:flex-row sm:items-start justify-between gap-3'>
                     <div>
                         {product?.type && (
                             <p className='text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5'>
                                 {product.type}
                             </p>
                         )}
-                        <h3 className='font-bold text-[#0d1f35] text-sm'>
+                        <h3 className='font-bold text-[#0d1f35] text-sm sm:text-base break-words'>
                             {product?.name ?? 'Producto eliminado'}
                         </h3>
                         {transaction.reference && (
@@ -35,7 +35,7 @@ const TransactionCard = ({ transaction }) => {
                         )}
                     </div>
 
-                    <div className='text-right shrink-0'>
+                    <div className='sm:text-right shrink-0'>
                         <p className='font-extrabold text-rose-500 text-sm'>
                             −{formatBalance(transaction.amount)}
                         </p>
@@ -75,10 +75,10 @@ export const UserTransactionsPage = () => {
     }, [error]);
     const completed = transactions.filter((t) => t.status === 'COMPLETED');
     return (
-        <div className='p-6'>
+        <div className='p-3 sm:p-4 lg:p-6'>
             <div className='mb-6'>
-                <h1 className='text-2xl font-bold text-[#0d1f35]'>Mis productos</h1>
-                <p className='text-gray-500 text-sm'>
+                <h1 className='text-xl sm:text-2xl font-bold text-[#0d1f35]'>Mis productos</h1>
+                <p className='text-gray-500 text-xs sm:text-sm leading-relaxed'>
                     Productos que has contratado con ChapinBank
                     {!loading && completed.length > 0 && (
                         <span className='ml-2 font-semibold text-[#0d1f35]'>· {completed.length} activo{completed.length !== 1 ? 's' : ''}</span>
