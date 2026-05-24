@@ -23,7 +23,7 @@ const QUICK_ACTIONS = [
   {
     label: 'Ver historial',
     icon: History,
-    to: '/dashboard',
+    to: '/dashboard/historial',
     color: 'bg-purple-500/10 text-purple-600 hover:bg-purple-500/20',
   },
 ];
@@ -40,10 +40,10 @@ const QuickAccess = () => {
           <button
             key={label}
             onClick={() => navigate(to)}
-            className={`flex flex-col items-center justify-center gap-2 rounded-xl p-4 text-xs font-medium transition-colors cursor-pointer ${color}`}
+            className={`flex flex-col items-center justify-center gap-2 rounded-xl p-3 sm:p-4 min-h-[110px] text-[11px] sm:text-xs font-medium transition-colors cursor-pointer ${color}`}
           >
-            <div className='w-9 h-9 rounded-full bg-white/60 flex items-center justify-center'>
-              <Icon size={18} />
+            <div className='w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/60 flex items-center justify-center shrink-0'>
+              <Icon size={15} className='sm:w-[18px] sm:h-[18px]' />
             </div>
             {label}
           </button>
@@ -107,7 +107,7 @@ const RecentClients = ({ users = [] }) => {
 };
 
 export const DashboardSidebar = ({ users }) => (
-  <div className='flex flex-col gap-4 xl:w-80 shrink-0'>
+  <div className='flex flex-col gap-4 w-full xl:w-80 shrink-0'>
     <QuickAccess />
     <RecentClients users={users} />
   </div>

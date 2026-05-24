@@ -33,7 +33,7 @@ export const AdminDashboardPage = () => {
         color: 'green',
       },
       {
-        title: 'Activos administrados',
+        title: 'Activos administrado',
         value: formatBalance(accounts?.totalBalance),
         subtitle: 'Saldo total del banco',
         icon: DollarSign,
@@ -45,7 +45,7 @@ export const AdminDashboardPage = () => {
 
   return (
     <div className='flex flex-col gap-6'>
-      <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4'>
+      <div className='grid grid-cols-2 xl:grid-cols-4 gap-4'>
         {stats.map((stat) => (
           <StatCard key={stat.title} {...stat} value={loadings ? stat.value : '—'} />
         ))}

@@ -31,25 +31,25 @@ export const FavoritesPage = () => {
 
     return (
         <div className='space-y-5'>
-            <div className='flex items-start justify-between'>
+            <div className='flex flex-col sm:flex-row sm:items-start justify-between gap-3'>
                 <div>
                     <h1 className='text-xl font-bold text-[#0d1f35]'>Cuentas favoritas</h1>
                     <p className='text-xs text-gray-400 mt-0.5'>Administra tus cuentas de transferencia frecuente</p>
                 </div>
                 <button
                     onClick={openAdd}
-                    className='flex items-center gap-1.5 text-sm font-semibold text-white bg-[#F28C00] hover:bg-[#d97b00] px-4 py-2 rounded-xl transition-colors'
+                    className='w-full sm:w-auto flex items-center justify-center gap-1.5 text-sm font-semibold text-white bg-[#F28C00] hover:bg-[#d97b00] px-4 py-2 rounded-xl transition-colors'
                 >
                     <Plus size={15} />
                     Agregar favorito
                 </button>
             </div>
 
-            <div className='grid grid-cols-3 gap-3'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
                 <div className='rounded-2xl bg-[#0d1f35] p-4 flex items-center justify-between'>
                     <div>
                         <p className='text-[10px] font-bold tracking-widest text-white/50 uppercase mb-1'>Total</p>
-                        <p className='text-3xl font-extrabold text-white'>{favorites.length}</p>
+                        <p className='text-2xl sm:text-3xl font-extrabold text-white'>{favorites.length}</p>
                     </div>
                     <div className='w-9 h-9 rounded-full bg-white/10 flex items-center justify-center'>
                         <Star size={17} className='text-white' />
@@ -82,7 +82,7 @@ export const FavoritesPage = () => {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder='Buscar por alias o número de cuenta...'
-                    className='w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-200 bg-white'
+                    className='w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-200 bg-white min-w-0'
                 />
             </div>
 
@@ -94,7 +94,7 @@ export const FavoritesPage = () => {
                         ))}
                     </div>
                 ) : filtered.length === 0 ? (
-                    <div className='p-12 text-center'>
+                    <div className='p-6 sm:p-12 text-center'>
                         <Star size={32} className='text-gray-200 mx-auto mb-3' />
                         <p className='text-sm font-medium text-gray-400'>
                             {search ? 'Sin resultados para tu búsqueda' : 'No tienes favoritos registrados'}
@@ -107,8 +107,8 @@ export const FavoritesPage = () => {
                     </div>
                 ) : (
                     <div className='bg-white rounded-2xl border border-gray-100 overflow-hidden'>
-                        <div className='overflow-x-auto'>
-                            <table className='w-full text-sm min-w-[600px]'>
+                        <div className='overflow-x-auto scrollbar-thin'>
+                            <table className='w-full text-sm min-w-[720px]'>
                                 <thead>
                                     <tr className='border-b border-gray-100'>
                                         <th className='text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-5 py-3'>Favorito</th>
@@ -126,7 +126,7 @@ export const FavoritesPage = () => {
                                                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${getAvatarColor(fav._id)}`}>
                                                         {getInitials(fav.alias)}
                                                     </div>
-                                                    <span className='font-semibold text-[#0d1f35]'>{fav.alias}</span>
+                                                    <span className='font-semibold text-[#0d1f35] truncate max-w-[140px] block'>{fav.alias}</span>
                                                 </div>
                                             </td>
                                             <td className='px-5 py-3 text-gray-500 font-mono text-xs'>{fav.accountNumber}</td>
@@ -137,7 +137,7 @@ export const FavoritesPage = () => {
                                             </td>
                                             <td className='px-5 py-3 text-gray-400 text-xs'>{formatDate(fav.createdAt)}</td>
                                             <td className='px-5 py-3'>
-                                                <div className='flex items-center gap-1.5'>
+                                                <div className='flex items-center gap-1.5 min-w-max'>
                                                     <button
                                                         onClick={() => setTxTarget(fav)}
                                                         title='Transferencia rápida'

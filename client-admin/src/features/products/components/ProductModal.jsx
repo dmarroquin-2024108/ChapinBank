@@ -74,9 +74,9 @@ export const ProductModal = ({ isOpen, onClose, onSubmit, mode = 'add', initialD
 
   return (
     <div className='fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4'>
-      <div className='bg-white rounded-lg shadow-2xl w-full max-w-3xl overflow-hidden border-t-[12px] border-[#0d1f35]'>
-        <div className='px-8 pt-6 pb-4'>
-          <h2 className='text-[#0d1f35] text-2xl font-bold'>
+      <div className='bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[95vh] overflow-y-auto border-t-[10px] border-[#0d1f35]'>
+        <div className='px-4 sm:px-8 pt-5 sm:pt-6 pb-4'>
+          <h2 className='text-[#0d1f35] text-xl sm:text-2xl font-bold'>
             {mode === 'add' ? 'Crear nuevo producto' : 'Actualizar producto'}
           </h2>
 
@@ -85,13 +85,13 @@ export const ProductModal = ({ isOpen, onClose, onSubmit, mode = 'add', initialD
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className='px-8 pb-8'>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4'>
+        <form onSubmit={handleSubmit} className='px-4 sm:px-8 pb-6 sm:pb-8'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 sm:gap-y-4'>
             <div className='flex flex-col gap-1'>
               <label className='text-gray-600 text-sm font-medium'>Nombre del producto</label>
 
               <input
-                className='border border-gray-300 rounded-md p-2.5 text-gray-700 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all'
+                className='border border-gray-300 rounded-lg p-2.5 text-sm text-gray-700 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all'
                 value={formData.name}
                 onChange={(e) => handleChange('name', e.target.value)}
                 placeholder='Ej. Seguro Gold'
@@ -104,7 +104,7 @@ export const ProductModal = ({ isOpen, onClose, onSubmit, mode = 'add', initialD
 
               <input
                 type='number'
-                className='border border-gray-300 rounded-md p-2.5 text-gray-700 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all'
+                className='border border-gray-300 rounded-lg p-2.5 text-sm text-gray-700 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all'
                 value={formData.price}
                 onChange={(e) => handleChange('price', e.target.value)}
                 placeholder='0.00'
@@ -116,7 +116,7 @@ export const ProductModal = ({ isOpen, onClose, onSubmit, mode = 'add', initialD
               <label className='text-gray-600 text-sm font-medium'>Tipo</label>
 
               <select
-                className='border border-gray-300 rounded-md p-2.5 text-gray-700 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all'
+                className='border border-gray-300 rounded-lg p-2.5 text-sm text-gray-700 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all'
                 value={formData.type}
                 onChange={(e) => handleChange('type', e.target.value)}
               >
@@ -132,7 +132,7 @@ export const ProductModal = ({ isOpen, onClose, onSubmit, mode = 'add', initialD
               <label className='text-gray-600 text-sm font-medium'>Breve descripción</label>
 
               <input
-                className='border border-gray-300 rounded-md p-2.5 text-gray-700 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all'
+                className='border border-gray-300 rounded-lg p-2.5 text-sm text-gray-700 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all'
                 value={formData.description}
                 onChange={(e) => handleChange('description', e.target.value)}
                 placeholder='Detalles del producto'
@@ -151,7 +151,7 @@ export const ProductModal = ({ isOpen, onClose, onSubmit, mode = 'add', initialD
                   <img
                     src={imagePreview}
                     alt='Preview'
-                    className='h-32 object-contain rounded'
+                    className='h-24 sm:h-32 object-contain rounded-xl'
                   />
                 ) : (
                   <div className='text-gray-400 text-sm text-center'>
@@ -175,18 +175,18 @@ export const ProductModal = ({ isOpen, onClose, onSubmit, mode = 'add', initialD
             </div>
           </div>
 
-          <div className='flex justify-end gap-4 mt-10'>
+          <div className='flex flex-col-reverse sm:flex-row justify-end gap-3 mt-8'>
             <button
               type='button'
               onClick={onClose}
-              className='px-6 py-2.5 text-gray-500 hover:bg-gray-100 rounded-md font-medium transition-colors'
+              className='w-full sm:w-auto px-6 py-2.5 text-sm text-gray-500 hover:bg-gray-100 rounded-xl font-medium transition-colors'
             >
               Cancelar
             </button>
 
             <button
               type='submit'
-              className='px-8 py-2.5 bg-[#f59e0b] hover:bg-[#d97706] text-white rounded-md font-bold shadow-md transition-all active:scale-95'
+              className='w-full sm:w-auto px-8 py-2.5 bg-[#f59e0b] hover:bg-[#d97706] text-white text-sm rounded-xl font-bold shadow-md transition-all active:scale-95'
             >
               {mode === 'add' ? 'Crear producto' : 'Actualizar producto'}
             </button>

@@ -17,34 +17,34 @@ export const UserRow = ({ user, index, onDelete }) => {
 
   return (
     <tr className='border-b border-gray-50 hover:bg-gray-50/60 transition-colors'>
-      <td className='py-4 px-6 whitespace-nowrap'>
+      <td className='py-3 sm:py-4 px-3 sm:px-6 whitespace-nowrap'>
         <div className='flex items-center gap-3'>
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 ${AVATAR_COLORS[index % AVATAR_COLORS.length]}`}
           >
             {getInitials(user.name, user.surname)}
           </div>
-          <span className='font-semibold text-gray-800'>
+          <span className='font-semibold text-gray-800 truncate max-w-[140px] sm:max-w-none'>
             {user.name} {user.surname}
           </span>
         </div>
       </td>
 
-      <td className='py-4 px-6 text-gray-500 whitespace-nowrap'>@{user.username}</td>
+      <td className='py-3 sm:py-4 px-3 sm:px-6 whitespace-nowrap'>@{user.username}</td>
 
-      <td className='py-4 px-6 text-gray-500 whitespace-nowrap'>{user.email}</td>
+      <td className='py-3 sm:py-4 px-3 sm:px-6 whitespace-nowrap'>{user.email}</td>
 
-      <td className='py-4 px-6 whitespace-nowrap'>
+      <td className='py-3 sm:py-4 px-3 sm:px-6 whitespace-nowrap'>
         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${role.className}`}>
           {role.label}
         </span>
       </td>
 
-      <td className='py-4 px-6 text-gray-400 text-xs whitespace-nowrap'>
+      <td className='py-3 sm:py-4 px-3 sm:px-6 whitespace-nowrap'>
         {formatDate(user.createdAt)}
       </td>
 
-      <td className='py-4 px-6 whitespace-nowrap'>
+      <td className='py-3 sm:py-4 px-3 sm:px-6 whitespace-nowrap'>
         <span
           className={`flex items-center gap-1 text-xs font-medium w-fit px-2 py-0.5 rounded-full ${user.status ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-500'}`}
         >
@@ -60,7 +60,7 @@ export const UserRow = ({ user, index, onDelete }) => {
         </span>
       </td>
 
-      <td className='py-4 px-6 whitespace-nowrap text-right'>
+      <td className='py-3 sm:py-4 px-3 sm:px-6 whitespace-nowrap'>
         {user.status && (
           <button
             onClick={() => onDelete(user)}
