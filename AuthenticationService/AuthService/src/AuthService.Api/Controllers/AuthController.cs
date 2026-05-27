@@ -196,8 +196,18 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginDto loginDto)
     {
-        var result = await _authService.LoginAsync(loginDto);
-        return Ok(result);
+        try
+        {
+            var result = await _authService.LoginAsync(loginDto);
+            return Ok(result);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new
+            {
+                message = ex.Message
+            });
+        }
     }
 
     /// <summary>
