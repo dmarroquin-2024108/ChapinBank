@@ -5,6 +5,7 @@ import { notificationSchemas } from '../src/notifications/notification.schema.js
 import { historySchemas } from '../src/history/history.schema.js';
 import { transferSchemas } from '../src/transfers/transfers.schemas.js';
 import { depositSchemas } from '../src/deposits/deposit.schema.js';
+import { favoriteSchemas } from '../src/favorite/favorite.schema.js';
 
 const options = {
   definition: {
@@ -21,6 +22,7 @@ const options = {
         ...notificationSchemas,
         ...historySchemas,
         ...transferSchemas,
+        ...favoriteSchemas
       },
       securitySchemes: {
         bearerAuth: {

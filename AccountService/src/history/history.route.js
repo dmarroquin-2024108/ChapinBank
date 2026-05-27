@@ -270,7 +270,60 @@ router.get('/account/:accountNumber', validateJWT, validateAccountHistory, accou
  */
 router.post('/internal', validateJWT, createHistoryInternal);
 
+/**
+ * @swagger
+ * /chapin-bank/v1/history/user/recent:
+ *   get:
+ *     tags: [History]
+ *     summary: Obtener movimientos recientes del usuario
+ *     description: Devuelve los movimientos recientes del usuario autenticado.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Movimientos recientes obtenidos correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HistoryListResponse'
+ *       401:
+ *         description: Token JWT inválido o no proporcionado
+ *       500:
+ *         description: Error al obtener movimientos recientes
+ */
 router.get('/user/recent', validateJWT, userRecentMovements);
+
+/**
+ * @swagger
+ * /chapin-bank/v1/history/bank/account-filter:
+ *   get:
+ *     tags: [History]
+ *     summary: Filtrar historial por tipo de movimiento
+ *     description: Permite obtener movimientos filtrados por tipo. Solo accesible para administradores.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: type
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [DEPOSIT, DEPOSIT_REVERT, TRANSFER, TRANSACTION]
+ *         example: "TRANSFER"
+ *     responses:
+ *       200:
+ *         description: Movimientos filtrados correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HistoryListResponse'
+ *       401:
+ *         description: Token JWT inválido o no proporcionado
+ *       403:
+ *         description: Sin permisos de ADMIN_ROLE o SUPERADMIN_ROLE
+ *       500:
+ *         description: Error al filtrar movimientos
+ */
 router.get(
   '/bank/account-filter',
   validateJWT,

@@ -22,7 +22,7 @@ const QUICK_ACTIONS = [
     to: '/inicio/transferencias',
   },
   { label: 'Historial', sub: 'Tus movimientos', icon: Clock, to: '/inicio/historial' },
-  { label: 'Mis productos', sub: '0 contratados', icon: Package, to: '/' },
+  { label: 'Mis productos', sub: '0 contratados', icon: Package, to: '/inicio/misProductos' },
 ];
 
 export const UserPage = () => {

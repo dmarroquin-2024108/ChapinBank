@@ -29,36 +29,53 @@ export const createTransactionRecord = async ({
       { headers: { 'x-token': token } }
     );
     account = accountResponse.data.data;
+  } catch (e) {
+    const error = new Error('No se pudo obtener la cuenta');
+    error.statusCode = 502;
+    throw error;
+  }
 
-    if (!account.status) {
-      const error = new Error('La cuenta está deshabilitada. Solicite al banco su reactivación.');
-      error.statusCode = 403;
-      throw error;
-    }
+  if (!account.status) {
+    const error = new Error('La cuenta está deshabilitada. Solicite al banco su reactivación.');
+    error.statusCode = 403;
+    throw error;
+  }
 
-    if (account.userId !== userId) {
-      const error = new Error('La cuenta no pertenece al usuario');
-      error.statusCode = 403;
-      throw error;
-    }
-    originalBalance = parseFloat(account.balance);
+  if (account.userId !== userId) {
+    const error = new Error('La cuenta no pertenece al usuario');
+    error.statusCode = 403;
+    throw error;
+  }
+  originalBalance = parseFloat(account.balance);
 
-    if (originalBalance < pricing.totalAmount) {
-      const error = new Error('Fondos insuficientes');
-      error.statusCode = 400;
-      throw error;
-    }
+  if (originalBalance < pricing.totalAmount) {
+    const error = new Error('Fondos insuficientes');
+    error.statusCode = 400;
+    throw error;
+  }
 
+  let currentBalance;
+  try {
     const recheckResponse = await axios.get(
       `${process.env.ACCOUNT_SERVICE_URL}/accounts/account-internal/${accountNumber}`,
       { headers: { 'x-token': token } }
     );
+    currentBalance = parseFloat(recheckResponse.data.data.balance);
+  } catch (e) {
+    const error = new Error('No se pudo verificar el balance');
+    error.statusCode = 502;
+    throw error;
+  }
 
-    const currentBalance = parseFloat(recheckResponse.data.data.balance);
-    if (currentBalance !== originalBalance) {
-      throw new Error('La cuenta fue modificada recientemente. Intente de nuevo.');
-    }
-    newBalance = parseFloat((currentBalance - pricing.totalAmount).toFixed(2));
+  if (currentBalance !== originalBalance) {
+    const error = new Error('La cuenta fue modificada recientemente. Intente de nuevo.');
+    error.statusCode = 409;
+    throw error;
+  }
+
+  newBalance = parseFloat((currentBalance - pricing.totalAmount).toFixed(2));
+
+  try {
     await axios.patch(
       `${process.env.ACCOUNT_SERVICE_URL}/accounts/account-internal/${accountNumber}`,
       { balance: newBalance },
@@ -93,9 +110,10 @@ export const createTransactionRecord = async ({
       ...transaction.toObject(),
       pricing,
     };
-  } catch (e) {
-    console.error('Error PATCH balance:', e.response?.status, e.response?.data);
-    throw e;
+  } catch (e){
+    const error = new Error ('Error al procesar la transacción');
+    error.statusCode = 502;
+    throw error;
   }
 }; //createTransactioRecord
 

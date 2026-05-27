@@ -139,8 +139,112 @@ router.get('/', getAccounts);
  */
 router.get('/admin/summary', requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'), getAccountsSummaryAdmin);
 
+/**
+ * @swagger
+ * /chapinbank/v1/accounts/admin/all:
+ *   get:
+ *     tags: [Accounts]
+ *     summary: Obtener todas las cuentas (Admin)
+ *     description: Devuelve todas las cuentas registradas en el sistema. Solo accesible para administradores.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Cuentas obtenidas correctamente
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               total: 3
+ *               data:
+ *                 - accountNumber: "AH0000001"
+ *                   accountType: "AHORRO"
+ *                   balance: 1500.00
+ *                   isActive: true
+ *                 - accountNumber: "MO0000002"
+ *                   accountType: "MONETARIA"
+ *                   balance: 3200.50
+ *                   isActive: false
+ *       401:
+ *         description: No autorizado
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "No autorizado"
+ *       403:
+ *         description: Se requiere rol ADMIN_ROLE o SUPERADMIN_ROLE
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "Acceso denegado"
+ *       500:
+ *         description: Error al obtener las cuentas
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "Error al obtener las cuentas"
+ */
 router.get('/admin/all', requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'), getAllAccountsAdmin);
 
+/**
+ * @swagger
+ * /chapinbank/v1/accounts/admin/{accountNumber}/status:
+ *   patch:
+ *     tags: [Accounts]
+ *     summary: Activar o desactivar cuenta (Admin)
+ *     description: Permite cambiar el estado de una cuenta bancaria. Solo accesible para administradores.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: accountNumber
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         example: "AH0000001"
+ *     responses:
+ *       200:
+ *         description: Estado de la cuenta actualizado correctamente
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: "Estado de la cuenta actualizado correctamente"
+ *               data:
+ *                 accountNumber: "AH0000001"
+ *                 isActive: false
+ *       401:
+ *         description: No autorizado
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "No autorizado"
+ *       403:
+ *         description: Se requiere rol ADMIN_ROLE o SUPERADMIN_ROLE
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "Acceso denegado"
+ *       404:
+ *         description: Cuenta no encontrada
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "Cuenta no encontrada"
+ *       500:
+ *         description: Error al actualizar el estado de la cuenta
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: "Error al actualizar el estado de la cuenta"
+ */
 router.patch(
   '/admin/:accountNumber/status',
   requireRole('ADMIN_ROLE', 'SUPERADMIN_ROLE'),
