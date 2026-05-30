@@ -1,12 +1,12 @@
 import { Trash2, CheckCircle, XCircle } from 'lucide-react';
 import { formatDate } from '../../../shared/utils/formatters.js';
 
-const AVATAR_COLORS = ['bg-[#0d1f35]', 'bg-[#1a6b4a]', 'bg-orange', 'bg-[#6b21a8]', 'bg-blue-600'];
+const AVATAR_COLORS = ['bg-main-blue', 'bg-orange', 'bg-gold'];
 
 const ROLE_LABELS = {
-  SUPERADMIN_ROLE: { label: 'Super Admin', className: 'bg-purple-100 text-purple-700' },
-  ADMIN_ROLE: { label: 'Admin', className: 'bg-blue-100 text-blue-700' },
-  USER_ROLE: { label: 'Usuario', className: 'bg-gray-100 text-gray-600' },
+  SUPERADMIN_ROLE: { label: 'Super Admin', className: 'bg-gold text-white' },
+  ADMIN_ROLE: { label: 'Admin', className: 'bg-amber-500 text-white' },
+  USER_ROLE: { label: 'Usuario', className: 'bg-main-blue text-white' },
 };
 
 const getInitials = (name = '', surname = '') =>
@@ -44,7 +44,7 @@ export const UserRow = ({ user, index, onDelete }) => {
 
       <td className='py-3 sm:py-4 px-3 sm:px-6 whitespace-nowrap'>
         <span
-          className={`flex items-center gap-1 text-xs font-medium w-fit px-2 py-0.5 rounded-full ${user.status ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-500'}`}
+          className={`flex items-center gap-1 text-xs font-medium w-fit px-2 py-0.5 rounded-full ${user.status ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-500'}`}
         >
           {user.isDeleted ? (
             <>
@@ -66,7 +66,7 @@ export const UserRow = ({ user, index, onDelete }) => {
         {user.status && !user.isDeleted && (
           <button
             onClick={() => onDelete(user)}
-            className='p-1.5 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition cursor-pointer'
+            className='p-1.5 rounded-lg text-orange-400 hover:bg-orange-50 hover:text-orange-600 transition cursor-pointer'
             title='Deshabilitar usuario'
           >
             <Trash2 size={15} />

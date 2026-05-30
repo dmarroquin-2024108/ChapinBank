@@ -6,6 +6,7 @@ import { StatCard } from '../../admin/components/StatCard.jsx';
 import { AccountTable } from '../components/AccountTable.jsx';
 import { DetailModal } from '../components/DetailModal.jsx';
 import { ConfirmModal } from '../../../shared/components/ui/ConfirmModal.jsx';
+import { formatBalance } from '../../../shared/utils/formatters.js';
 
 const INITIAL_FILTERS = { search: '', type: '', status: '' };
 
@@ -96,13 +97,13 @@ export const AdminAccountsPage = () => {
           title='Activas'
           value={isLoadingStats ? '...' : stats.active}
           icon={CheckSquare}
-          color='green'
+          color='orange'
         />
         <StatCard
           title='Inhabilitadas'
           value={isLoadingStats ? '...' : stats.disabled}
           icon={XSquare}
-          color='orange'
+          color='gold'
         />
         <StatCard
           title='Saldo total'
@@ -110,7 +111,7 @@ export const AdminAccountsPage = () => {
             isLoadingStats
               ? '...'
               : stats.totalBalance != null
-                ? `Q ${Number(stats.totalBalance).toLocaleString('es-GT', { minimumFractionDigits: 2 })}`
+                ? `${formatBalance(stats.totalBalance)}`
                 : '—'
           }
           icon={DollarSign}

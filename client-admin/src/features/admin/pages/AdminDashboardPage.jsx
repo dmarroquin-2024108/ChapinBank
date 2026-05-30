@@ -30,14 +30,14 @@ export const AdminDashboardPage = () => {
         value: products?.length,
         subtitle: 'Beneficios de Chapin Bank',
         icon: Package,
-        color: 'green',
+        color: 'gold',
       },
       {
         title: 'Activos administrado',
         value: formatBalance(accounts?.totalBalance),
         subtitle: 'Saldo total del banco',
         icon: DollarSign,
-        color: 'purple',
+        color: 'dark',
       },
     ],
     [users, accounts, products]

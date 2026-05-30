@@ -6,7 +6,7 @@ const QUICK_ACTIONS = [
     label: 'Agregar producto',
     icon: Plus,
     to: '/dashboard/products',
-    color: 'bg-green-500/10 text-[#1a6b4a] hover:bg-green-500/20',
+    color: 'bg-blue-500/10 text-blue-600 hover:bg-blue-500/20',
   },
   {
     label: 'Registrar usuario',
@@ -18,13 +18,13 @@ const QUICK_ACTIONS = [
     label: 'Gestionar cuentas',
     icon: CreditCard,
     to: '/dashboard/accounts',
-    color: 'bg-blue-500/10 text-blue-600 hover:bg-blue-500/20',
+    color: 'bg-gold/10 text-amber-800 hover:bg-gold/20',
   },
   {
     label: 'Ver historial',
     icon: History,
     to: '/dashboard/historial',
-    color: 'bg-purple-500/10 text-purple-600 hover:bg-purple-500/20',
+    color: 'bg-blue-500/10 text-blue-600 hover:bg-blue-500/20',
   },
 ];
 
@@ -53,7 +53,7 @@ const QuickAccess = () => {
   );
 };
 
-const AVATAR_COLORS = ['bg-[#0d1f35]', 'bg-[#1a6b4a]', 'bg-orange', 'bg-[#6b21a8]', 'bg-blue-600'];
+const AVATAR_COLORS = ['bg-main-blue',  'bg-orange', 'bg-gold'];
 
 const getInitials = (name = '', surname = '') =>
   `${name.charAt(0)}${surname.charAt(0)}`.toUpperCase();
@@ -93,7 +93,7 @@ const RecentClients = ({ users = [] }) => {
               </p>
               <span
                 className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0
-                                ${user.status ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-500'}`}
+                                ${user.status ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-500'}`}
               >
                 {user.status ? 'activo' : 'inhabilitado'}
               </span>

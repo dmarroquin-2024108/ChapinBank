@@ -3,11 +3,7 @@ import { ChevronRight, Plus } from 'lucide-react';
 import { useAccountStore } from '../store/accountsStore.js';
 import { CuentasModal } from './AccountsModal.jsx';
 import { DetailModal } from './DetailModal.jsx';
-
-const fmt = (n) =>
-  new Intl.NumberFormat('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
-    Number(n)
-  );
+import { formatDate, formatAmount } from '../../../shared/utils/formatters.js'
 
 const AccountCard = ({ account, onDetail }) => {
   const dark = account.accountType === 'AHORRO';
@@ -35,17 +31,13 @@ const AccountCard = ({ account, onDetail }) => {
         </span>
       </div>
       <div>
-        <p className='text-2xl font-extrabold tracking-tight'>Q {fmt(account.balance)}</p>
+        <p className='text-2xl font-extrabold tracking-tight'>Q {formatAmount(account.balance)}</p>
         <p className='text-xs opacity-60 mt-0.5'>•••• {account.accountNumber.slice(-4)}</p>
       </div>
       <div className='flex items-center justify-between mt-1'>
         <span className='text-xs opacity-60'>
           {account.createdAt
-            ? new Date(account.createdAt).toLocaleDateString('es-GT', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-              })
+            ? formatDate(account.createdAt)
             : '—'}
         </span>
         <button

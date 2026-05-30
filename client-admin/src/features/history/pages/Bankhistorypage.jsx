@@ -41,12 +41,12 @@ const AccountMovementRow = ({ item, index }) => (
     <div
       className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
         index === 0
-          ? 'bg-yellow-100 text-yellow-600'
+          ? 'bg-gold text-white'
           : index === 1
-            ? 'bg-gray-200 text-gray-500'
+            ? 'bg-main-blue text-white'
             : index === 2
-              ? 'bg-orange/15 text-orange'
-              : 'bg-gray-100 text-gray-400'
+              ? 'bg-orange text-white'
+              : 'bg-orange/15 text-orange'
       }`}
     >
       {index + 1}
@@ -75,7 +75,7 @@ const AccountCard = ({ account, selected, onClick }) => {
     >
       <div
         className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-          isMonetaria ? 'bg-orange/10 text-orange' : 'bg-green-100 text-green-600'
+          isMonetaria ? 'bg-orange/10 text-orange' : 'bg-blue-100 text-blue-600'
         }`}
       >
         <Icon size={16} />

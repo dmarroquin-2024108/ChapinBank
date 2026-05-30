@@ -7,11 +7,9 @@ import { QuickTransferModal } from '../components/QuickTransferModal.jsx';
 import { formatDate } from '../../../shared/utils/formatters.js';
 
 const AVATAR_COLORS = [
-  'bg-orange-100 text-orange-700',
-  'bg-green-100 text-green-700',
-  'bg-blue-100 text-blue-700',
-  'bg-purple-100 text-purple-700',
-  'bg-pink-100 text-pink-700',
+  'bg-orange text-white',
+  'bg-main-blue text-white',
+  'bg-gold text-white',
 ];
 
 const getInitials = (alias) =>
@@ -52,9 +50,9 @@ export const FavoritesPage = () => {
       </div>
 
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
-        <div className='rounded-2xl bg-[#0d1f35] p-4 flex items-center justify-between'>
+        <div className='rounded-2xl bg-main-blue p-4 flex items-center justify-between'>
           <div>
-            <p className='text-[10px] font-bold tracking-widest text-white/50 uppercase mb-1'>
+            <p className='text-[10px] font-bold tracking-widest text-white uppercase mb-1'>
               Total
             </p>
             <p className='text-2xl sm:text-3xl font-extrabold text-white'>{favorites.length}</p>
@@ -63,9 +61,10 @@ export const FavoritesPage = () => {
             <Star size={17} className='text-white' />
           </div>
         </div>
-        <div className='rounded-2xl bg-[#0a4f3a] p-4 flex items-center justify-between'>
+
+        <div className='rounded-2xl bg-orange p-4 flex items-center justify-between'>
           <div>
-            <p className='text-[10px] font-bold tracking-widest text-white/50 uppercase mb-1'>
+            <p className='text-[10px] font-bold tracking-widest text-white uppercase mb-1'>
               Ahorro
             </p>
             <p className='text-3xl font-extrabold text-white'>{ahorro}</p>
@@ -74,9 +73,10 @@ export const FavoritesPage = () => {
             <Star size={17} className='text-white' />
           </div>
         </div>
-        <div className='rounded-2xl bg-[#F28C00] p-4 flex items-center justify-between'>
+
+        <div className='rounded-2xl bg-gold p-4 flex items-center justify-between'>
           <div>
-            <p className='text-[10px] font-bold tracking-widest text-white/50 uppercase mb-1'>
+            <p className='text-[10px] font-bold tracking-widest text-white uppercase mb-1'>
               Monetaria
             </p>
             <p className='text-3xl font-extrabold text-white'>{monetaria}</p>
@@ -163,7 +163,7 @@ export const FavoritesPage = () => {
                       </td>
                       <td className='px-5 py-3'>
                         <span
-                          className={`text-xs font-bold px-2.5 py-1 rounded-full ${fav.accountType === 'AHORRO' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}
+                          className={`text-xs font-bold px-2.5 py-1 rounded-full ${fav.accountType === 'AHORRO' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}
                         >
                           {fav.accountType}
                         </span>
@@ -176,10 +176,11 @@ export const FavoritesPage = () => {
                           <button
                             onClick={() => setTxTarget(fav)}
                             title='Transferencia rápida'
-                            className='w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-[#F28C00] hover:bg-orange-50 transition-colors'
+                            className='w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-gold hover:bg-gold/10 transition-colors'
                           >
                             <Send size={13} />
                           </button>
+
                           <button
                             onClick={() => openEdit(fav)}
                             title='Editar alias'
@@ -187,10 +188,11 @@ export const FavoritesPage = () => {
                           >
                             <Pencil size={13} />
                           </button>
+
                           <button
                             onClick={() => setDeleteTarget(fav)}
                             title='Eliminar'
-                            className='w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-red-400 hover:bg-red-50 transition-colors'
+                            className='w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center text-orange-400 hover:bg-orange-50 transition-colors'
                           >
                             <Trash2 size={13} />
                           </button>

@@ -32,8 +32,8 @@ export const DepositSuccessCard = ({ deposit, onRevert, onDismiss, revertLoading
   return (
     <div className='bg-white rounded-2xl border border-gray-100 shadow-sm p-6'>
       <div className='flex items-start gap-3 mb-5'>
-        <div className='w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center shrink-0'>
-          <CheckCircle size={20} className='text-green-500' />
+        <div className='w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0'>
+          <CheckCircle size={20} className='text-orange-500' />
         </div>
         <div>
           <p className='text-sm font-bold text-[#032340]'>Depósito registrado</p>

@@ -5,29 +5,29 @@ const MOVEMENT_CONFIG = {
   DEPOSIT: {
     label: 'Deposito',
     icon: ArrowDownLeft,
-    colorClass: 'bg-green-100 text-green-600',
-    amountClass: 'text-green-600',
+    colorClass: 'bg-blue-100 text-blue-600',
+    amountClass: 'text-blue-600',
     sign: '+',
   },
   DEPOSIT_REVERT: {
     label: 'Reversion de deposito',
     icon: RotateCcw,
-    colorClass: 'bg-red-100 text-red-500',
-    amountClass: 'text-red-500',
+    colorClass: 'bg-orange-100 text-orange-500',
+    amountClass: 'text-orange-500',
     sign: '-',
   },
   TRANSFER: {
     label: 'Transferencia',
     icon: ArrowLeftRight,
-    colorClass: 'bg-orange/10 text-orange',
-    amountClass: 'text-orange',
+    colorClass: 'bg-gold/10 text-gold',
+    amountClass: 'text-gold',
     sign: '-',
   },
   TRANSACTION: {
     label: 'Transaccion',
     icon: ShoppingBag,
-    colorClass: 'bg-purple-100 text-purple-600',
-    amountClass: 'text-purple-600',
+    colorClass: 'bg-main-blue/90 text-white',
+    amountClass: 'text-main-blue',
     sign: '-',
   },
 };
@@ -96,7 +96,7 @@ export const MovementCard = ({ mov, showAccount = false }) => {
                 className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
                   mov.status === 'PENDING'
                     ? 'bg-yellow-100 text-yellow-600'
-                    : 'bg-red-100 text-red-500'
+                    : 'bg-amber-100 text-orange-500'
                 }`}
               >
                 {mov.status === 'PENDING' ? 'Pendiente' : 'Fallido'}

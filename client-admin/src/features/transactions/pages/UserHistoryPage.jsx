@@ -61,7 +61,7 @@ export const UserHistoryPage = () => {
       {loading ? (
         <div className='h-10 bg-gray-100 rounded-lg animate-pulse w-full' />
       ) : error ? (
-        <p className='text-sm text-red-500 bg-red-50 border border-red-100 rounded-lg px-4 py-3'>
+        <p className='text-sm text-orange-500 bg-orange-50 border border-orange-100 rounded-lg px-4 py-3'>
           {error}
         </p>
       ) : accounts.length > 0 ? (

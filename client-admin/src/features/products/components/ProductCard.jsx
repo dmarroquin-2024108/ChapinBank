@@ -3,8 +3,8 @@ import { Edit, Trash2, ShoppingCart, CheckCircle } from 'lucide-react';
 const CATEGORY_CONFIG = {
   SEGURO: {
     label: 'Seguro',
-    gradient: 'from-violet-600 to-indigo-700',
-    badge: 'bg-violet-100 text-violet-700',
+    gradient: 'from-yellow-200 to-amber-500',
+    badge: 'bg-yellow-200 text-amber-700',
   },
   VIAJE: {
     label: 'Viaje',
@@ -13,8 +13,8 @@ const CATEGORY_CONFIG = {
   },
   SUSCRIPCION: {
     label: 'Suscripción',
-    gradient: 'from-emerald-500 to-teal-600',
-    badge: 'bg-emerald-100 text-emerald-700',
+    gradient:  'from-blue-700 to-indigo-900',
+    badge: 'bg-blue-100 text-blue-700',
   },
 };
 
@@ -145,7 +145,7 @@ export const ProductCard = ({
           <button
             onClick={() => onDelete?.(product)}
             title='Eliminar'
-            className='p-2.5 text-red-400 hover:bg-red-50 rounded-xl transition-all active:scale-90 cursor-pointer'
+            className='p-2.5 text-orange-400 hover:bg-orange-50 rounded-xl transition-all active:scale-90 cursor-pointer'
           >
             <Trash2 size={16} />
           </button>

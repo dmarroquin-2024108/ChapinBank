@@ -10,7 +10,7 @@ body,
 /* Estilos globales */
 @theme {
   --color-main-blue: #032340;
-  --color-gold: #fcdc85;
+  --color-gold: #FFBB00;
   --color-orange: #f28c00;
 }
 
@@ -20,7 +20,7 @@ body,
   font-weight: 400;
 
   --main-blue: #032340;
-  --main-gold: #fcdc85;
+  --main-gold: #FFBB00;
   --main-orange: #f28c00;
 
   font-synthesis: none;
