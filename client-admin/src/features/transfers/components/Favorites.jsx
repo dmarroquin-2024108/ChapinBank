@@ -4,14 +4,9 @@ import { useFavoriteStore } from '../../favorites/store/favoriteStore.js';
 import { Link } from 'react-router-dom';
 
 const AVATAR_COLORS = [
-  'bg-blue-600',
-  'bg-violet-600',
-  'bg-rose-500',
-  'bg-teal-600',
-  'bg-amber-500',
-  'bg-indigo-600',
-  'bg-green-600',
-  'bg-pink-500',
+  'bg-main-blue',
+  'bg-gold',
+  'bg-orange',
 ];
 
 const getInitials = (name = '') =>

@@ -28,7 +28,7 @@ const LoadingState = () => (
 );
 
 const ErrorState = ({ message }) => (
-  <div className='flex items-center gap-2 text-red-500 bg-red-50 rounded-xl px-4 py-3 text-sm'>
+  <div className='flex items-center gap-2 text-orange-500 bg-orange-50 rounded-xl px-4 py-3 text-sm'>
     <AlertCircle size={16} className='shrink-0' />
     <span>{message}</span>
   </div>

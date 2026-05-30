@@ -76,7 +76,7 @@ export const AdminUsersPage = () => {
         </p>
       </div>
 
-      <div className='grid grid-cols-2 lg:grid-cols-3 gap-4'>
+      <div className='grid grid-cols-2 lg:grid-cols-4 gap-4'>
         <StatCard
           title='Total'
           value={loadings.users ? '...' : stats.total}
@@ -87,19 +87,19 @@ export const AdminUsersPage = () => {
           title='Activos'
           value={loadings.users ? '...' : stats.active}
           icon={UserCheck}
-          color='green'
+          color='orange'
         />
         <StatCard
           title='Sin Activar'
           value={loadings.users ? '...' : stats.pending}
           icon={UserX}
-          color='orange'
+          color='gold'
         />
         <StatCard
           title='Inhabilitados'
           value={loadings.users ? '...' : stats.deleted}
           icon={UserX}
-          color='purple'
+          color='dark'
         />
       </div>
 

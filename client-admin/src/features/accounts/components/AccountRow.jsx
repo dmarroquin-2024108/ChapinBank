@@ -2,8 +2,8 @@ import { CheckCircle, XCircle, PiggyBank, Wallet, Eye, PowerOff, Power } from 'l
 import { formatDate, formatBalance } from '../../../shared/utils/formatters.js';
 
 const ACCOUNT_TYPE_CONFIG = {
-  MONETARIA: { label: 'Monetaria', Icon: Wallet, className: 'bg-orange-100 text-orange-700' },
-  AHORRO: { label: 'Ahorro', Icon: PiggyBank, className: 'bg-blue-100 text-blue-700' },
+  MONETARIA: { label: 'Monetaria', Icon: Wallet, className: 'bg-gold text-white' },
+  AHORRO: { label: 'Ahorro', Icon: PiggyBank, className: 'bg-main-blue text-white' },
 };
 
 export const AccountRow = ({ account, onToggle, onDetail }) => {
@@ -45,7 +45,7 @@ export const AccountRow = ({ account, onToggle, onDetail }) => {
       <td className='py-4 px-6 whitespace-nowrap'>
         <span
           className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-0.5 rounded-full ${
-            isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-500'
+            isActive ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-500'
           }`}
         >
           {isActive ? <CheckCircle size={11} /> : <XCircle size={11} />}
@@ -56,19 +56,11 @@ export const AccountRow = ({ account, onToggle, onDetail }) => {
       <td className='py-4 px-6 whitespace-nowrap'>
         <div className='flex items-center justify-end gap-1'>
           <button
-            onClick={() => onDetail(account)}
-            className='p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-[#0d1f35] transition cursor-pointer'
-            title='Ver detalle'
-          >
-            <Eye size={15} />
-          </button>
-
-          <button
             onClick={() => onToggle(account)}
             className={`p-1.5 rounded-lg transition cursor-pointer ${
               isActive
-                ? 'text-red-400 hover:bg-red-50 hover:text-red-600'
-                : 'text-green-500 hover:bg-green-50 hover:text-green-700'
+                ? 'text-orange-400 hover:bg-orange-50 hover:text-orange-600'
+                : 'text-blue-500 hover:bg-blue-50 hover:text-blue-700'
             }`}
             title={isActive ? 'Deshabilitar cuenta' : 'Habilitar cuenta'}
           >

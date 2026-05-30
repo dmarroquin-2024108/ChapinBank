@@ -4,7 +4,7 @@ import { AvatarUser } from '../ui/AvatarUser.jsx';
 export const Navbar = ({ onLogout }) => {
   const { user } = useAuthStore();
   return (
-    <nav className='min-h-14 bg-[#032340] border-b border-gray-200 flex items-center justify-between px-3 sm:px-6 py-2 gap-3'>
+    <nav className='min-h-14 bg-[#032340] flex items-center justify-between px-3 sm:px-6 py-2 gap-3'>
       <div className='min-w-0'>
         <span className='text-white font-extrabold text-sm sm:text-lg mt-0.5'>Hola</span>{' '}
         <span className='text-[#F28C00] font-extrabold text-sm sm:text-lg mt-0.5 truncate'>

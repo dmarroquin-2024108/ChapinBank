@@ -36,11 +36,11 @@ const TransactionCard = ({ transaction }) => {
           </div>
 
           <div className='sm:text-right shrink-0'>
-            <p className='font-extrabold text-rose-500 text-sm'>
+            <p className='font-extrabold text-orange-500 text-sm'>
               −{formatBalance(transaction.amount)}
             </p>
             {transaction.pricing?.discountApplied && (
-              <span className='inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold'>
+              <span className='inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold'>
                 <Tag size={9} />
                 {(transaction.pricing.discountApplied * 100).toFixed(0)}% dto.
               </span>

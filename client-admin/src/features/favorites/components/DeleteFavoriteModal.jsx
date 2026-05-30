@@ -19,8 +19,8 @@ export const DeleteFavoriteModal = ({ isOpen, onClose, favorite }) => {
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm'>
       <div className='bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6'>
         <div className='flex items-start justify-between mb-4'>
-          <div className='w-10 h-10 rounded-full bg-red-100 flex items-center justify-center'>
-            <Trash2 size={18} className='text-red-500' />
+          <div className='w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center'>
+            <Trash2 size={18} className='text-orange-500' />
           </div>
           <button onClick={onClose} className='text-gray-400 hover:text-gray-600 transition'>
             <X size={18} />
@@ -44,7 +44,7 @@ export const DeleteFavoriteModal = ({ isOpen, onClose, favorite }) => {
           <button
             onClick={handleDelete}
             disabled={loadings.action}
-            className='px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition disabled:opacity-50'
+            className='px-4 py-2 text-sm bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition disabled:opacity-50'
           >
             {loadings.action ? 'Eliminando...' : 'Eliminar'}
           </button>

@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react';
 import { X, CreditCard, ArrowDownLeft, ArrowUpRight, Loader2 } from 'lucide-react';
 import { useAccountStore } from '../store/accountsStore.js';
 import toast from 'react-hot-toast';
-
-const fmt = (n) =>
-  new Intl.NumberFormat('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
-    Number(n)
-  );
+import { formatAmount, formatDate, formatBalance } from '../../../shared/utils/formatters.js';
 
 const MOVEMENT_LABELS = {
   DEPOSIT: 'Depósito',
@@ -33,18 +29,14 @@ const MovementItem = ({ mov }) => {
         </p>
         <p className='text-[10px] text-gray-400'>
           {mov.date
-            ? new Date(mov.date).toLocaleDateString('es-GT', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-              })
+            ? formatDate(mov.date)
             : '—'}
         </p>
       </div>
       <span
         className={`text-xs font-bold shrink-0 ${isCredit ? 'text-green-600' : 'text-orange-500'}`}
       >
-        {isCredit ? '+' : '-'}Q {fmt(mov.amount)}
+        {isCredit ? '+' : '-'}{formatAmount(mov.amount)}
       </span>
     </div>
   );
@@ -112,7 +104,7 @@ export const DetailModal = ({ isOpen, onClose, accountNumber }) => {
               <div>
                 <p className='text-xs text-gray-400 mb-1'>Saldo disponible</p>
                 <p className='text-lg font-extrabold text-[#032340]'>
-                  Q {fmt(selectedAccount.balance)}
+                  {formatBalance(selectedAccount.balance)}
                 </p>
               </div>
               <div>
@@ -133,22 +125,17 @@ export const DetailModal = ({ isOpen, onClose, accountNumber }) => {
                 <p className='text-xs text-gray-400 mb-1'>Fecha de apertura</p>
                 <p className='text-sm font-semibold text-[#032340]'>
                   {selectedAccount.createdAt
-                    ? new Date(selectedAccount.createdAt).toLocaleDateString('es-GT', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric',
-                      })
+                    ? formatDate(selectedAccount.createdAt)
                     : '—'}
                 </p>
               </div>
               <div>
                 <p className='text-xs text-gray-400 mb-1'>Estado de cuenta</p>
                 <span
-                  className={`text-xs font-bold px-2 py-1 rounded-full text-center ${
-                    selectedAccount.status
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-red-100 text-red-700'
-                  }`}
+                  className={`text-xs font-bold px-2 py-1 rounded-full text-center ${selectedAccount.status
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'bg-orange-100 text-orange-700'
+                    }`}
                 >
                   {selectedAccount.status ? 'ACTIVA' : 'DESHABILITADA'}
                 </span>
@@ -159,7 +146,7 @@ export const DetailModal = ({ isOpen, onClose, accountNumber }) => {
               <button
                 type='button'
                 onClick={handleClose}
-                className='px-4 py-2 text-sm text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer'
+                className='px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition cursor-pointer'
               >
                 Cerrar
               </button>

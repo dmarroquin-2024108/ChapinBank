@@ -5,7 +5,7 @@ export const formatDate = (isoString) => {
   const date = new Date(isoString);
   return date.toLocaleDateString('es-GT', {
     year: 'numeric',
-    month: '2-digit',
+    month: 'short',
     day: '2-digit',
   });
 };

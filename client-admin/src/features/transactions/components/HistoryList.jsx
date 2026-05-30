@@ -49,7 +49,7 @@ export const HistoryList = ({
               >
                 <div
                   className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0
-                    ${isCredit ? 'bg-green-200/20 text-green-400' : 'bg-orange/15 text-orange'}`}
+                    ${isCredit ? 'bg-blue-200/20 text-blue-400' : 'bg-orange/15 text-orange'}`}
                 >
                   {isCredit ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}
                 </div>
@@ -64,7 +64,7 @@ export const HistoryList = ({
                 </div>
                 <span
                   className={`text-sm font-semibold shrink-0
-                    ${isCredit ? 'text-green-400' : 'text-orange'}`}
+                    ${isCredit ? 'text-blue-400' : 'text-orange'}`}
                 >
                   {isCredit ? '+' : '-'}Q {formatAmount(mov.amount)}
                 </span>

@@ -15,15 +15,15 @@ export const ConfirmModal = ({
 
   const confirmStyles =
     variant === 'danger'
-      ? 'bg-red-500 hover:bg-red-600 text-white'
+      ? 'bg-orange hover:bg-[#c07018] text-white'
       : 'bg-orange hover:bg-[#c07018] text-white';
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm'>
       <div className='bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6 flex flex-col gap-4 animate-fadeIn'>
         <div className='flex items-center gap-3'>
-          <div className='w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0'>
-            <AlertTriangle size={18} className='text-red-500' />
+          <div className='w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0'>
+            <AlertTriangle size={18} className='text-orange-500' />
           </div>
           <h2 className='text-base font-bold text-[#0d1f35]'>{title}</h2>
         </div>
@@ -34,7 +34,7 @@ export const ConfirmModal = ({
           <button
             onClick={onCancel}
             disabled={loading}
-            className='px-4 py-2 text-sm text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 cursor-pointer'
+            className='px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 cursor-pointer'
           >
             {cancelLabel}
           </button>
