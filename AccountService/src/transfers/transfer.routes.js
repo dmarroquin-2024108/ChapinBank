@@ -4,10 +4,12 @@ import {
   confirmTransfer,
   getCurrencyRates,
   getDailyLimit,
+  quickTransfer
 } from './transfer.controller.js';
 import {
   validateCreateTransfer,
   validateConfirmTransfer,
+  validateQuickTransfer
 } from '../../middlewares/transfer-validator.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
 
@@ -190,4 +192,72 @@ router.get('/currency', validateJWT, getCurrencyRates);
  */
 router.get('/daily-limit', validateJWT, getDailyLimit);
 
+/**
+ * @swagger
+ * /chapinbank/v1/transfers/quick/{favoriteId}:
+ *   post:
+ *     tags: [Transfers]
+ *     summary: Transferencia rápida a un favorito
+ *     description: Crea una transferencia hacia una cuenta guardada en favoritos, sin necesidad de indicar la cuenta de destino. Genera un token para que el destinatario la acepte o rechace.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: favoriteId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         example: "664f1a2b3c4d5e6f7a8b9c0d"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               numberAccountOrigin:
+ *                 type: string
+ *                 example: "MO0000001"
+ *               originHolder:
+ *                 type: string
+ *                 example: "Juan Pérez"
+ *               amount:
+ *                 type: number
+ *                 example: 150.00
+ *               currency:
+ *                 type: string
+ *                 example: "GTQ"
+ *               description:
+ *                 type: string
+ *                 example: "Pago de renta"
+ *     responses:
+ *       201:
+ *         description: Transferencia rápida creada exitosamente
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: "Transferencia creada. Se envió un token al correo del destinatario para que la acepte o rechace."
+ *               data:
+ *                 noOperacion: 123456789
+ *                 numberAccountOrigin: "MO0000001"
+ *                 numberAccountDestination: "AH0000002"
+ *                 amount: "150.00"
+ *                 currency: "GTQ"
+ *                 amountInGTQ: "150.00"
+ *                 exchangeRate: 1
+ *                 commision: "3.00"
+ *                 status: "PENDIENTE"
+ *                 nuevoBalanceOrigen: "850.00"
+ *                 createdAt: "2024-06-01T10:00:00.000Z"
+ *       400:
+ *         description: Error de validación (monto inválido, favorito inexistente, saldo insuficiente, límite excedido, etc.)
+ *       403:
+ *         description: La cuenta de origen no pertenece al usuario
+ *       404:
+ *         description: Favorito o cuenta de origen no encontrada
+ *       500:
+ *         description: Error al crear la transferencia rápida
+ */
+router.post('/quick/:favoriteId', validateQuickTransfer, quickTransfer);
 export default router;

@@ -4,6 +4,7 @@ import {
   cancelTransferRecord,
   rejectTransferRecord,
   getDailyLimitStatus,
+  quickTransferRecord
 } from './transfer.service.js';
 import { getAllRates } from '../../helpers/currency.helper.js';
 
@@ -131,3 +132,37 @@ export const getCurrencyRates = async (req, res) => {
     });
   }
 }; //Consultar la tasas de las divisas de la api
+
+export const quickTransfer = async (req, res) => {
+  try {
+    const { favoriteId } = req.params;
+    const { transfer, nuevoBalanceOrigen, commision, amountInGTQ, exchangeRate } =
+      await quickTransferRecord({
+        favoriteId,
+        userId: req.user.id,
+        token: req.token,
+        transferData: req.body,
+      });
+
+    res.status(201).json({
+      success: true,
+      message:
+        'Transferencia creada. Se envió un token al correo del destinatario para que la acepte o rechace.',
+      data: {
+        noOperacion: transfer.noOperacion,
+        numberAccountOrigin: transfer.numberAccountOrigin,
+        numberAccountDestination: transfer.numberAccountDestination,
+        amount: transfer.amount.toFixed(2),
+        currency: transfer.currency,
+        amountInGTQ,
+        exchangeRate,
+        commision,
+        status: transfer.status,
+        nuevoBalanceOrigen,
+        createdAt: transfer.createdAt,
+      },
+    });
+  } catch (e) {
+    res.status(e.statusCode || 500).json({ success: false, message: e.message });
+  }
+}; //quickTransfer
