@@ -11,6 +11,7 @@ import {
   notifyTransferCreated,
 } from '../notifications/notification.service.js';
 import { convertToGTQ } from '../../helpers/currency.helper.js';
+import { getFavoriteByIdRecord } from '../favorite/favorite.service.js';
 import {
   sendTransferRequestEmail,
   sendTransferCancelledEmail,
@@ -560,3 +561,17 @@ export const getDailyLimitStatus = async (numberAccountOrigin) => {
     currency: 'GTQ',
   };
 };
+
+export const quickTransferRecord = async({ favoriteId, userId, token, transferData}) => {
+  const favorite = await getFavoriteByIdRecord({ favoriteId, userId });
+
+  return createTransferRecord({
+    transferData: {
+      ...transferData,
+      numberAccountDestination: favorite.accountNumber,
+      destinationHolder: transferData.destinationHolder ?? favorite.alias,
+    },
+    userId,
+    token,
+  });
+};// Transferencias rapidas

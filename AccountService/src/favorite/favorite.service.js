@@ -1,6 +1,5 @@
 import Favorite from './favorite.model.js';
 import { getAccountByNumberAccount } from '../accounts/account.service.js';
-import { createTransferRecord } from '../transfers/transfer.service.js';
 import { validateActiveAccount } from '../../helpers/activeAccount.helper.js';
 
 export const addFavoriteRecord = async ({ userId, accountNumber, alias }) => {
@@ -95,21 +94,3 @@ export const deleteFavoriteRecord = async ({ favoriteId, userId }) => {
   }
   return favorite;
 };
-
-export const quickTransferFromFavoriteRecord = async ({
-  favoriteId,
-  userId,
-  token,
-  transferData,
-}) => {
-  const favorite = await getFavoriteByIdRecord({ favoriteId, userId });
-  return createTransferRecord({
-    transferData: {
-      ...transferData,
-      numberAccountDestination: favorite.accountNumber,
-      destinationHolder: transferData.destinationHolder ?? favorite.alias,
-    },
-    userId,
-    token,
-  });
-}; //Para las transferencias rápidas
