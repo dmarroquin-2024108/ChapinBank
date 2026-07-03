@@ -119,7 +119,7 @@ const AdminBankHistoryScreen = ({ rightAction }) => {
 
   return (
     <View style={styles.screenContainer}>
-      <Header title="Historial del banco" rightAction={rightAction} />
+      <Header title="Historial del banco" showMenu />
       <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <View style={styles.headerLeft}>

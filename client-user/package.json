@@ -35,7 +35,8 @@
     "zustand": "^4.5.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.0"
+    "@babel/core": "^7.25.0",
+    "babel-preset-expo": "^54.0.10"
   },
   "private": true,
   "packageManager": "pnpm@9.0.0"
