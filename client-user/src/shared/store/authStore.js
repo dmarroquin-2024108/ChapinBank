@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
-import { setRefreshToken, getRefreshToken } from '../api/authClient';
+import { setRefreshToken, getRefreshToken, setOnAuthFailure, setOnTokenRefreshed } from '../api/authClient';
 import {
   loginRequest,
   lostPasswordRequest,
@@ -165,3 +165,12 @@ export const useAuthStore = create(
     }
   )
 );
+
+setOnTokenRefreshed(({ token, refreshToken, expiresAt }) => {
+  useAuthStore.setState({ token, refreshToken, expiresAt });
+});
+
+
+setOnAuthFailure(async () => {
+  await useAuthStore.getState().logout();
+});

@@ -28,7 +28,8 @@ const ProfileModal = ({ visible, onClose, userBase }) => {
         phone: profile.phone ?? '',
         direction: profile.direction ?? '',
         nameWork: profile.nameWork ?? '',
-        ingresosMensuales: profile.ingresosMensuales ?? '',
+        ingresosMensuales:
+          profile.ingresosMensuales != null ? String(profile.ingresosMensuales) : '',
       });
     }
   }, [profile, reset]);
@@ -40,6 +41,10 @@ const ProfileModal = ({ visible, onClose, userBase }) => {
         return value !== profile[key];
       })
     );
+
+    if (payload.ingresosMensuales !== undefined) {
+      payload.ingresosMensuales = Number(payload.ingresosMensuales);
+    }
 
     if (Object.keys(payload).length === 0) {
       showToast('No realizaste ningún cambio', 'info');
@@ -190,7 +195,7 @@ const ProfileModal = ({ visible, onClose, userBase }) => {
                 style={styles.button}
               />
               <Button
-                title={loading ? 'Guardando...' : 'Guardar cambios'}
+                title={loading ? 'Guardando...' : 'Guardar'}
                 onPress={handleSubmit(onSubmit)}
                 loading={loading}
                 disabled={!isDirty}
