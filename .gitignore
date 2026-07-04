@@ -482,6 +482,7 @@ $RECYCLE.BIN/
 
 # Evitar subir credenciales y módulos de entorno
 
+.env
 .env.local
 .env.development
 .env.production
