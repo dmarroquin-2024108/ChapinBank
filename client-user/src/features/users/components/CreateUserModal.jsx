@@ -238,7 +238,7 @@ const CreateUserModal = ({ visible, onClose, currentUserRole }) => {
                 style={styles.button}
               />
               <Button
-                title="Crear usuario"
+                title="Crear"
                 onPress={handleSubmit(onSubmit)}
                 style={styles.button}
               />

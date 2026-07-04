@@ -7,7 +7,7 @@ const REFRESH_TOKEN_KEY = 'refreshToken';
 const createApiClient = (baseURL) => {
   const client = axios.create({
     baseURL,
-    timeout: 5000,
+    timeout: 20000,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -22,6 +22,16 @@ const productClient = createApiClient(API_BASE_URLS.PRODUCT);
 
 let isRefreshing = false;
 let failedQueue = [];
+let onAuthFailure = null;
+let onTokenRefreshed = null;
+
+export const setOnAuthFailure = (callback) => {
+  onAuthFailure = callback;
+};
+
+export const setOnTokenRefreshed = (callback) => {
+  onTokenRefreshed = callback;
+};
 
 const processQueue = (error, token = null) => {
   failedQueue.forEach(({ resolve, reject }) => (error ? reject(error) : resolve(token)));
@@ -86,25 +96,37 @@ const handleRefreshToken = async (error, originalRequest, client) => {
 
     if (!refreshToken) {
       isRefreshing = false;
+      await SecureStore.deleteItemAsync('accessToken');
       await setRefreshToken(null);
+      if (onAuthFailure) {
+        await onAuthFailure();
+      }
       return Promise.reject(error);
     }
 
     try {
       const response = await authClient.post(ENDPOINTS.AUTH.REFRESH, { refreshToken });
       const { accessToken, refreshToken: newRefreshToken, expiresIn, userDetails } = response.data;
-
+      await SecureStore.setItemAsync('accessToken', accessToken);
       await setRefreshToken(newRefreshToken);
 
       const token = accessToken;
-      const expiresAt = new Date(Date.now() + expiresIn * 1000).toISOString();
+      const expiresAt = expiresIn ? new Date(Date.now() + expiresIn * 1000).toISOString() : null;
+
+      if (onTokenRefreshed) {
+        onTokenRefreshed({ token, refreshToken: newRefreshToken, expiresAt, userDetails });
+      }
 
       processQueue(null, token);
       originalRequest.headers['Authorization'] = 'Bearer ' + token;
       return client(originalRequest);
     } catch (err) {
       processQueue(err, null);
+      await SecureStore.deleteItemAsync('accessToken');
       await setRefreshToken(null);
+      if (onAuthFailure) {
+        await onAuthFailure();
+      }
       return Promise.reject(err);
     } finally {
       isRefreshing = false;
