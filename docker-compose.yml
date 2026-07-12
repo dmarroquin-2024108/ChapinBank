@@ -1,0 +1,276 @@
+name: chapinbank
+
+services:
+
+  postgres:
+    image: postgres:13
+    container_name: in6am_chapin_bank
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-IN6AM}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-Admin!}
+      POSTGRES_DB: ${POSTGRES_DB:-chapin_bank}
+    ports:
+      - "${POSTGRES_PORT:-5436}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-IN6AM} -d ${POSTGRES_DB:-chapin_bank}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - chapinbank-network
+
+  mongodb:
+    image: mongo:7
+    container_name: chapinbank_mongodb
+    restart: unless-stopped
+    ports:
+      - "${MONGODB_PORT:-27017}:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - chapinbank-network
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.AuthService
+    container_name: chapinbank_auth_service
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5079
+      DOTNET_USE_POLLING_FILE_WATCHER: "1"
+      ConnectionStrings__DefaultConnection: >-
+        Host=postgres;Port=5432;Database=${POSTGRES_DB:-chapin_bank};
+        Username=${POSTGRES_USER:-IN6AM};Password=${POSTGRES_PASSWORD:-Admin!}
+      AppSettings__FrontendUrl: ${FRONTEND_URL:-http://localhost:5173}
+      JwtSettings__SecretKey: ${JWT_SECRET:-MiLLaveSuperSeceretaParaJWT2021272y2021001}
+      JwtSettings__Issuer: ${JWT_ISSUER:-ChapinBank}
+      JwtSettings__Audience: ${JWT_AUDIENCE:-ChapinBank}
+      SmtpSettings__Host: ${SMTP_HOST:-smtp.gmail.com}
+      SmtpSettings__Port: ${SMTP_PORT:-465}
+      SmtpSettings__Username: ${SMTP_USER:-}
+      SmtpSettings__Password: ${SMTP_PASS:-}
+      SmtpSettings__FromEmail: ${SMTP_USER:-}
+      SmtpSettings__FromName: ${SMTP_FROM_NAME:-Chapin Bank Soporte}
+      Supabase__Host: ${SUPABASE_HOST}
+      Supabase__Port: ${SUPABASE_PORT}
+      Supabase__Database: ${SUPABASE_DATABASE}
+      Supabase__Username: ${SUPABASE_USERNAME}
+      Supabase__Password: ${SUPABASE_PASSWORD}
+    env_file:
+      - path: .env.docker
+        required: false
+    volumes:
+      - ./AuthenticationService/AuthService:/src
+      - /src/src/AuthService.Api/bin
+      - /src/src/AuthService.Api/obj
+      - /src/src/AuthService.Application/bin
+      - /src/src/AuthService.Application/obj
+      - /src/src/AuthService.Domain/bin
+      - /src/src/AuthService.Domain/obj
+      - /src/src/AuthService.Persistence/bin
+      - /src/src/AuthService.Persistence/obj
+    ports:
+      - "${AUTH_SERVICE_PORT:-5079}:5079"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:5079/api/v1/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - chapinbank-network
+
+  account-service:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.AccountService
+    container_name: chapinbank_account_service
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3010
+      URI_MONGODB: mongodb://mongodb:27017/${MONGO_DB_NAME:-cbk-debuggers}
+      JWT_SECRET: ${JWT_SECRET:-MiLLaveSuperSeceretaParaJWT2021272y2021001}
+      JWT_ISSUER: ${JWT_ISSUER:-ChapinBank}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:-ChapinBank}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
+      ACCOUNT_SERVICE_URL: ${ACCOUNT_SERVICE_URL:-http://account-service:3010}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:-http://auth-service:5079}
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT_ACCOUNT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME:-Chapin Bank}
+      SMTP_FROM_EMAIL: ${SMTP_USER:-}
+      TRANSFER_CANCEL_WINDOW_MINUTES: ${TRANSFER_CANCEL_WINDOW_MINUTES:-30}
+      DEPOSIT_REVERT_LIMIT_MS: ${DEPOSIT_REVERT_LIMIT_MS:-60000}
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+      CHOKIDAR_USEPOLLING: "true"
+    env_file:
+      - path: .env.docker
+        required: false
+    volumes:
+      - ./AccountService:/app
+      - /app/node_modules
+    ports:
+      - "${ACCOUNT_SERVICE_PORT:-3010}:3010"
+    command: sh -c "CI=true pnpm install && node_modules/.bin/nodemon --legacy-watch index.js"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fsS http://localhost:3010/chapinbank/v1/health || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - chapinbank-network
+
+  products-service:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.products-service
+    container_name: chapinbank_products_service
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      account-service:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3015
+      URI_MONGODB: mongodb://mongodb:27017/${MONGO_DB_NAME:-cbk-debuggers}
+      JWT_SECRET: ${JWT_SECRET:-MiLLaveSuperSeceretaParaJWT2021272y2021001}
+      JWT_ISSUER: ${JWT_ISSUER:-ChapinBank}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:-ChapinBank}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
+      ACCOUNT_SERVICE_URL: ${ACCOUNT_SERVICE_URL_BASE:-http://account-service:3010/chapinbank/v1}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+      CHOKIDAR_USEPOLLING: "true"
+    env_file:
+      - path: .env.docker
+        required: false
+    volumes:
+      - ./products-service:/app
+      - /app/node_modules
+    ports:
+      - "${PRODUCT_SERVICE_PORT:-3015}:3015"
+    command: sh -c "CI=true pnpm install && node_modules/.bin/nodemon --legacy-watch index.js"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fsS http://localhost:3015/chapinbank/v1/health || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - chapinbank-network
+
+  client-admin:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.client-admin
+    container_name: chapinbank_client_admin
+    restart: unless-stopped
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      account-service:
+        condition: service_healthy
+      products-service:
+        condition: service_healthy
+    environment:
+      VITE_AUTH_URL: ${VITE_AUTH_URL:-http://localhost:5079/api/v1}
+      VITE_ACCOUNT_URL: ${VITE_ACCOUNT_URL:-http://localhost:3010/chapinbank/v1}
+      VITE_PRODUCT_URL: ${VITE_PRODUCT_URL:-http://localhost:3015/chapinbank/v1}
+      CHOKIDAR_USEPOLLING: "true"
+    env_file:
+      - path: .env.docker
+        required: false
+    volumes:
+      - ./client-admin:/app
+      - /app/node_modules
+    ports:
+      - "${CLIENT_ADMIN_PORT:-5173}:5173"
+    networks:
+      - chapinbank-network
+
+  client-user:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.client-user
+    container_name: chapinbank_client_user
+    restart: unless-stopped
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      account-service:
+        condition: service_healthy
+      products-service:
+        condition: service_healthy
+    environment:
+      EXPO_PUBLIC_AUTH_URL: ${EXPO_PUBLIC_AUTH_URL:-http://10.0.2.2:5079/api/v1}
+      EXPO_PUBLIC_ACCOUNT_URL: ${EXPO_PUBLIC_ACCOUNT_URL:-http://10.0.2.2:3010/chapinbank/v1}
+      EXPO_PUBLIC_PRODUCT_URL: ${EXPO_PUBLIC_PRODUCT_URL:-http://10.0.2.2:3015/chapinbank/v1}
+      REACT_NATIVE_PACKAGER_HOSTNAME: ${EXPO_PACKAGER_HOSTNAME:-10.0.2.2}
+      EXPO_DEVTOOLS_LISTEN_ADDRESS: 0.0.0.0
+      EXPO_UNSTABLE_HEADLESS: "true"
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    env_file:
+      - path: .env.docker
+        required: false
+    volumes:
+      - ./client-user:/app
+      - /app/node_modules
+    ports:
+      - "${CLIENT_USER_METRO_PORT:-8081}:8081"
+      - "${CLIENT_USER_EXPO_PORT:-19000}:19000"
+      - "${CLIENT_USER_EXPO_DEVTOOLS_PORT:-19001}:19001"
+      - "${CLIENT_USER_EXPO_INSPECTOR_PORT:-19002}:19002"
+    command: sh -c "CI=true pnpm install && pnpm exec expo start --host lan --port 8081"
+    networks:
+      - chapinbank-network
+
+networks:
+  chapinbank-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    name: postgres_postgres_data
+    external: true
+  mongo_data:

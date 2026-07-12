@@ -1,0 +1,21 @@
+FROM node:22
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+RUN corepack enable && corepack prepare pnpm@10.28.0 --activate
+
+COPY AccountService/package.json AccountService/pnpm-lock.yaml ./
+
+RUN pnpm install --frozen-lockfile
+
+COPY AccountService/ ./
+
+ENV NODE_ENV=development
+
+EXPOSE 3010
+
+CMD ["node_modules/.bin/nodemon", "--legacy-watch", "index.js"]
