@@ -1,6 +1,7 @@
 using AuthService.Api.Extensions;
 using AuthService.Api.Middlewares;
 using AuthService.Persistence.Data;
+using Microsoft.EntityFrameworkCore;
 using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 using Serilog;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -179,8 +180,7 @@ using (var scope = app.Services.CreateScope())
     {
         logger.LogInformation("Verificando conexión a la base de datos...");
 
-        // Garantizar que la base de datos se crea (similar a Sequelize sync en Node.js)
-        await context.Database.EnsureCreatedAsync();
+        await context.Database.MigrateAsync();
 
         logger.LogInformation("Base de datos lista. Ejecutando datos semilla...");
         await DataSeeder.SeedAsync(context);
@@ -190,7 +190,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         logger.LogError(ex, "Ocurrió un error al inicializar la base de datos");
-        throw; // Relanzar para detener la aplicación
+        throw; 
     }
 }
 
