@@ -9,7 +9,7 @@ import {
   Wallet,
   PiggyBank,
 } from 'lucide-react';
-import { useHistoryStore } from '../store/historystore.js';
+import { useHistoryStore } from '../store/historyStore.js';
 import { MovementCard } from '../components/Movementcard.jsx';
 import { getAccountsList } from '../../../shared/apis/admin.js';
 

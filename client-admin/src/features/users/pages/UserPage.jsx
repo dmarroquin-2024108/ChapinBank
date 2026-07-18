@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { Cuentas } from '../../accounts/components/Accounts.jsx';
 import { useAccountStore } from '../../accounts/store/accountsStore.js';
-import { useHistoryStore } from '../../history/store/historystore.js';
+import { useHistoryStore } from '../../history/store/historyStore.js';
 import { MovementCard } from '../../history/components/Movementcard.jsx';
 
 const QUICK_ACTIONS = [
