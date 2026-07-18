@@ -1,8 +1,9 @@
 import rateLimit from 'express-rate-limit';
 
 export const requestLimit = rateLimit({
-  windowMs: 15 * 60 * 1000, //Es recomendable ponerlo en 15 minutos
+  windowMs: 15 * 60 * 1000,
   max: 100,
+  skip: (req) => req.path.endsWith('/health'),
   handler: (req, res) => {
     console.log(`Peticiones excedidas desde IP: ${req.ip}, Endpoint: ${req.path}`);
     res.status(429).json({
