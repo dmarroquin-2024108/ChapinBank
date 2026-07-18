@@ -19,7 +19,7 @@ public static class SecurityExtensions
                 var allowedOrigins = configuration.GetSection("Security:AllowedOrigins").Get<string[]>()
                     ?? DefaultAllowedOrigins;
 
-                builder.WithOrigins("http://localhost:5173")
+                builder.WithOrigins(allowedOrigins)
                         .AllowAnyHeader()
                     .WithMethods(AllowedHttpMethods)
                     .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
