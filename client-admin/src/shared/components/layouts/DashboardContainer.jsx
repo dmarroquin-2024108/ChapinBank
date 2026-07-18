@@ -15,7 +15,7 @@ export const DashboardContainer = ({ user, onLogout, children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className='h-dvh bg-[#f5f3ef] flex'>
+    <div className='h-screen bg-[#f5f3ef] flex'>
       <Sidebar
         onLogout={onLogout}
         user={user}
