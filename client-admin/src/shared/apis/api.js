@@ -3,7 +3,7 @@ import { useAuthStore } from '../../features/auth/store/authStore';
 
 const axiosAuth = axios.create({
   baseURL: import.meta.env.VITE_AUTH_URL,
-  timeout: 5000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -11,7 +11,7 @@ const axiosAuth = axios.create({
 
 const axiosAccounts = axios.create({
   baseURL: import.meta.env.VITE_ACCOUNT_URL,
-  timeout: 5000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -19,7 +19,7 @@ const axiosAccounts = axios.create({
 
 const axiosProduct = axios.create({
   baseURL: import.meta.env.VITE_PRODUCT_URL,
-  timeout: 5000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
   },
