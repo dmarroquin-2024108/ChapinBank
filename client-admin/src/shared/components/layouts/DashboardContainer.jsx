@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar.jsx';
 import { Navbar } from './Navbar.jsx';
@@ -12,22 +11,12 @@ export const DashboardContainer = ({ user, onLogout, children }) => {
   };
   const location = useLocation();
   const title = titles[location.pathname] || 'Panel';
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className='h-screen bg-[#f5f3ef] flex'>
-      <Sidebar
-        onLogout={onLogout}
-        user={user}
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+    <div className='h-dvh bg-[#f5f3ef] flex'>
+      <Sidebar onLogout={onLogout} user={user} />
       <div className='flex-1 flex flex-col overflow-hidden min-w-0'>
-        <Navbar
-          onLogout={onLogout}
-          title={title}
-          onMenuClick={() => setSidebarOpen((prev) => !prev)}
-        />
+        <Navbar onLogout={onLogout} title={title} />
         <main className='flex-1 p-6 overflow-y-auto min-h-0 min-w-0'>{children}</main>
       </div>
     </div>
