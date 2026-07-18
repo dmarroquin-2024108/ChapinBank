@@ -1,0 +1,138 @@
+envVarGroups:
+  - name: chapinbank-shared
+    envVars:
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_ISSUER
+        value: ChapinBank
+      - key: JWT_AUDIENCE
+        value: ChapinBank
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM_NAME
+        value: Chapin Bank
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+services:
+  # ---------------- AUTH SERVICE (.NET + Supabase) ----------------
+  - type: web
+    name: chapinbank-auth
+    runtime: docker
+    plan: free
+    dockerfilePath: dockerfiles/Dockerfile.AuthService.production
+    dockerContext: .
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: Supabase__Host
+        sync: false
+      - key: Supabase__Port
+        value: "5432"
+      - key: Supabase__Database
+        value: postgres
+      - key: Supabase__Username
+        sync: false
+      - key: Supabase__Password
+        sync: false
+      - key: JwtSettings__SecretKey
+        fromGroup: chapinbank-shared
+      - key: JwtSettings__Issuer
+        fromGroup: chapinbank-shared
+      - key: JwtSettings__Audience
+        fromGroup: chapinbank-shared
+      - key: SmtpSettings__Host
+        fromGroup: chapinbank-shared
+      - key: SmtpSettings__Port
+        value: "465"
+      - key: SmtpSettings__Username
+        fromGroup: chapinbank-shared
+      - key: SmtpSettings__Password
+        fromGroup: chapinbank-shared
+      - key: SmtpSettings__FromEmail
+        fromGroup: chapinbank-shared
+      - key: SmtpSettings__FromName
+        fromGroup: chapinbank-shared
+      - key: AppSettings__FrontendUrl
+        sync: false
+
+  # ---------------- ACCOUNT SERVICE (Node + MongoDB Atlas) ----------------
+  - type: web
+    name: chapinbank-account
+    runtime: docker
+    plan: free
+    dockerfilePath: dockerfiles/Dockerfile.AccountService.production
+    dockerContext: .
+    healthCheckPath: /chapinbank/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: URI_MONGODB
+        sync: false
+      - key: JWT_SECRET
+        fromGroup: chapinbank-shared
+      - key: JWT_ISSUER
+        fromGroup: chapinbank-shared
+      - key: JWT_AUDIENCE
+        fromGroup: chapinbank-shared
+      - key: JWT_EXPIRES_IN
+        value: 1h
+      - key: AUTH_SERVICE_URL
+        value: https://chapinbank-auth.onrender.com
+      - key: ACCOUNT_SERVICE_URL
+        value: https://chapinbank-account.onrender.com
+      - key: SMTP_HOST
+        fromGroup: chapinbank-shared
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        fromGroup: chapinbank-shared
+      - key: SMTP_PASS
+        fromGroup: chapinbank-shared
+      - key: SMTP_FROM_NAME
+        fromGroup: chapinbank-shared
+      - key: SMTP_FROM_EMAIL
+        fromGroup: chapinbank-shared
+      - key: TRANSFER_CANCEL_WINDOW_MINUTES
+        value: "30"
+      - key: DEPOSIT_REVERT_LIMIT_MS
+        value: "60000"
+
+  # ---------------- PRODUCTS SERVICE (Node + MongoDB Atlas) ----------------
+  - type: web
+    name: chapinbank-products
+    runtime: docker
+    plan: free
+    dockerfilePath: dockerfiles/Dockerfile.products-service.production
+    dockerContext: .
+    healthCheckPath: /chapinbank/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: URI_MONGODB
+        sync: false
+      - key: JWT_SECRET
+        fromGroup: chapinbank-shared
+      - key: JWT_ISSUER
+        fromGroup: chapinbank-shared
+      - key: JWT_AUDIENCE
+        fromGroup: chapinbank-shared
+      - key: JWT_EXPIRES_IN
+        value: 1h
+      - key: ACCOUNT_SERVICE_URL
+        value: https://chapinbank-account.onrender.com/chapinbank/v1
+      - key: CLOUDINARY_CLOUD_NAME
+        fromGroup: chapinbank-shared
+      - key: CLOUDINARY_API_KEY
+        fromGroup: chapinbank-shared
+      - key: CLOUDINARY_API_SECRET
+        fromGroup: chapinbank-shared

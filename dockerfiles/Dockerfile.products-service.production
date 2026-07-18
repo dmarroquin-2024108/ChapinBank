@@ -1,0 +1,13 @@
+FROM node:22-alpine
+WORKDIR /app
+
+RUN corepack enable && corepack prepare pnpm@10.29.3 --activate
+
+COPY products-service/package.json products-service/pnpm-lock.yaml ./
+RUN pnpm install --prod --frozen-lockfile
+
+COPY products-service/ ./
+
+ENV NODE_ENV=production
+
+CMD ["node", "index.js"]
