@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Bell, User, LogOut, Trash2 } from 'lucide-react';
+import { Bell, User, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
 import imgLogo from '../../../assets/img/ChapinLogo.png';
 import { useAuthStore } from '../../../features/auth/store/authStore.js';
 import { ProfileModal } from '../../../features/users/components/ProfileModal.jsx';
@@ -23,9 +23,9 @@ export const UserNavbar = ({ onLogout }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [showDeleteAccount, setShowDeleteAccount] = useState(false);
   const dropdownRef = useRef(null);
   const notifRef = useRef(null);
+  const navScrollRef = useRef(null);
   const { unreadCount, fetchNotifications } = useNotificationStore();
 
   useEffect(() => {
@@ -47,21 +47,20 @@ export const UserNavbar = ({ onLogout }) => {
     setTimeout(() => setShowProfile(true), 50);
   };
 
-  const handleOpenDeleteAccount = () => {
-    setDropdownOpen(false);
-    setTimeout(() => setShowDeleteAccount(true), 50);
-  };
-
   const isActive = (to, exact) =>
     exact
       ? location.pathname === to
       : location.pathname === to || location.pathname.startsWith(to + '/');
 
+  const scrollNav = (direction) => {
+    navScrollRef.current?.scrollBy({ left: direction * 150, behavior: 'smooth' });
+  };
+
   return (
     <>
       <header className='bg-[#032340] sticky top-0 z-40 shadow-md'>
         <div className='max-w-7xl mx-auto px-6 h-14 flex items-center justify-between'>
-          <div className='flex items-center gap-4 flex-1 min-w-0'>
+          <div className='flex items-center gap-1 flex-1 min-w-0'>
             <div className='flex items-center gap-2 mr-2'>
               <img
                 src={imgLogo}
@@ -72,7 +71,19 @@ export const UserNavbar = ({ onLogout }) => {
                 Chapin<span className='text-[#F28C00]'>Bank</span>
               </span>
             </div>
-            <nav className='flex items-center gap-1 overflow-x-auto whitespace-nowrap flex-1 min-w-0 no-scrollbar'>
+
+            <button
+              onClick={() => scrollNav(-1)}
+              className='shrink-0 text-gray-400 hover:text-white p-1'
+              aria-label='Desplazar izquierda'
+            >
+              <ChevronLeft size={16} />
+            </button>
+
+            <nav
+              ref={navScrollRef}
+              className='flex items-center gap-1 overflow-x-auto whitespace-nowrap flex-1 min-w-0 no-scrollbar scroll-smooth'
+            >
               {NAV_ITEMS.map(({ label, to, exact }) => (
                 <Link
                   key={label}
@@ -87,6 +98,14 @@ export const UserNavbar = ({ onLogout }) => {
                 </Link>
               ))}
             </nav>
+
+            <button
+              onClick={() => scrollNav(1)}
+              className='shrink-0 text-gray-400 hover:text-white p-1'
+              aria-label='Desplazar derecha'
+            >
+              <ChevronRight size={16} />
+            </button>
           </div>
 
           <div className='flex items-center gap-3'>
