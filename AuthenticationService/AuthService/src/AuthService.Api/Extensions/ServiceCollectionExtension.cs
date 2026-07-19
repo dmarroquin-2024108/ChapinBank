@@ -24,7 +24,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserManagementService, UserManagementService>();
         services.AddScoped<IPassHashService, PasswordHashService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
-        services.AddScoped<IEmailService, EmailService>();
+        services.AddHttpClient<IEmailService, EmailService>();
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         

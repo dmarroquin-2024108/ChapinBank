@@ -64,11 +64,8 @@ services:
       JwtSettings__SecretKey: ${JWT_SECRET:-MiLLaveSuperSeceretaParaJWT2021272y2021001}
       JwtSettings__Issuer: ${JWT_ISSUER:-ChapinBank}
       JwtSettings__Audience: ${JWT_AUDIENCE:-ChapinBank}
-      SmtpSettings__Host: ${SMTP_HOST:-smtp.gmail.com}
-      SmtpSettings__Port: ${SMTP_PORT:-465}
-      SmtpSettings__Username: ${SMTP_USER:-}
-      SmtpSettings__Password: ${SMTP_PASS:-}
-      SmtpSettings__FromEmail: ${SMTP_USER:-}
+      Brevo__ApiKey: ${BREVO_API_KEY:-}
+      SmtpSettings__FromEmail: ${SMTP_FROM_EMAIL:-}
       SmtpSettings__FromName: ${SMTP_FROM_NAME:-Chapin Bank Soporte}
       Supabase__Host: ${SUPABASE_HOST}
       Supabase__Port: ${SUPABASE_PORT}
@@ -120,12 +117,9 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
       ACCOUNT_SERVICE_URL: ${ACCOUNT_SERVICE_URL:-http://account-service:3010}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:-http://auth-service:5079}
-      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
-      SMTP_PORT: ${SMTP_PORT_ACCOUNT:-587}
-      SMTP_USER: ${SMTP_USER:-}
-      SMTP_PASS: ${SMTP_PASS:-}
+      BREVO_API_KEY: ${BREVO_API_KEY:-}
       SMTP_FROM_NAME: ${SMTP_FROM_NAME:-Chapin Bank}
-      SMTP_FROM_EMAIL: ${SMTP_USER:-}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL:-}
       TRANSFER_CANCEL_WINDOW_MINUTES: ${TRANSFER_CANCEL_WINDOW_MINUTES:-30}
       DEPOSIT_REVERT_LIMIT_MS: ${DEPOSIT_REVERT_LIMIT_MS:-60000}
       NODE_TLS_REJECT_UNAUTHORIZED: "0"

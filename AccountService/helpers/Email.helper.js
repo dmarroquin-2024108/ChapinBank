@@ -1,15 +1,29 @@
-import nodemailer from 'nodemailer';
+const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
 
-const createTransporter = () =>
-  nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+const sendBrevoMail = async ({ to, toName, subject, html }) => {
+  const response = await fetch(BREVO_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      'api-key': process.env.BREVO_API_KEY,
     },
+    body: JSON.stringify({
+      sender: {
+        name: process.env.SMTP_FROM_NAME,
+        email: process.env.SMTP_FROM_EMAIL,
+      },
+      to: [{ email: to, name: toName }],
+      subject,
+      htmlContent: html,
+    }),
   });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(`Error al enviar el email: ${response.status} ${errorBody}`);
+  }
+};
 
 export const sendTransferRequestEmail = async ({
   toEmail,
@@ -21,17 +35,11 @@ export const sendTransferRequestEmail = async ({
   transferToken,
   cancelWindowMinutes,
 }) => {
-  const transporter = createTransporter();
-
   const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
   const acceptUrl = `${baseUrl}/inicio/confirmar-transferencia?token=${transferToken}&action=ACEPTAR`;
   const rejectUrl = `${baseUrl}/inicio/confirmar-transferencia?token=${transferToken}&action=RECHAZAR`;
 
-  const mailOptions = {
-    from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
-    to: toEmail,
-    subject: `Chapin Bank - Tienes una transferencia pendiente #${noOperacion}`,
-    html: `
+  const html = `
             <h2>Hola ${toName},</h2>
             <p><strong>${fromName}</strong> te ha enviado una transferencia por <strong>${currency} ${parseFloat(amount).toFixed(2)}</strong>.</p>
             <p><strong>No. de operación:</strong> ${noOperacion}</p>
@@ -49,10 +57,14 @@ export const sendTransferRequestEmail = async ({
             <p>Si no reconoces esta operación, ignora este correo.</p>
             <br/>
             <p>Equipo Chapin Bank</p>
-        `,
-  };
+        `;
 
-  await transporter.sendMail(mailOptions);
+  await sendBrevoMail({
+    to: toEmail,
+    toName,
+    subject: `Chapin Bank - Tienes una transferencia pendiente #${noOperacion}`,
+    html,
+  });
 }; //sendTransferRequestEmail
 
 export const sendTransferCancelledEmail = async ({
@@ -62,22 +74,20 @@ export const sendTransferCancelledEmail = async ({
   currency,
   noOperacion,
 }) => {
-  const transporter = createTransporter();
-
-  const mailOptions = {
-    from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
-    to: toEmail,
-    subject: `Chapin Bank - Transferencia cancelada #${noOperacion}`,
-    html: `
+  const html = `
             <h2>Hola ${toName},</h2>
             <p>La transferencia de <strong>${currency} ${parseFloat(amount).toFixed(2)}</strong> con No. de operación <strong>#${noOperacion}</strong> que le habían enviado fue <strong>cancelada por el emisor</strong>.</p>
             <p>El token que recibiste ya no es válido.</p>
             <br/>
             <p>Equipo Chapin Bank</p>
-        `,
-  };
+        `;
 
-  await transporter.sendMail(mailOptions);
+  await sendBrevoMail({
+    to: toEmail,
+    toName,
+    subject: `Chapin Bank - Transferencia cancelada #${noOperacion}`,
+    html,
+  });
 }; //sendTransferCancelledEmail
 
 export const sendTransferRejectedEmail = async ({
@@ -87,22 +97,20 @@ export const sendTransferRejectedEmail = async ({
   currency,
   noOperacion,
 }) => {
-  const transporter = createTransporter();
-
-  const mailOptions = {
-    from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
-    to: toEmail,
-    subject: `Chapin Bank - Transferencia rechazada #${noOperacion}`,
-    html: `
+  const html = `
             <h2>Hola ${toName},</h2>
             <p>Su transferencia de <strong>${currency} ${parseFloat(amount).toFixed(2)}</strong> con No. de operación <strong>#${noOperacion}</strong> fue <strong>rechazada por el destinatario</strong>.</p>
             <p>El monto ha sido reembolsado a su cuenta de origen.</p>
             <br/>
             <p>Equipo Chapin Bank</p>
-        `,
-  };
+        `;
 
-  await transporter.sendMail(mailOptions);
+  await sendBrevoMail({
+    to: toEmail,
+    toName,
+    subject: `Chapin Bank - Transferencia rechazada #${noOperacion}`,
+    html,
+  });
 }; //sendTransferRejectedEmail
 
 export const sendTransferAcceptedEmail = async ({
@@ -112,22 +120,20 @@ export const sendTransferAcceptedEmail = async ({
   currency,
   noOperacion,
 }) => {
-  const transporter = createTransporter();
-
-  const mailOptions = {
-    from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
-    to: toEmail,
-    subject: `Chapin Bank - Transferencia aceptada #${noOperacion}`,
-    html: `
+  const html = `
             <h2>Hola ${toName},</h2>
             <p>Su transferencia de <strong>${currency} ${parseFloat(amount).toFixed(2)}</strong> con No. de operación <strong>#${noOperacion}</strong> fue <strong>aceptada por el destinatario</strong>.</p>
             <p>El dinero ha sido acreditado exitosamente.</p>
             <br/>
             <p>Equipo Chapin Bank</p>
-        `,
-  };
+        `;
 
-  await transporter.sendMail(mailOptions);
+  await sendBrevoMail({
+    to: toEmail,
+    toName,
+    subject: `Chapin Bank - Transferencia aceptada #${noOperacion}`,
+    html,
+  });
 }; //Notificar al emisor que su transferencia fue aceptada
 
 export const sendTransferAcceptEmail = async ({
@@ -137,19 +143,18 @@ export const sendTransferAcceptEmail = async ({
   currency,
   noOperacion,
 }) => {
-  const transporter = createTransporter();
-
-  const mailOptions = {
-    from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
-    to: toEmail,
-    subject: `Chapin Bank - Confirmación de transferencia recibida #${noOperacion}`,
-    html: `
+  const html = `
             <h2>Hola ${toName},</h2>
             <p>Has aceptado una transferencia de <strong>${currency} ${parseFloat(amount).toFixed(2)}</strong> con No. de operación <strong>#${noOperacion}</strong>.</p>
             <p>El monto ha sido acreditado a tu cuenta.</p>
             <br/>
             <p>Equipo Chapin Bank</p>
-        `,
-  };
-  await transporter.sendMail(mailOptions);
+        `;
+
+  await sendBrevoMail({
+    to: toEmail,
+    toName,
+    subject: `Chapin Bank - Confirmación de transferencia recibida #${noOperacion}`,
+    html,
+  });
 }; //Notificar al destinatario que aceptó la transferencia

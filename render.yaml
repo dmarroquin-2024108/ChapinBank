@@ -7,11 +7,7 @@ envVarGroups:
         value: ChapinBank
       - key: JWT_AUDIENCE
         value: ChapinBank
-      - key: SMTP_HOST
-        value: smtp.gmail.com
-      - key: SMTP_USER
-        sync: false
-      - key: SMTP_PASS
+      - key: BREVO_API_KEY
         sync: false
       - key: SMTP_FROM_NAME
         value: Chapin Bank
@@ -50,13 +46,7 @@ services:
         value: ChapinBank
       - key: JwtSettings__Audience
         value: ChapinBank
-      - key: SmtpSettings__Host
-        value: smtp.gmail.com
-      - key: SmtpSettings__Port
-        value: "465"
-      - key: SmtpSettings__Username
-        sync: false
-      - key: SmtpSettings__Password
+      - key: Brevo__ApiKey
         sync: false
       - key: SmtpSettings__FromEmail
         sync: false
@@ -84,8 +74,6 @@ services:
         value: https://chapinbank-auth.onrender.com
       - key: ACCOUNT_SERVICE_URL
         value: https://chapinbank-account.onrender.com
-      - key: SMTP_PORT
-        value: "587"
       - key: SMTP_FROM_EMAIL
         sync: false
       - key: TRANSFER_CANCEL_WINDOW_MINUTES
