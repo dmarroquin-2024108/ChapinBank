@@ -70,6 +70,8 @@ services:
         sync: false
       - key: JWT_EXPIRES_IN
         value: 1h
+      - key: FRONTEND_URL
+        value: https://chapin-bank.vercel.app
       - key: AUTH_SERVICE_URL
         value: https://chapinbank-auth.onrender.com
       - key: ACCOUNT_SERVICE_URL
